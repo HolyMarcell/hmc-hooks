@@ -29,6 +29,10 @@ export interface UseRequestProps {
 export interface UseRequestApi {
   go: () => Promise<any>;
   id: string;
+  setParams: (params: Record<string, any>) => void;
+  setSegments: (segments: Record<string, any>) => void;
+  setHeaders: (headers: Record<string, any>) => void;
+  setData: (data: Record<string, any>) => void;
 }
 
 export interface RegisterRequestAction {
@@ -36,4 +40,10 @@ export interface RegisterRequestAction {
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
   id: string;
+}
+
+export interface ChangeRequestAction {
+  id: string;
+  type: 'param' | 'segment' | 'data' | 'header' | string;
+  value: any;
 }

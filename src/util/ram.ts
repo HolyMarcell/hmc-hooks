@@ -27,5 +27,6 @@ export const splitAt = (...args) => R.splitAt(...args);
 export const contains = (...args) => R.contains(...args);
 export const find = (...args) => R.find(...args);
 export const propEq = (...args) => R.propEq(...args);
+export const intersection = (...args) => R.intersection(...args);
 export const filter = (predicate: Function, filterable: any) => R.filter(predicate, filterable);
 
