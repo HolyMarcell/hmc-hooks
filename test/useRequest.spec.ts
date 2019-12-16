@@ -1,9 +1,8 @@
 import {useRequest} from "../src";
 import {Provider} from 'react-redux';
-import { renderHook } from "@testing-library/react-hooks";
+import {renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
-import {CHANGE_REQUEST, REGISTER_REQUEST} from "../src/http/requestDuck";
-
+import {CHANGE_REQUEST, REGISTER_REQUEST, SEND_REQUEST} from "../src/http/requestDuck";
 
 
 const mockTemplate = {
@@ -70,6 +69,12 @@ describe('useRequest hook', () => {
 
     expect(regReq.length).toEqual(1);
     expect(regReq[0].type).toEqual(REGISTER_REQUEST);
+
+    const state = mockStore.getState();
+    expect(state.http[mockId]).toBeDefined();
+    expect(state.http[mockId].action).toEqual(mockTemplate.action);
+    expect(state.http[mockId].paginated).toEqual(undefined);
+    expect(state.http[mockId].paginationMapper).toEqual(undefined);
   });
 
   it('dispatches set param action', () => {
@@ -83,7 +88,11 @@ describe('useRequest hook', () => {
     expect(changeReq.length).toEqual(1);
     expect(changeReq[0].payload.value).toEqual(mockHttpParam);
     expect(changeReq[0].payload.id).toEqual(mockId);
-    expect(changeReq[0].payload.type).toEqual('param');
+    expect(changeReq[0].payload.type).toEqual('params');
+
+    const state = mockStore.getState();
+    expect(state.http[api.id].action.params).toEqual(mockHttpParam);
+
   });
 
   it('dispatches set header action', () => {
@@ -97,7 +106,10 @@ describe('useRequest hook', () => {
     expect(changeReq.length).toEqual(1);
     expect(changeReq[0].payload.value).toEqual(mockHttpParam);
     expect(changeReq[0].payload.id).toEqual(api.id);
-    expect(changeReq[0].payload.type).toEqual('header');
+    expect(changeReq[0].payload.type).toEqual('headers');
+
+    const state = mockStore.getState();
+    expect(state.http[api.id].action.headers).toEqual(mockHttpParam);
   });
 
   it('dispatches set data action', () => {
@@ -112,6 +124,9 @@ describe('useRequest hook', () => {
     expect(changeReq[0].payload.value).toEqual(mockHttpParam);
     expect(changeReq[0].payload.id).toEqual(mockId);
     expect(changeReq[0].payload.type).toEqual('data');
+
+    const state = mockStore.getState();
+    expect(state.http[api.id].action.data).toEqual(mockHttpParam);
   });
 
   it('dispatches set segmment action', () => {
@@ -125,7 +140,30 @@ describe('useRequest hook', () => {
     expect(changeReq.length).toEqual(1);
     expect(changeReq[0].payload.value).toEqual(mockHttpParam);
     expect(changeReq[0].payload.id).toEqual(api.id);
-    expect(changeReq[0].payload.type).toEqual('segment');
+    expect(changeReq[0].payload.type).toEqual('segments');
+
+    const state = mockStore.getState();
+    expect(state.http[api.id].action.segments).toEqual(mockHttpParam);
+  });
+
+  it('dispatches go action', () => {
+    const api = runHook({template: mockTemplate});
+    api.go()
+      .then(() => {
+
+        const actions = mockStore.getActions();
+        expect(actions).toBeDefined();
+        const changeReq = actions.filter((ac) => ac.type === SEND_REQUEST);
+        expect(changeReq.length).toEqual(1);
+        expect(changeReq[0].payload.id).toEqual(api.id);
+
+        const state = mockStore.getState();
+        expect(state.http[api.id].isLoading).toEqual(true);
+        expect(state.http[api.id].data).toEqual({});
+        expect(state.http[api.id].hasError).toEqual(false);
+        expect(state.http[api.id].hasData).toEqual(false);
+        expect(state.http[api.id].error).toEqual({});
+      });
   });
 
 

@@ -4,6 +4,8 @@ export interface PaginationMapper {
   [_]: any;
 }
 
+export type RequestId = string;
+
 export interface RequestAction {
   url: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' |'OPTIONS' | 'HEAD' | 'CONNECT' | string;
@@ -22,13 +24,13 @@ export interface RequestTemplate {
 }
 
 export interface UseRequestProps {
-  id?: string;
+  id?: RequestId;
   template: RequestTemplate;
 }
 
 export interface UseRequestApi {
   go: () => Promise<any>;
-  id: string;
+  id: RequestId;
   setParams: (params: Record<string, any>) => void;
   setSegments: (segments: Record<string, any>) => void;
   setHeaders: (headers: Record<string, any>) => void;
@@ -39,11 +41,15 @@ export interface RegisterRequestAction {
   action: RequestAction;
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
-  id: string;
+  id: RequestId;
 }
 
 export interface ChangeRequestAction {
-  id: string;
-  type: 'param' | 'segment' | 'data' | 'header' | string;
+  id: RequestId;
+  type: 'params' | 'segments' | 'data' | 'headers' | string;
   value: any;
+}
+
+export interface SendRequestAction {
+  id: RequestId;
 }

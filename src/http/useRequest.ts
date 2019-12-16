@@ -1,9 +1,9 @@
 import {UseRequestApi, UseRequestProps} from "./types";
 import rid from "../util/rid";
-import {hasPath, intersection, isEmpty, isNil, keys, prop} from "../util/ram";
-import {useEffect, useRef} from "react";
+import {intersection, isEmpty, isNil, keys, last, prop} from "../util/ram";
+import {useEffect, useRef, useState} from "react";
 import {useDispatch} from 'react-redux';
-import {changeRequest, registerRequest} from "./requestDuck";
+import {changeRequest, registerRequest, sendRequest} from "./requestDuck";
 
 const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
   if (isNil(template) || isEmpty(template)) {
@@ -54,16 +54,33 @@ const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
     }
   }, []);
 
+  // -- Fire request if all deps are resolved
+
+  const go = () => {
+    if(!depsResolved()) {
+      return Promise.reject({error: {message: 'Dependencies not met', deps: {...deps.current}}});
+    }
+
+    const reqProm = dispatch(sendRequest({id})) as unknown as Promise<any>;
+    return reqProm.then((resultAction) => {
+      const type = last(prop('type', resultAction).split('_'));
+      if (type === 'FAIL') {
+        return Promise.reject(prop('error', resultAction))
+      }
+      return prop('payload', resultAction);
+    });
+  };
+
 
   // -- Setters
 
   const setParams = (params) => {
-    dispatch(changeRequest({id, type: 'param', value: params}));
+    dispatch(changeRequest({id, type: 'params', value: params}));
     resolveDeps(params);
   };
 
   const setSegments = (segments) => {
-    dispatch(changeRequest({id, type: 'segment', value: segments}));
+    dispatch(changeRequest({id, type: 'segments', value: segments}));
     resolveDeps(segments);
   };
 
@@ -73,12 +90,12 @@ const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
   };
 
   const setHeaders = (headers) => {
-    dispatch(changeRequest({id, type: 'header', value: headers}));
+    dispatch(changeRequest({id, type: 'headers', value: headers}));
     resolveDeps(headers);
   };
 
   return {
-    go: () => Promise.resolve(),
+    go,
     id,
     setParams,
     setSegments,
