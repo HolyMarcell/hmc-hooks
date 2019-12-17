@@ -1,6 +1,7 @@
 import {ChangeRequestAction, RegisterRequestAction, SendRequestAction} from "./types";
 import {assoc, assocPath, pathOr} from "../util/ram";
 import parseUrlSegments from "../util/parseUrlSegments";
+import {config} from "../config";
 
 export const REGISTER_REQUEST = 'http/useRequest/registerRequest';
 export const CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -26,7 +27,7 @@ export const sendRequest = ({id}: SendRequestAction) => {
   return (dispatch, getState) => {
 
     const state = getState();
-    const {segments, url, ...action} = pathOr({}, ['http', id, 'action'], state);
+    const {segments, url, ...action} = pathOr({}, [config.reduxTopLevelKey, id, 'action'], state);
 
     const resolvedUrl = parseUrlSegments(url, segments);
 

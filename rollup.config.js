@@ -12,6 +12,7 @@ import pkg from './package.json';
 const config = [
   {
     input: 'src/index.ts',
+
     output: [
       {
         file: pkg.main,
@@ -25,10 +26,13 @@ const config = [
     external: [
       'react',
       'react-dom',
+      'redux',
+      'react-redux'
     ],
     plugins: [
       typescript(),
       peerDepsExternal(),
+      // builtins(),
       babel({exclude: 'node_modules/**'}),
       localResolve(),
       resolve(),

@@ -21,11 +21,14 @@ const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
     return;
   }
 
+  const setupStatus = useRef(false);
+
   const dispatch = useDispatch();
 
   // -- Setup request
   useEffect(() => {
     dispatch(registerRequest({action, paginationMapper, paginated, id}));
+    setupStatus.current = true; // -- go() awaits this value to ensure that a request is registered before run
   }, []);
 
   // -- Setup dependencies
@@ -59,6 +62,11 @@ const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
   const go = () => {
     if(!depsResolved()) {
       return Promise.reject({error: {message: 'Dependencies not met', deps: {...deps.current}}});
+    }
+
+    if(!setupStatus.current) {
+      setTimeout(go, 0); // Put it back on the call-stack until "registerRequest" has run
+      return;
     }
 
     const reqProm = dispatch(sendRequest({id})) as unknown as Promise<any>;
