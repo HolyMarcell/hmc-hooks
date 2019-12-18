@@ -121,7 +121,7 @@ export const requestReducer = (state = {}, action) => {
       };
       return assoc(id, merger, state);
     }
-    
+
     case SET_FILTER: {
       const {id, filter} = payload;
       const f = path([id, 'filter'], state);

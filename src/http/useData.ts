@@ -9,7 +9,7 @@ const useData = ({id}: UseDataProps) => {
   const {pagination, ...rest} = useSelector((state) => selectData(state, id));
   if (!isNil(pagination)) {
     const setFilter = (filter: Filter) => {
-      dispatch()
+      dispatch(setFilter({id, filter}));
     }
   }
 
@@ -17,3 +17,4 @@ const useData = ({id}: UseDataProps) => {
 };
 
 export default useData;
+ 
