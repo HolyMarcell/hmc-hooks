@@ -1,14 +1,19 @@
-import {UseDataProps} from "./types";
-import {selectRequestData} from "./useDataSelectors";
-import {useSelector} from 'react-redux';
+import {Filter, UseDataProps} from "./types";
+import {selectData} from "./useDataSelectors";
+import {useDispatch, useSelector} from 'react-redux';
+import {isNil} from "../util/ram";
 
 
 const useData = ({id}: UseDataProps) => {
+  const dispatch = useDispatch();
+  const {pagination, ...rest} = useSelector((state) => selectData(state, id));
+  if (!isNil(pagination)) {
+    const setFilter = (filter: Filter) => {
+      dispatch()
+    }
+  }
 
-  // @ts-ignore
-  const d = useSelector((state) => selectRequestData(state, id));
-  console.log(d);
-  return d;
+  return rest;
 };
 
 export default useData;

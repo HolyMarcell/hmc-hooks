@@ -1,10 +1,11 @@
-import {ChangeRequestAction, RegisterRequestAction, SendRequestAction} from "./types";
-import {assoc, assocPath, has, path, pathOr, prop} from "../util/ram";
+import {ChangeRequestAction, RegisterRequestAction, SendRequestAction, SetFilterAction} from "./types";
+import {assoc, assocPath, has, isNil, path, pathOr, prop, reject} from "../util/ram";
 import parseUrlSegments from "../util/parseUrlSegments";
 import {config} from "../config";
 
 export const REGISTER_REQUEST = 'http/useRequest/registerRequest';
 export const CHANGE_REQUEST = 'http/useRequest/changeRequest';
+export const SET_FILTER = 'http/useRequest/setFiler';
 export const SEND_REQUEST = 'http/useRequest/sendRequest';
 export const SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
 export const SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
@@ -20,6 +21,17 @@ export const changeRequest = ({id, type, value}: ChangeRequestAction) => {
   return {
     type: CHANGE_REQUEST,
     payload: {id, type, value}
+  }
+};
+
+export const setFilter = ({id, filter}: SetFilterAction) => {
+  return (dispatch) => {
+
+    dispatch(changeRequest({id, type: 'params', value: filter}));
+    return dispatch({
+      type: SET_FILTER,
+      payload: {id, filter}
+    });
   }
 };
 
@@ -63,7 +75,9 @@ export const requestReducer = (state = {}, action) => {
         hasError: false,
         hasData: false,
         data: {},
-        error: {}
+        error: {},
+        filter: {},
+        sort: {},
       }, state);
     }
 
@@ -106,6 +120,13 @@ export const requestReducer = (state = {}, action) => {
         error: {}
       };
       return assoc(id, merger, state);
+    }
+    
+    case SET_FILTER: {
+      const {id, filter} = payload;
+      const f = path([id, 'filter'], state);
+      const newF = reject(isNil, {...f, ...filter});
+      return assocPath([id, 'filter'], newF, state);
     }
 
     default: {

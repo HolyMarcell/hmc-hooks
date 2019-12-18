@@ -11417,12 +11417,26 @@ var prop$2 = function () {
     }
     return prop$1.apply(R, args);
 };
+var propOr$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return propOr$1.apply(R, args);
+};
 var last$2 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
     return last$1.apply(R, args);
+};
+var reject$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return reject$1.apply(R, args);
 };
 var has$2 = function () {
     var args = [];
@@ -11444,6 +11458,13 @@ var keys$2 = function () {
         args[_i] = arguments[_i];
     }
     return keys$1.apply(R, args);
+};
+var equals$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return equals$1.apply(R, args);
 };
 var intersection$2 = function () {
     var args = [];
@@ -11470,6 +11491,7 @@ var config = {
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
+var SET_FILTER = 'http/useRequest/setFiler';
 var SEND_REQUEST = 'http/useRequest/sendRequest';
 var SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
 var SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
@@ -11520,7 +11542,9 @@ var requestReducer = function (state, action) {
                 hasError: false,
                 hasData: false,
                 data: {},
-                error: {}
+                error: {},
+                filter: {},
+                sort: {},
             }, state);
         }
         case CHANGE_REQUEST: {
@@ -11544,12 +11568,17 @@ var requestReducer = function (state, action) {
             var merger = __assign(__assign({}, prev), { loading: false, hasError: false, hasData: true, hasRun: true, data: prop$2('data', payload), error: {} });
             return assoc$2(id, merger, state);
         }
+        case SET_FILTER: {
+            var id = payload.id, filter = payload.filter;
+            var f = path$2([id, 'filter'], state);
+            var newF = reject$2(isNil$2, __assign(__assign({}, f), filter));
+            return assocPath$2([id, 'filter'], newF, state);
+        }
         default: {
             return state;
         }
     }
 };
-//# sourceMappingURL=requestDuck.js.map
 
 var useRequest = function (_a) {
     var _b = _a.id, id = _b === void 0 ? rid() : _b, template = _a.template;
@@ -11598,8 +11627,8 @@ var useRequest = function (_a) {
     }, []);
     // -- Fire request if all deps are resolved
     var isGone = useRef(false);
-    var go = function (_a) {
-        var force = (_a === void 0 ? { force: false } : _a).force;
+    var go = function (force) {
+        if (force === void 0) { force = false; }
         if (!depsResolved()) {
             return Promise.reject({ error: { message: 'Dependencies not met', deps: __assign({}, deps.current) } });
         }
@@ -11620,18 +11649,22 @@ var useRequest = function (_a) {
     // -- Setters
     var setParams = function (params) {
         dispatch(changeRequest({ id: id, type: 'params', value: params }));
+        isGone.current = false;
         resolveDeps(params);
     };
     var setSegments = function (segments) {
         dispatch(changeRequest({ id: id, type: 'segments', value: segments }));
+        isGone.current = false;
         resolveDeps(segments);
     };
     var setData = function (data) {
         dispatch(changeRequest({ id: id, type: 'data', value: data }));
+        isGone.current = false;
         resolveDeps(data);
     };
     var setHeaders = function (headers) {
         dispatch(changeRequest({ id: id, type: 'headers', value: headers }));
+        isGone.current = false;
         resolveDeps(headers);
     };
     return {
@@ -11744,20 +11777,56 @@ function createSelectorCreator(memoize) {
 
 var createSelector = createSelectorCreator(defaultMemoize);
 
+var createDeepEqualSelector = createSelectorCreator(defaultMemoize, equals$2);
 var selectHttp = function (state) { return prop$2(config.reduxTopLevelKey, state); };
 var selectConst = function (_, v) { return v; };
-var selectRequest = createSelector(selectHttp, selectConst, function (state, id) { return prop$2(id, state); });
-var selectRequestData = createSelector(selectHttp, selectConst, function (state, id) { return path$2([id, 'data'], state); });
-//# sourceMappingURL=useDataSelectors.js.map
+var defaultPaginationMapper = {
+    elements: 'elements',
+    totalElements: 'totalElements',
+    totalPages: 'totalPages',
+    index: 'index',
+    size: 'size',
+    numberOfElements: 'numberOfElements',
+    nestedSplitChar: '.'
+};
+var mapPagination = function (data, paginationMapper) {
+    if (paginationMapper === void 0) { paginationMapper = defaultPaginationMapper; }
+    var split = paginationMapper.nestedSplitChar, pm = __rest(paginationMapper, ["nestedSplitChar"]);
+    return {
+        data: pathOr$2([], pm.elements.split(split), data),
+        pagination: {
+            totalElements: path$2(pm.totalElements.split(split), data),
+            totalPages: path$2(pm.totalPages.split(split), data),
+            index: path$2(pm.index.split(split), data),
+            size: path$2(pm.size.split(split), data),
+            numberOfElements: path$2(pm.numberOfElements.split(split), data),
+        },
+    };
+};
+var selectData = createDeepEqualSelector(selectHttp, selectConst, function (state, id) {
+    var _a = propOr$2({}, id, state), data = _a.data, hasError = _a.hasError, error = _a.error, loading = _a.loading, hasData = _a.hasData, paginated = _a.paginated, paginationMapper = _a.paginationMapper;
+    if (!paginated) {
+        return {
+            data: hasData ? data : {},
+            loading: loading,
+            error: error,
+            hasError: hasError,
+        };
+    }
+    else {
+        return __assign(__assign({}, mapPagination(hasData ? data : {}, paginationMapper)), { loading: loading,
+            error: error,
+            hasError: hasError });
+    }
+});
 
 var useData = function (_a) {
     var id = _a.id;
-    // @ts-ignore
-    var d = useSelector(function (state) { return selectRequestData(state, id); });
-    console.log(d);
-    return d;
+    var dispatch = useDispatch();
+    var _b = useSelector(function (state) { return selectData(state, id); }), pagination = _b.pagination, rest = __rest(_b, ["pagination"]);
+    if (!isNil$2(pagination)) ;
+    return rest;
 };
-//# sourceMappingURL=useData.js.map
 
 var useRequest$1 = useRequest;
 var useData$1 = useData;

@@ -82,21 +82,25 @@ const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
 
   const setParams = (params) => {
     dispatch(changeRequest({id, type: 'params', value: params}));
+    isGone.current = false;
     resolveDeps(params);
   };
 
   const setSegments = (segments) => {
     dispatch(changeRequest({id, type: 'segments', value: segments}));
+    isGone.current = false;
     resolveDeps(segments);
   };
 
   const setData = (data) => {
     dispatch(changeRequest({id, type: 'data', value: data}));
+    isGone.current = false;
     resolveDeps(data);
   };
 
   const setHeaders = (headers) => {
     dispatch(changeRequest({id, type: 'headers', value: headers}));
+    isGone.current = false;
     resolveDeps(headers);
   };
 

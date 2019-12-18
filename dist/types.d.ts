@@ -1,5 +1,11 @@
 interface PaginationMapper {
-  [_]: any;
+  elements: string;
+  totalElements: string;
+  totalPages: string;
+  index: string;
+  size: string;
+  numberOfElements: string;
+  nestedSplitChar: string;
 }
 
 type RequestId = string;
@@ -27,7 +33,7 @@ interface UseRequestProps {
 }
 
 interface UseRequestApi {
-  go: ({force}: {force?: boolean}) => Promise<any>;
+  go: (force?: boolean) => Promise<any>;
   id: RequestId;
   setParams: (params: Record<string, any>) => void;
   setSegments: (segments: Record<string, any>) => void;
@@ -56,4 +62,13 @@ interface UseDataProps {
   id: RequestId;
 }
 
-export { ChangeRequestAction, PaginationMapper, RegisterRequestAction, RequestAction, RequestId, RequestTemplate, SendRequestAction, UseDataProps, UseRequestApi, UseRequestProps };
+interface Filter {
+  [_]: string;
+}
+
+interface SetFilterAction {
+  filter: Filter;
+  id: RequestId;
+}
+
+export { ChangeRequestAction, Filter, PaginationMapper, RegisterRequestAction, RequestAction, RequestId, RequestTemplate, SendRequestAction, SetFilterAction, UseDataProps, UseRequestApi, UseRequestProps };

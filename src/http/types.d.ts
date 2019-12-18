@@ -1,7 +1,13 @@
 
 
 export interface PaginationMapper {
-  [_]: any;
+  elements: string;
+  totalElements: string;
+  totalPages: string;
+  index: string;
+  size: string;
+  numberOfElements: string;
+  nestedSplitChar: string;
 }
 
 export type RequestId = string;
@@ -55,5 +61,14 @@ export interface SendRequestAction {
 }
 
 export interface UseDataProps {
+  id: RequestId;
+}
+
+export interface Filter {
+  [_]: string;
+}
+
+export interface SetFilterAction {
+  filter: Filter;
   id: RequestId;
 }
