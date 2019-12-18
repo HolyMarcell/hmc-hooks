@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -11382,6 +11382,13 @@ var R = /*#__PURE__*/Object.freeze({
 });
 
 var assoc$2 = function (key, value, object) { return assoc$1(key, value, object); };
+var path$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return path$1.apply(R, args);
+};
 var pathOr$2 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -11416,6 +11423,13 @@ var last$2 = function () {
         args[_i] = arguments[_i];
     }
     return last$1.apply(R, args);
+};
+var has$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return has$1.apply(R, args);
 };
 var isEmpty$2 = function () {
     var args = [];
@@ -11452,6 +11466,7 @@ var parseUrlSegments = function (url, segments) {
 var config = {
     reduxTopLevelKey: 'httpv3'
 };
+//# sourceMappingURL=config.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -11488,16 +11503,19 @@ var sendRequest = function (_a) {
 };
 var requestReducer = function (state, action) {
     if (state === void 0) { state = {}; }
-    var type = action.type, payload = action.payload;
+    var type = action.type, payload = action.payload, meta = action.meta, error = action.error;
     switch (type) {
         case REGISTER_REQUEST: {
             var action_1 = payload.action, paginated = payload.paginated, paginationMapper = payload.paginationMapper, id = payload.id;
+            if (has$2(id, state)) { // -- no re-registering
+                return state;
+            }
             return assoc$2(id, {
                 action: action_1,
                 paginated: paginated,
                 paginationMapper: paginationMapper,
                 id: id,
-                isLoading: false,
+                loading: false,
                 hasRun: false,
                 hasError: false,
                 hasData: false,
@@ -11512,19 +11530,26 @@ var requestReducer = function (state, action) {
         }
         case SEND_REQUEST: {
             var id = payload.id;
-            return assocPath$2([id, 'isLoading'], true, state);
+            return assocPath$2([id, 'loading'], true, state);
         }
         case SEND_REQUEST_FAIL: {
-            return state;
+            var id = path$2(['previousAction', 'payload', 'id'], meta);
+            var prev = prop$2(id, state);
+            var merger = __assign(__assign({}, prev), { loading: false, hasError: true, hasRun: true, error: error });
+            return assoc$2(id, merger, state);
         }
         case SEND_REQUEST_SUCCESS: {
-            return state;
+            var id = path$2(['previousAction', 'payload', 'id'], meta);
+            var prev = prop$2(id, state);
+            var merger = __assign(__assign({}, prev), { loading: false, hasError: false, hasData: true, hasRun: true, data: prop$2('data', payload), error: {} });
+            return assoc$2(id, merger, state);
         }
         default: {
             return state;
         }
     }
 };
+//# sourceMappingURL=requestDuck.js.map
 
 var useRequest = function (_a) {
     var _b = _a.id, id = _b === void 0 ? rid() : _b, template = _a.template;
@@ -11542,13 +11567,10 @@ var useRequest = function (_a) {
         console.warn('useRequest: template.action.url and template.action.method may not be null or empty');
         return;
     }
-    var setupStatus = useRef(false);
     var dispatch = useDispatch();
     // -- Setup request
-    useEffect(function () {
-        dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, paginated: paginated, id: id }));
-        setupStatus.current = true; // -- go() awaits this value to ensure that a request is registered before run
-    }, []);
+    // cannot run in useEffect because it needs to be done by the time go() is called
+    dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, paginated: paginated, id: id }));
     // -- Setup dependencies
     var deps = useRef({});
     // -- helpers
@@ -11575,14 +11597,17 @@ var useRequest = function (_a) {
         }
     }, []);
     // -- Fire request if all deps are resolved
-    var go = function () {
+    var isGone = useRef(false);
+    var go = function (_a) {
+        var force = (_a === void 0 ? { force: false } : _a).force;
         if (!depsResolved()) {
             return Promise.reject({ error: { message: 'Dependencies not met', deps: __assign({}, deps.current) } });
         }
-        if (!setupStatus.current) {
-            setTimeout(go, 0); // Put it back on the call-stack until "registerRequest" has run
-            return;
+        // -- run only once
+        if (isGone.current && !force) {
+            return Promise.resolve();
         }
+        isGone.current = true;
         var reqProm = dispatch(sendRequest({ id: id }));
         return reqProm.then(function (resultAction) {
             var type = last$2(prop$2('type', resultAction).split('_'));
@@ -11619,7 +11644,123 @@ var useRequest = function (_a) {
     };
 };
 
+function defaultEqualityCheck(a, b) {
+  return a === b;
+}
+
+function areArgumentsShallowlyEqual(equalityCheck, prev, next) {
+  if (prev === null || next === null || prev.length !== next.length) {
+    return false;
+  }
+
+  // Do this in a for loop (and not a `forEach` or an `every`) so we can determine equality as fast as possible.
+  var length = prev.length;
+  for (var i = 0; i < length; i++) {
+    if (!equalityCheck(prev[i], next[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function defaultMemoize(func) {
+  var equalityCheck = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : defaultEqualityCheck;
+
+  var lastArgs = null;
+  var lastResult = null;
+  // we reference arguments instead of spreading them for performance reasons
+  return function () {
+    if (!areArgumentsShallowlyEqual(equalityCheck, lastArgs, arguments)) {
+      // apply arguments instead of spreading for performance.
+      lastResult = func.apply(null, arguments);
+    }
+
+    lastArgs = arguments;
+    return lastResult;
+  };
+}
+
+function getDependencies(funcs) {
+  var dependencies = Array.isArray(funcs[0]) ? funcs[0] : funcs;
+
+  if (!dependencies.every(function (dep) {
+    return typeof dep === 'function';
+  })) {
+    var dependencyTypes = dependencies.map(function (dep) {
+      return typeof dep;
+    }).join(', ');
+    throw new Error('Selector creators expect all input-selectors to be functions, ' + ('instead received the following types: [' + dependencyTypes + ']'));
+  }
+
+  return dependencies;
+}
+
+function createSelectorCreator(memoize) {
+  for (var _len = arguments.length, memoizeOptions = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    memoizeOptions[_key - 1] = arguments[_key];
+  }
+
+  return function () {
+    for (var _len2 = arguments.length, funcs = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      funcs[_key2] = arguments[_key2];
+    }
+
+    var recomputations = 0;
+    var resultFunc = funcs.pop();
+    var dependencies = getDependencies(funcs);
+
+    var memoizedResultFunc = memoize.apply(undefined, [function () {
+      recomputations++;
+      // apply arguments instead of spreading for performance.
+      return resultFunc.apply(null, arguments);
+    }].concat(memoizeOptions));
+
+    // If a selector is called with the exact same arguments we don't need to traverse our dependencies again.
+    var selector = memoize(function () {
+      var params = [];
+      var length = dependencies.length;
+
+      for (var i = 0; i < length; i++) {
+        // apply arguments instead of spreading and mutate a local list of params for performance.
+        params.push(dependencies[i].apply(null, arguments));
+      }
+
+      // apply arguments instead of spreading for performance.
+      return memoizedResultFunc.apply(null, params);
+    });
+
+    selector.resultFunc = resultFunc;
+    selector.dependencies = dependencies;
+    selector.recomputations = function () {
+      return recomputations;
+    };
+    selector.resetRecomputations = function () {
+      return recomputations = 0;
+    };
+    return selector;
+  };
+}
+
+var createSelector = createSelectorCreator(defaultMemoize);
+
+var selectHttp = function (state) { return prop$2(config.reduxTopLevelKey, state); };
+var selectConst = function (_, v) { return v; };
+var selectRequest = createSelector(selectHttp, selectConst, function (state, id) { return prop$2(id, state); });
+var selectRequestData = createSelector(selectHttp, selectConst, function (state, id) { return path$2([id, 'data'], state); });
+//# sourceMappingURL=useDataSelectors.js.map
+
+var useData = function (_a) {
+    var id = _a.id;
+    // @ts-ignore
+    var d = useSelector(function (state) { return selectRequestData(state, id); });
+    console.log(d);
+    return d;
+};
+//# sourceMappingURL=useData.js.map
+
 var useRequest$1 = useRequest;
+var useData$1 = useData;
 var requestReducer$1 = requestReducer;
 
-export { requestReducer$1 as requestReducer, useRequest$1 as useRequest };
+export { requestReducer$1 as requestReducer, useData$1 as useData, useRequest$1 as useRequest };

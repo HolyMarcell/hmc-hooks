@@ -1,5 +1,5 @@
 import {ChangeRequestAction, RegisterRequestAction, SendRequestAction} from "./types";
-import {assoc, assocPath, pathOr} from "../util/ram";
+import {assoc, assocPath, has, path, pathOr, prop} from "../util/ram";
 import parseUrlSegments from "../util/parseUrlSegments";
 import {config} from "../config";
 
@@ -45,17 +45,20 @@ export const sendRequest = ({id}: SendRequestAction) => {
 
 export const requestReducer = (state = {}, action) => {
 
-  const {type, payload} = action;
+  const {type, payload, meta, error} = action;
 
   switch (type) {
     case REGISTER_REQUEST: {
       const {action, paginated, paginationMapper, id} = payload;
+      if(has(id, state)) { // -- no re-registering
+        return state;
+      }
       return assoc(id, {
         action,
         paginated,
         paginationMapper,
         id,
-        isLoading: false,
+        loading: false,
         hasRun: false,
         hasError: false,
         hasData: false,
@@ -74,16 +77,35 @@ export const requestReducer = (state = {}, action) => {
     case SEND_REQUEST: {
       const {id} = payload;
 
-      return assocPath([id, 'isLoading'], true, state);
+      return assocPath([id, 'loading'], true, state);
     }
 
     case SEND_REQUEST_FAIL: {
-
-      return state;
+      const id = path(['previousAction', 'payload', 'id'], meta);
+      const prev = prop(id, state);
+      const merger = {
+        ...prev,
+        loading: false,
+        hasError: true,
+        hasRun: true,
+        error: error,
+      };
+      return assoc(id, merger, state);
     }
 
     case SEND_REQUEST_SUCCESS: {
-      return state;
+      const id = path(['previousAction', 'payload', 'id'], meta);
+      const prev = prop(id, state);
+      const merger = {
+        ...prev,
+        loading: false,
+        hasError: false,
+        hasData: true,
+        hasRun: true,
+        data: prop('data', payload),
+        error: {}
+      };
+      return assoc(id, merger, state);
     }
 
     default: {

@@ -29,7 +29,7 @@ export interface UseRequestProps {
 }
 
 export interface UseRequestApi {
-  go: () => Promise<any>;
+  go: (force?: boolean) => Promise<any>;
   id: RequestId;
   setParams: (params: Record<string, any>) => void;
   setSegments: (segments: Record<string, any>) => void;
@@ -51,5 +51,9 @@ export interface ChangeRequestAction {
 }
 
 export interface SendRequestAction {
+  id: RequestId;
+}
+
+export interface UseDataProps {
   id: RequestId;
 }

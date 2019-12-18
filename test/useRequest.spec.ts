@@ -2,7 +2,14 @@ import {useRequest} from "../src";
 import {Provider} from 'react-redux';
 import {renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
-import {CHANGE_REQUEST, REGISTER_REQUEST, SEND_REQUEST} from "../src/http/requestDuck";
+import {
+  CHANGE_REQUEST,
+  REGISTER_REQUEST,
+  SEND_REQUEST,
+  SEND_REQUEST_FAIL,
+  SEND_REQUEST_SUCCESS
+} from "../src/http/requestDuck";
+import {config} from "../src/config";
 
 
 const mockTemplate = {
@@ -11,8 +18,19 @@ const mockTemplate = {
     method: 'GET'
   }
 };
+
+export const mockTemplateFails = {
+  action: {
+    url: 'this-fails',
+    method: 'GET'
+  }
+};
+
+
 const mockId = 'by-the-great-prophet-zarquon';
 const mockHttpParam = {fnord: 'istdasechoderstille'};
+export const mockResponse = {foo: 'bar'};
+
 
 describe('useRequest hook', () => {
 
@@ -71,10 +89,10 @@ describe('useRequest hook', () => {
     expect(regReq[0].type).toEqual(REGISTER_REQUEST);
 
     const state = mockStore.getState();
-    expect(state.http[mockId]).toBeDefined();
-    expect(state.http[mockId].action).toEqual(mockTemplate.action);
-    expect(state.http[mockId].paginated).toEqual(undefined);
-    expect(state.http[mockId].paginationMapper).toEqual(undefined);
+    expect(state[config.reduxTopLevelKey][mockId]).toBeDefined();
+    expect(state[config.reduxTopLevelKey][mockId].action).toEqual(mockTemplate.action);
+    expect(state[config.reduxTopLevelKey][mockId].paginated).toEqual(undefined);
+    expect(state[config.reduxTopLevelKey][mockId].paginationMapper).toEqual(undefined);
   });
 
   it('dispatches set param action', () => {
@@ -91,7 +109,7 @@ describe('useRequest hook', () => {
     expect(changeReq[0].payload.type).toEqual('params');
 
     const state = mockStore.getState();
-    expect(state.http[api.id].action.params).toEqual(mockHttpParam);
+    expect(state[config.reduxTopLevelKey][api.id].action.params).toEqual(mockHttpParam);
 
   });
 
@@ -109,7 +127,7 @@ describe('useRequest hook', () => {
     expect(changeReq[0].payload.type).toEqual('headers');
 
     const state = mockStore.getState();
-    expect(state.http[api.id].action.headers).toEqual(mockHttpParam);
+    expect(state[config.reduxTopLevelKey][api.id].action.headers).toEqual(mockHttpParam);
   });
 
   it('dispatches set data action', () => {
@@ -126,7 +144,7 @@ describe('useRequest hook', () => {
     expect(changeReq[0].payload.type).toEqual('data');
 
     const state = mockStore.getState();
-    expect(state.http[api.id].action.data).toEqual(mockHttpParam);
+    expect(state[config.reduxTopLevelKey][api.id].action.data).toEqual(mockHttpParam);
   });
 
   it('dispatches set segmment action', () => {
@@ -143,7 +161,7 @@ describe('useRequest hook', () => {
     expect(changeReq[0].payload.type).toEqual('segments');
 
     const state = mockStore.getState();
-    expect(state.http[api.id].action.segments).toEqual(mockHttpParam);
+    expect(state[config.reduxTopLevelKey][api.id].action.segments).toEqual(mockHttpParam);
   });
 
   it('dispatches go action', () => {
@@ -158,11 +176,46 @@ describe('useRequest hook', () => {
         expect(changeReq[0].payload.id).toEqual(api.id);
 
         const state = mockStore.getState();
-        expect(state.http[api.id].isLoading).toEqual(true);
-        expect(state.http[api.id].data).toEqual({});
-        expect(state.http[api.id].hasError).toEqual(false);
-        expect(state.http[api.id].hasData).toEqual(false);
-        expect(state.http[api.id].error).toEqual({});
+        expect(state[config.reduxTopLevelKey][api.id].loading).toEqual(true);
+        expect(state[config.reduxTopLevelKey][api.id].data).toBeDefined();
+        expect(state[config.reduxTopLevelKey][api.id].hasError).toEqual(false);
+        expect(state[config.reduxTopLevelKey][api.id].hasData).toEqual(true);
+        expect(state[config.reduxTopLevelKey][api.id].error).toEqual({});
+      });
+  });
+
+  it('sets data correctly', () => {
+    const api = runHook({template: mockTemplate});
+    api.go()
+      .then(() => {
+
+        const actions = mockStore.getActions();
+        expect(actions).toBeDefined();
+        const changeReq = actions.filter((ac) => ac.type === SEND_REQUEST_SUCCESS);
+        expect(changeReq.length).toEqual(1);
+        expect(changeReq[0].meta.previousAction.payload.id).toEqual(api.id);
+
+        const state = mockStore.getState();
+        expect(state[config.reduxTopLevelKey][api.id].data).toEqual(mockResponse);
+      });
+  });
+
+  it('sets error correctly', () => {
+    const api = runHook({template: mockTemplateFails});
+    api.go()
+      .then(() => {
+
+        const actions = mockStore.getActions();
+        expect(actions).toBeDefined();
+        const changeReq = actions.filter((ac) => ac.type === SEND_REQUEST_FAIL);
+        expect(changeReq.length).toEqual(1);
+        expect(changeReq[0].meta.previousAction.payload.id).toEqual(api.id);
+
+        const state = mockStore.getState();
+        expect(state[config.reduxTopLevelKey][api.id].data).toEqual({});
+        expect(state[config.reduxTopLevelKey][api.id].hasError).toEqual(true);
+        expect(state[config.reduxTopLevelKey][api.id].error).toBeDefined();
+        expect(state[config.reduxTopLevelKey][api.id].error).not.toEqual({});
       });
   });
 
