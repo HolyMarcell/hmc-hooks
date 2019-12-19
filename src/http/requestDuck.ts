@@ -1,19 +1,38 @@
-import {ChangeRequestAction, RegisterRequestAction, SendRequestAction, SetFilterAction} from "./types";
+import {
+  ChangeRequestAction,
+  PaginationMapper,
+  RegisterRequestAction,
+  SendRequestAction,
+  SetFilterAction, SetPageAction,
+  SetSortAction
+} from "./types";
 import {assoc, assocPath, has, isNil, path, pathOr, prop, reject} from "../util/ram";
 import parseUrlSegments from "../util/parseUrlSegments";
 import {config} from "../config";
+import {selectAction, selectPageParam, selectPaginationMapper, selectRequest} from "./useDataSelectors";
+import defaultPaginationMapper from "../util/defaultPaginationMapper";
 
 export const REGISTER_REQUEST = 'http/useRequest/registerRequest';
 export const CHANGE_REQUEST = 'http/useRequest/changeRequest';
-export const SET_FILTER = 'http/useRequest/setFiler';
+export const SET_FILTER = 'http/useRequest/setFilter';
+export const SET_SORT = 'http/useRequest/setSort';
 export const SEND_REQUEST = 'http/useRequest/sendRequest';
 export const SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
 export const SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
 
 export const registerRequest = ({action, paginated, paginationMapper, id}: RegisterRequestAction) => {
-  return {
-    type: REGISTER_REQUEST,
-    payload: {action, paginated, paginationMapper, id}
+
+  return (dispatch, getState) => {
+    const state = getState();
+    const req = selectRequest(state, id);
+    if(isNil(req)) {
+      return dispatch(
+        {
+          type: REGISTER_REQUEST,
+          payload: {action, paginated, paginationMapper, id}
+        }
+      )
+    }
   }
 };
 
@@ -35,12 +54,33 @@ export const setFilter = ({id, filter}: SetFilterAction) => {
   }
 };
 
+export const setSort = ({id, sort}: SetSortAction) => {
+  return (dispatch) => {
+
+    dispatch(changeRequest({id, type: 'params', value: sort}));
+    return dispatch({
+      type: SET_FILTER,
+      payload: {id, sort}
+    });
+  }
+};
+
+export const setPage = ({id, mod}: SetPageAction) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const mapper: PaginationMapper = selectPaginationMapper(state, id);
+    const pageProp = prop('page', mapper);
+    const page = selectPageParam(state, id);
+    return dispatch(changeRequest({id, type: 'params', value: {[pageProp]: mod(page)}}));
+  }
+};
+
+
 export const sendRequest = ({id}: SendRequestAction) => {
   return (dispatch, getState) => {
 
     const state = getState();
-    const {segments, url, ...action} = pathOr({}, [config.reduxTopLevelKey, id, 'action'], state);
-
+    const {segments, url, ...action} = selectAction(state, id);
     const resolvedUrl = parseUrlSegments(url, segments);
 
     return dispatch({
@@ -61,10 +101,7 @@ export const requestReducer = (state = {}, action) => {
 
   switch (type) {
     case REGISTER_REQUEST: {
-      const {action, paginated, paginationMapper, id} = payload;
-      if(has(id, state)) { // -- no re-registering
-        return state;
-      }
+      const {action, paginated, paginationMapper = defaultPaginationMapper, id} = payload;
       return assoc(id, {
         action,
         paginated,
@@ -84,8 +121,9 @@ export const requestReducer = (state = {}, action) => {
     case CHANGE_REQUEST: {
       const {id, type, value} = payload;
 
-      const vals = pathOr({}, [id, 'action', type], state);
-      return assocPath([id, 'action', type], {...vals, ...value}, state);
+      const oldVals = pathOr({}, [id, 'action', type], state);
+      const newVals = reject(isNil, {...oldVals, ...value});
+      return assocPath([id, 'action', type], newVals, state);
     }
 
     case SEND_REQUEST: {
@@ -127,6 +165,13 @@ export const requestReducer = (state = {}, action) => {
       const f = path([id, 'filter'], state);
       const newF = reject(isNil, {...f, ...filter});
       return assocPath([id, 'filter'], newF, state);
+    }
+
+    case SET_SORT: {
+      const {id, sort} = payload;
+      const s = path([id, 'sort'], state);
+      const newS = reject(isNil, {...s, ...sort});
+      return assocPath([id, 'sort'], newS, state);
     }
 
     default: {

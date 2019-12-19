@@ -34,13 +34,21 @@ export interface UseRequestProps {
   template: RequestTemplate;
 }
 
+
+export type GoFunc = (force?: boolean) => Promise<any>;
+export interface ChainedSetter {
+  go: GoFunc;
+}
+
 export interface UseRequestApi {
-  go: (force?: boolean) => Promise<any>;
+  go: GoFunc;
   id: RequestId;
-  setParams: (params: Record<string, any>) => void;
-  setSegments: (segments: Record<string, any>) => void;
-  setHeaders: (headers: Record<string, any>) => void;
-  setData: (data: Record<string, any>) => void;
+  setParams: (params: Record<string, any>) => ChainedSetter;
+  setSegments: (segments: Record<string, any>) => ChainedSetter;
+  setHeaders: (headers: Record<string, any>) => ChainedSetter;
+  setData: (data: Record<string, any>) => ChainedSetter;
+  setFilter: (filter: Filter) => ChainedSetter;
+  setSort: (sort: Sort) => ChainedSetter;
 }
 
 export interface RegisterRequestAction {
@@ -70,5 +78,20 @@ export interface Filter {
 
 export interface SetFilterAction {
   filter: Filter;
+  id: RequestId;
+}
+
+
+export interface Sort {
+  [_]: string;
+}
+
+export interface SetSortAction {
+  sort: Sort;
+  id: RequestId;
+}
+
+export interface SetPageAction {
+  mod: (page?: number) => number;
   id: RequestId;
 }

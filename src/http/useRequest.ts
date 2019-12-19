@@ -1,11 +1,18 @@
-import {UseRequestApi, UseRequestProps} from "./types";
+import {Filter, Sort, UseRequestApi, UseRequestProps} from "./types";
 import rid from "../util/rid";
 import {intersection, isEmpty, isNil, keys, last, prop} from "../util/ram";
 import {useEffect, useRef, useState} from "react";
-import {useDispatch} from 'react-redux';
-import {changeRequest, registerRequest, sendRequest} from "./requestDuck";
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  changeRequest,
+  registerRequest,
+  sendRequest,
+  setFilter as setFilterAction, setPage,
+  setSort as setSortAction
+} from "./requestDuck";
+import {selectData} from "./useDataSelectors";
 
-const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
+const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   if (isNil(template) || isEmpty(template)) {
     console.warn('useRequest: template may not be null or empty');
     return;
@@ -22,10 +29,15 @@ const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
   }
 
   const dispatch = useDispatch();
+  const requestId = useRef(id);
 
   // -- Setup request
-  // cannot run in useEffect because it needs to be done by the time go() is called
-  dispatch(registerRequest({action, paginationMapper, paginated, id}));
+  requestId.current = isNil(requestId.current) ? rid() : requestId.current;
+
+  dispatch(registerRequest({action, paginationMapper, paginated, id: requestId.current}));
+
+  const {pagination, ...requestData} = useSelector((state) => selectData(state, requestId.current));
+
 
   // -- Setup dependencies
 
@@ -57,17 +69,17 @@ const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
   const isGone = useRef(false);
 
   const go = (force = false) => {
-    if(!depsResolved()) {
+    if (!depsResolved()) {
       return Promise.reject({error: {message: 'Dependencies not met', deps: {...deps.current}}});
     }
 
     // -- run only once
-    if(isGone.current && !force) {
+    if (isGone.current && !force) {
       return Promise.resolve();
     }
     isGone.current = true;
 
-    const reqProm = dispatch(sendRequest({id})) as unknown as Promise<any>;
+    const reqProm = dispatch(sendRequest({id: requestId.current})) as unknown as Promise<any>;
     return reqProm.then((resultAction) => {
       const type = last(prop('type', resultAction).split('_'));
       if (type === 'FAIL') {
@@ -81,36 +93,73 @@ const useRequest = ({id = rid(), template}: UseRequestProps): UseRequestApi => {
   // -- Setters
 
   const setParams = (params) => {
-    dispatch(changeRequest({id, type: 'params', value: params}));
+    dispatch(changeRequest({id: requestId.current, type: 'params', value: params}));
     isGone.current = false;
     resolveDeps(params);
+    return {go};
   };
 
   const setSegments = (segments) => {
-    dispatch(changeRequest({id, type: 'segments', value: segments}));
+    dispatch(changeRequest({id: requestId.current, type: 'segments', value: segments}));
     isGone.current = false;
     resolveDeps(segments);
+    return {go};
   };
 
   const setData = (data) => {
-    dispatch(changeRequest({id, type: 'data', value: data}));
+    dispatch(changeRequest({id: requestId.current, type: 'data', value: data}));
     isGone.current = false;
     resolveDeps(data);
+    return {go};
   };
 
   const setHeaders = (headers) => {
-    dispatch(changeRequest({id, type: 'headers', value: headers}));
+    dispatch(changeRequest({id: requestId.current, type: 'headers', value: headers}));
     isGone.current = false;
     resolveDeps(headers);
+    return {go};
+  };
+
+  const setFilter = (filter: Filter) => {
+    dispatch(setFilterAction({id: requestId.current, filter}));
+    isGone.current = false;
+    return {go};
+  };
+
+  const setSort = (sort: Sort) => {
+    dispatch(setSortAction({id: requestId.current, sort}));
+    isGone.current = false;
+    return {go};
+  };
+
+  const onPageSelect = (page: number) => {
+    dispatch(setPage({id: requestId.current, mod: () => page}));
+    isGone.current = false;
+    return {go};
+  };
+
+  const onNext = () => {
+    dispatch(setPage({id: requestId.current, mod: (p) => p + 1}));
+    isGone.current = false;
+    return {go};
+  };
+
+  const onPrev = () => {
+    dispatch(setPage({id: requestId.current, mod: (p) => p - 1}));
+    isGone.current = false;
+    return {go};
   };
 
   return {
+    // ...requestData,
     go,
     id,
     setParams,
     setSegments,
     setData,
-    setHeaders
+    setHeaders,
+    setFilter,
+    setSort,
   };
 };
 

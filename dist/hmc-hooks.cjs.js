@@ -11444,13 +11444,6 @@ var reject$2 = function () {
     }
     return reject$1.apply(R, args);
 };
-var has$2 = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    return has$1.apply(R, args);
-};
 var isEmpty$2 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -11494,194 +11487,6 @@ var config = {
     reduxTopLevelKey: 'httpv3'
 };
 //# sourceMappingURL=config.js.map
-
-var REGISTER_REQUEST = 'http/useRequest/registerRequest';
-var CHANGE_REQUEST = 'http/useRequest/changeRequest';
-var SET_FILTER = 'http/useRequest/setFiler';
-var SEND_REQUEST = 'http/useRequest/sendRequest';
-var SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
-var SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
-var registerRequest = function (_a) {
-    var action = _a.action, paginated = _a.paginated, paginationMapper = _a.paginationMapper, id = _a.id;
-    return {
-        type: REGISTER_REQUEST,
-        payload: { action: action, paginated: paginated, paginationMapper: paginationMapper, id: id }
-    };
-};
-var changeRequest = function (_a) {
-    var id = _a.id, type = _a.type, value = _a.value;
-    return {
-        type: CHANGE_REQUEST,
-        payload: { id: id, type: type, value: value }
-    };
-};
-var sendRequest = function (_a) {
-    var id = _a.id;
-    return function (dispatch, getState) {
-        var state = getState();
-        var _a = pathOr$2({}, [config.reduxTopLevelKey, id, 'action'], state), segments = _a.segments, url = _a.url, action = __rest(_a, ["segments", "url"]);
-        var resolvedUrl = parseUrlSegments(url, segments);
-        return dispatch({
-            type: SEND_REQUEST, payload: {
-                request: __assign(__assign({}, action), { url: resolvedUrl }),
-                id: id,
-            }
-        });
-    };
-};
-var requestReducer = function (state, action) {
-    if (state === void 0) { state = {}; }
-    var type = action.type, payload = action.payload, meta = action.meta, error = action.error;
-    switch (type) {
-        case REGISTER_REQUEST: {
-            var action_1 = payload.action, paginated = payload.paginated, paginationMapper = payload.paginationMapper, id = payload.id;
-            if (has$2(id, state)) { // -- no re-registering
-                return state;
-            }
-            return assoc$2(id, {
-                action: action_1,
-                paginated: paginated,
-                paginationMapper: paginationMapper,
-                id: id,
-                loading: false,
-                hasRun: false,
-                hasError: false,
-                hasData: false,
-                data: {},
-                error: {},
-                filter: {},
-                sort: {},
-            }, state);
-        }
-        case CHANGE_REQUEST: {
-            var id = payload.id, type_1 = payload.type, value = payload.value;
-            var vals = pathOr$2({}, [id, 'action', type_1], state);
-            return assocPath$2([id, 'action', type_1], __assign(__assign({}, vals), value), state);
-        }
-        case SEND_REQUEST: {
-            var id = payload.id;
-            return assocPath$2([id, 'loading'], true, state);
-        }
-        case SEND_REQUEST_FAIL: {
-            var id = path$2(['previousAction', 'payload', 'id'], meta);
-            var prev = prop$2(id, state);
-            var merger = __assign(__assign({}, prev), { loading: false, hasError: true, hasRun: true, error: error });
-            return assoc$2(id, merger, state);
-        }
-        case SEND_REQUEST_SUCCESS: {
-            var id = path$2(['previousAction', 'payload', 'id'], meta);
-            var prev = prop$2(id, state);
-            var merger = __assign(__assign({}, prev), { loading: false, hasError: false, hasData: true, hasRun: true, data: prop$2('data', payload), error: {} });
-            return assoc$2(id, merger, state);
-        }
-        case SET_FILTER: {
-            var id = payload.id, filter = payload.filter;
-            var f = path$2([id, 'filter'], state);
-            var newF = reject$2(isNil$2, __assign(__assign({}, f), filter));
-            return assocPath$2([id, 'filter'], newF, state);
-        }
-        default: {
-            return state;
-        }
-    }
-};
-
-var useRequest = function (_a) {
-    var _b = _a.id, id = _b === void 0 ? rid() : _b, template = _a.template;
-    if (isNil$2(template) || isEmpty$2(template)) {
-        console.warn('useRequest: template may not be null or empty');
-        return;
-    }
-    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper;
-    if (isNil$2(action) || isEmpty$2(action)) {
-        console.warn('useRequest: template.action may not be null or empty');
-        return;
-    }
-    if (isNil$2(prop$2('url', action)) || isEmpty$2(prop$2('url', action)) ||
-        isNil$2(prop$2('method', action)) || isEmpty$2(prop$2('method', action))) {
-        console.warn('useRequest: template.action.url and template.action.method may not be null or empty');
-        return;
-    }
-    var dispatch = reactRedux.useDispatch();
-    // -- Setup request
-    // cannot run in useEffect because it needs to be done by the time go() is called
-    dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, paginated: paginated, id: id }));
-    // -- Setup dependencies
-    var deps = react.useRef({});
-    // -- helpers
-    var resolveDeps = function (values) {
-        var changedDeps = intersection$2(keys$2(values), keys$2(deps.current));
-        if (changedDeps.length > 0) {
-            changedDeps.map(function (name) {
-                deps.current[name] = true;
-            });
-        }
-    };
-    var depsResolved = function () {
-        return keys$2(deps.current).reduce(function (acc, name) {
-            return acc && deps.current[name];
-        }, true);
-    };
-    // -- init
-    react.useEffect(function () {
-        if (!isNil$2(dependencies) && dependencies.length > 0) {
-            deps.current = dependencies.reduce(function (acc, key) {
-                var _a;
-                return __assign(__assign({}, acc), (_a = {}, _a[key] = false, _a));
-            }, {});
-        }
-    }, []);
-    // -- Fire request if all deps are resolved
-    var isGone = react.useRef(false);
-    var go = function (force) {
-        if (force === void 0) { force = false; }
-        if (!depsResolved()) {
-            return Promise.reject({ error: { message: 'Dependencies not met', deps: __assign({}, deps.current) } });
-        }
-        // -- run only once
-        if (isGone.current && !force) {
-            return Promise.resolve();
-        }
-        isGone.current = true;
-        var reqProm = dispatch(sendRequest({ id: id }));
-        return reqProm.then(function (resultAction) {
-            var type = last$2(prop$2('type', resultAction).split('_'));
-            if (type === 'FAIL') {
-                return Promise.reject(prop$2('error', resultAction));
-            }
-            return prop$2('payload', resultAction);
-        });
-    };
-    // -- Setters
-    var setParams = function (params) {
-        dispatch(changeRequest({ id: id, type: 'params', value: params }));
-        isGone.current = false;
-        resolveDeps(params);
-    };
-    var setSegments = function (segments) {
-        dispatch(changeRequest({ id: id, type: 'segments', value: segments }));
-        isGone.current = false;
-        resolveDeps(segments);
-    };
-    var setData = function (data) {
-        dispatch(changeRequest({ id: id, type: 'data', value: data }));
-        isGone.current = false;
-        resolveDeps(data);
-    };
-    var setHeaders = function (headers) {
-        dispatch(changeRequest({ id: id, type: 'headers', value: headers }));
-        isGone.current = false;
-        resolveDeps(headers);
-    };
-    return {
-        go: go,
-        id: id,
-        setParams: setParams,
-        setSegments: setSegments,
-        setData: setData,
-        setHeaders: setHeaders
-    };
-};
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11786,17 +11591,9 @@ var createSelector = createSelectorCreator(defaultMemoize);
 var createDeepEqualSelector = createSelectorCreator(defaultMemoize, equals$2);
 var selectHttp = function (state) { return prop$2(config.reduxTopLevelKey, state); };
 var selectConst = function (_, v) { return v; };
-var defaultPaginationMapper = {
-    elements: 'elements',
-    totalElements: 'totalElements',
-    totalPages: 'totalPages',
-    index: 'index',
-    size: 'size',
-    numberOfElements: 'numberOfElements',
-    nestedSplitChar: '.'
-};
+var selectRequest = createSelector(selectHttp, selectConst, function (state, id) { return prop$2(id, state); });
+var selectPageParam = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2(0, [id, 'action', 'page'], state); });
 var mapPagination = function (data, paginationMapper) {
-    if (paginationMapper === void 0) { paginationMapper = defaultPaginationMapper; }
     var split = paginationMapper.nestedSplitChar, pm = __rest(paginationMapper, ["nestedSplitChar"]);
     return {
         data: pathOr$2([], pm.elements.split(split), data),
@@ -11825,19 +11622,270 @@ var selectData = createDeepEqualSelector(selectHttp, selectConst, function (stat
             hasError: hasError });
     }
 });
+var selectAction = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'action'], state); });
+var selectPaginationMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'action'], state); });
+
+var defaultPaginationMapper = {
+    elements: 'elements',
+    totalElements: 'totalElements',
+    totalPages: 'totalPages',
+    index: 'index',
+    size: 'size',
+    numberOfElements: 'numberOfElements',
+    nestedSplitChar: '.'
+};
+//# sourceMappingURL=defaultPaginationMapper.js.map
+
+var REGISTER_REQUEST = 'http/useRequest/registerRequest';
+var CHANGE_REQUEST = 'http/useRequest/changeRequest';
+var SET_FILTER = 'http/useRequest/setFilter';
+var SET_SORT = 'http/useRequest/setSort';
+var SEND_REQUEST = 'http/useRequest/sendRequest';
+var SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
+var SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
+var registerRequest = function (_a) {
+    var action = _a.action, paginated = _a.paginated, paginationMapper = _a.paginationMapper, id = _a.id;
+    return function (dispatch, getState) {
+        var state = getState();
+        var req = selectRequest(state, id);
+        if (isNil$2(req)) {
+            return dispatch({
+                type: REGISTER_REQUEST,
+                payload: { action: action, paginated: paginated, paginationMapper: paginationMapper, id: id }
+            });
+        }
+    };
+};
+var changeRequest = function (_a) {
+    var id = _a.id, type = _a.type, value = _a.value;
+    return {
+        type: CHANGE_REQUEST,
+        payload: { id: id, type: type, value: value }
+    };
+};
+var setFilter = function (_a) {
+    var id = _a.id, filter = _a.filter;
+    return function (dispatch) {
+        dispatch(changeRequest({ id: id, type: 'params', value: filter }));
+        return dispatch({
+            type: SET_FILTER,
+            payload: { id: id, filter: filter }
+        });
+    };
+};
+var setSort = function (_a) {
+    var id = _a.id, sort = _a.sort;
+    return function (dispatch) {
+        dispatch(changeRequest({ id: id, type: 'params', value: sort }));
+        return dispatch({
+            type: SET_FILTER,
+            payload: { id: id, sort: sort }
+        });
+    };
+};
+var sendRequest = function (_a) {
+    var id = _a.id;
+    return function (dispatch, getState) {
+        var state = getState();
+        var _a = selectAction(state, id), segments = _a.segments, url = _a.url, action = __rest(_a, ["segments", "url"]);
+        var resolvedUrl = parseUrlSegments(url, segments);
+        return dispatch({
+            type: SEND_REQUEST, payload: {
+                request: __assign(__assign({}, action), { url: resolvedUrl }),
+                id: id,
+            }
+        });
+    };
+};
+var requestReducer = function (state, action) {
+    if (state === void 0) { state = {}; }
+    var type = action.type, payload = action.payload, meta = action.meta, error = action.error;
+    switch (type) {
+        case REGISTER_REQUEST: {
+            var action_1 = payload.action, paginated = payload.paginated, _a = payload.paginationMapper, paginationMapper = _a === void 0 ? defaultPaginationMapper : _a, id = payload.id;
+            return assoc$2(id, {
+                action: action_1,
+                paginated: paginated,
+                paginationMapper: paginationMapper,
+                id: id,
+                loading: false,
+                hasRun: false,
+                hasError: false,
+                hasData: false,
+                data: {},
+                error: {},
+                filter: {},
+                sort: {},
+            }, state);
+        }
+        case CHANGE_REQUEST: {
+            var id = payload.id, type_1 = payload.type, value = payload.value;
+            var oldVals = pathOr$2({}, [id, 'action', type_1], state);
+            var newVals = reject$2(isNil$2, __assign(__assign({}, oldVals), value));
+            return assocPath$2([id, 'action', type_1], newVals, state);
+        }
+        case SEND_REQUEST: {
+            var id = payload.id;
+            return assocPath$2([id, 'loading'], true, state);
+        }
+        case SEND_REQUEST_FAIL: {
+            var id = path$2(['previousAction', 'payload', 'id'], meta);
+            var prev = prop$2(id, state);
+            var merger = __assign(__assign({}, prev), { loading: false, hasError: true, hasRun: true, error: error });
+            return assoc$2(id, merger, state);
+        }
+        case SEND_REQUEST_SUCCESS: {
+            var id = path$2(['previousAction', 'payload', 'id'], meta);
+            var prev = prop$2(id, state);
+            var merger = __assign(__assign({}, prev), { loading: false, hasError: false, hasData: true, hasRun: true, data: prop$2('data', payload), error: {} });
+            return assoc$2(id, merger, state);
+        }
+        case SET_FILTER: {
+            var id = payload.id, filter = payload.filter;
+            var f = path$2([id, 'filter'], state);
+            var newF = reject$2(isNil$2, __assign(__assign({}, f), filter));
+            return assocPath$2([id, 'filter'], newF, state);
+        }
+        case SET_SORT: {
+            var id = payload.id, sort = payload.sort;
+            var s = path$2([id, 'sort'], state);
+            var newS = reject$2(isNil$2, __assign(__assign({}, s), sort));
+            return assocPath$2([id, 'sort'], newS, state);
+        }
+        default: {
+            return state;
+        }
+    }
+};
+
+var useRequest = function (_a) {
+    var id = _a.id, template = _a.template;
+    if (isNil$2(template) || isEmpty$2(template)) {
+        console.warn('useRequest: template may not be null or empty');
+        return;
+    }
+    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper;
+    if (isNil$2(action) || isEmpty$2(action)) {
+        console.warn('useRequest: template.action may not be null or empty');
+        return;
+    }
+    if (isNil$2(prop$2('url', action)) || isEmpty$2(prop$2('url', action)) ||
+        isNil$2(prop$2('method', action)) || isEmpty$2(prop$2('method', action))) {
+        console.warn('useRequest: template.action.url and template.action.method may not be null or empty');
+        return;
+    }
+    var dispatch = reactRedux.useDispatch();
+    var requestId = react.useRef(id);
+    // -- Setup request
+    requestId.current = isNil$2(requestId.current) ? rid() : requestId.current;
+    dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, paginated: paginated, id: requestId.current }));
+    var _b = reactRedux.useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _b.pagination, requestData = __rest(_b, ["pagination"]);
+    // -- Setup dependencies
+    var deps = react.useRef({});
+    // -- helpers
+    var resolveDeps = function (values) {
+        var changedDeps = intersection$2(keys$2(values), keys$2(deps.current));
+        if (changedDeps.length > 0) {
+            changedDeps.map(function (name) {
+                deps.current[name] = true;
+            });
+        }
+    };
+    var depsResolved = function () {
+        return keys$2(deps.current).reduce(function (acc, name) {
+            return acc && deps.current[name];
+        }, true);
+    };
+    // -- init
+    react.useEffect(function () {
+        if (!isNil$2(dependencies) && dependencies.length > 0) {
+            deps.current = dependencies.reduce(function (acc, key) {
+                var _a;
+                return __assign(__assign({}, acc), (_a = {}, _a[key] = false, _a));
+            }, {});
+        }
+    }, []);
+    // -- Fire request if all deps are resolved
+    var isGone = react.useRef(false);
+    var go = function (force) {
+        if (force === void 0) { force = false; }
+        if (!depsResolved()) {
+            return Promise.reject({ error: { message: 'Dependencies not met', deps: __assign({}, deps.current) } });
+        }
+        // -- run only once
+        if (isGone.current && !force) {
+            return Promise.resolve();
+        }
+        isGone.current = true;
+        var reqProm = dispatch(sendRequest({ id: requestId.current }));
+        return reqProm.then(function (resultAction) {
+            var type = last$2(prop$2('type', resultAction).split('_'));
+            if (type === 'FAIL') {
+                return Promise.reject(prop$2('error', resultAction));
+            }
+            return prop$2('payload', resultAction);
+        });
+    };
+    // -- Setters
+    var setParams = function (params) {
+        dispatch(changeRequest({ id: requestId.current, type: 'params', value: params }));
+        isGone.current = false;
+        resolveDeps(params);
+        return { go: go };
+    };
+    var setSegments = function (segments) {
+        dispatch(changeRequest({ id: requestId.current, type: 'segments', value: segments }));
+        isGone.current = false;
+        resolveDeps(segments);
+        return { go: go };
+    };
+    var setData = function (data) {
+        dispatch(changeRequest({ id: requestId.current, type: 'data', value: data }));
+        isGone.current = false;
+        resolveDeps(data);
+        return { go: go };
+    };
+    var setHeaders = function (headers) {
+        dispatch(changeRequest({ id: requestId.current, type: 'headers', value: headers }));
+        isGone.current = false;
+        resolveDeps(headers);
+        return { go: go };
+    };
+    var setFilter$1 = function (filter) {
+        dispatch(setFilter({ id: requestId.current, filter: filter }));
+        isGone.current = false;
+        return { go: go };
+    };
+    var setSort$1 = function (sort) {
+        dispatch(setSort({ id: requestId.current, sort: sort }));
+        isGone.current = false;
+        return { go: go };
+    };
+    return {
+        // ...requestData,
+        go: go,
+        id: id,
+        setParams: setParams,
+        setSegments: setSegments,
+        setData: setData,
+        setHeaders: setHeaders,
+        setFilter: setFilter$1,
+        setSort: setSort$1,
+    };
+};
 
 var useData = function (_a) {
     var id = _a.id;
-    var dispatch = reactRedux.useDispatch();
-    var _b = reactRedux.useSelector(function (state) { return selectData(state, id); }), pagination = _b.pagination, rest = __rest(_b, ["pagination"]);
-    if (!isNil$2(pagination)) ;
-    return rest;
+    var data = reactRedux.useSelector(function (state) { return selectData(state, id); });
+    return data;
 };
 
 var useRequest$1 = useRequest;
 var useData$1 = useData;
 var requestReducer$1 = requestReducer;
+var defaultPaginationMapper$1 = defaultPaginationMapper;
 
+exports.defaultPaginationMapper = defaultPaginationMapper$1;
 exports.requestReducer = requestReducer$1;
 exports.useData = useData$1;
 exports.useRequest = useRequest$1;

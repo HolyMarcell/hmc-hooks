@@ -32,13 +32,21 @@ interface UseRequestProps {
   template: RequestTemplate;
 }
 
+
+type GoFunc = (force?: boolean) => Promise<any>;
+interface ChainedSetter {
+  go: GoFunc;
+}
+
 interface UseRequestApi {
-  go: (force?: boolean) => Promise<any>;
+  go: GoFunc;
   id: RequestId;
-  setParams: (params: Record<string, any>) => void;
-  setSegments: (segments: Record<string, any>) => void;
-  setHeaders: (headers: Record<string, any>) => void;
-  setData: (data: Record<string, any>) => void;
+  setParams: (params: Record<string, any>) => ChainedSetter;
+  setSegments: (segments: Record<string, any>) => ChainedSetter;
+  setHeaders: (headers: Record<string, any>) => ChainedSetter;
+  setData: (data: Record<string, any>) => ChainedSetter;
+  setFilter: (filter: Filter) => ChainedSetter;
+  setSort: (sort: Sort) => ChainedSetter;
 }
 
 interface RegisterRequestAction {
@@ -71,4 +79,19 @@ interface SetFilterAction {
   id: RequestId;
 }
 
-export { ChangeRequestAction, Filter, PaginationMapper, RegisterRequestAction, RequestAction, RequestId, RequestTemplate, SendRequestAction, SetFilterAction, UseDataProps, UseRequestApi, UseRequestProps };
+
+interface Sort {
+  [_]: string;
+}
+
+interface SetSortAction {
+  sort: Sort;
+  id: RequestId;
+}
+
+interface SetPageAction {
+  mod: (page?: number) => number;
+  id: RequestId;
+}
+
+export { ChainedSetter, ChangeRequestAction, Filter, GoFunc, PaginationMapper, RegisterRequestAction, RequestAction, RequestId, RequestTemplate, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction, Sort, UseDataProps, UseRequestApi, UseRequestProps };

@@ -1,6 +1,6 @@
 import {config} from "../config";
 import {equals, path, pathOr, prop, propOr} from "../util/ram";
-import {createSelectorCreator, defaultMemoize} from "reselect";
+import {createSelector, createSelectorCreator, defaultMemoize} from "reselect";
 import {PaginationMapper} from "./types";
 
 const createDeepEqualSelector = createSelectorCreator(
@@ -12,20 +12,23 @@ const createDeepEqualSelector = createSelectorCreator(
 export const selectHttp = state => prop(config.reduxTopLevelKey, state);
 export const selectConst = (_, v) => v;
 
+export const selectRequest = createSelector(
+  selectHttp,
+  selectConst,
+  (state, id) => prop(id, state)
+);
 
-const defaultPaginationMapper = {
-  elements: 'elements',
-  totalElements: 'totalElements',
-  totalPages: 'totalPages',
-  index: 'index',
-  size: 'size',
-  numberOfElements: 'numberOfElements',
-  nestedSplitChar: '.'
-};
+export const selectPageParam = createSelector(
+  selectHttp,
+  selectConst,
+  (state, id) => pathOr(0, [id, 'action', 'page'], state)
+);
+
+
 
 const mapPagination = (
   data: Record<string, any>,
-  paginationMapper: PaginationMapper = defaultPaginationMapper) => {
+  paginationMapper: PaginationMapper) => {
   const {nestedSplitChar: split, ...pm} = paginationMapper;
 
   return {
@@ -69,7 +72,17 @@ export const selectData = createDeepEqualSelector(
         hasError,
       };
     }
-
-
   }
+);
+
+export const selectAction = createSelector(
+  selectHttp,
+  selectConst,
+  (state, id) => pathOr({}, [id, 'action'], state)
+);
+
+export const selectPaginationMapper = createSelector(
+  selectHttp,
+  selectConst,
+  (state, id) => pathOr({}, [id, 'action'], state)
 );
