@@ -6,9 +6,8 @@ import {
   SetFilterAction, SetPageAction,
   SetSortAction
 } from "./types";
-import {assoc, assocPath, has, isNil, path, pathOr, prop, reject} from "../util/ram";
+import {assoc, assocPath, isNil, path, pathOr, prop, propOr, reject} from "../util/ram";
 import parseUrlSegments from "../util/parseUrlSegments";
-import {config} from "../config";
 import {selectAction, selectPageParam, selectPaginationMapper, selectRequest} from "./useDataSelectors";
 import defaultPaginationMapper from "../util/defaultPaginationMapper";
 
@@ -68,7 +67,7 @@ export const setSort = ({id, sort}: SetSortAction) => {
 export const setPage = ({id, mod}: SetPageAction) => {
   return (dispatch, getState) => {
     const state = getState();
-    const mapper: PaginationMapper = selectPaginationMapper(state, id);
+    const {toParam: mapper}: PaginationMapper = selectPaginationMapper(state, id);
     const pageProp = prop('page', mapper);
     const page = selectPageParam(state, id);
     return dispatch(changeRequest({id, type: 'params', value: {[pageProp]: mod(page)}}));
@@ -101,10 +100,10 @@ export const requestReducer = (state = {}, action) => {
 
   switch (type) {
     case REGISTER_REQUEST: {
-      const {action, paginated, paginationMapper = defaultPaginationMapper, id} = payload;
+      const {action, paginationMapper = defaultPaginationMapper, id} = payload;
       return assoc(id, {
         action,
-        paginated,
+        paginated: propOr(false, 'paginated', action),
         paginationMapper,
         id,
         loading: false,

@@ -1,7 +1,7 @@
 import {config} from "../config";
-import {equals, path, pathOr, prop, propOr} from "../util/ram";
+import {equals, path, pathOr, prop} from "../util/ram";
 import {createSelector, createSelectorCreator, defaultMemoize} from "reselect";
-import {PaginationMapper} from "./types";
+import {PaginationMapper, RequestDataSelection} from "./types";
 
 const createDeepEqualSelector = createSelectorCreator(
   defaultMemoize,
@@ -24,29 +24,35 @@ export const selectPageParam = createSelector(
   (state, id) => pathOr(0, [id, 'action', 'page'], state)
 );
 
+export const selectNotAction = createSelector(
+  selectRequest,
+  selectConst,
+  ({action, ...notAction}) => notAction
+);
 
 
 const mapPagination = (
   data: Record<string, any>,
   paginationMapper: PaginationMapper) => {
-  const {nestedSplitChar: split, ...pm} = paginationMapper;
+  const {fromData: mapper} = paginationMapper;
+  const {nestedSplitChar: split, ...pm} = mapper;
 
   return {
     data: pathOr([], pm.elements.split(split), data),
     pagination: {
       totalElements: path(pm.totalElements.split(split), data),
       totalPages: path(pm.totalPages.split(split), data),
-      index: path(pm.index.split(split), data),
       size: path(pm.size.split(split), data),
+      page: path(pm.page.split(split), data),
       numberOfElements: path(pm.numberOfElements.split(split), data),
     },
   };
 };
 
 export const selectData = createDeepEqualSelector(
-  selectHttp,
+  selectNotAction,
   selectConst,
-  (state, id) => {
+  (state) => {
     const {
       data,
       hasError,
@@ -55,7 +61,7 @@ export const selectData = createDeepEqualSelector(
       hasData,
       paginated,
       paginationMapper
-    } = propOr({}, id, state);
+    } = state;
 
     if (!paginated) {
       return {
@@ -63,14 +69,14 @@ export const selectData = createDeepEqualSelector(
         loading,
         error,
         hasError,
-      };
+      } as RequestDataSelection;
     } else {
       return {
         ...mapPagination(hasData ? data : {}, paginationMapper),
         loading,
         error,
         hasError,
-      };
+      } as RequestDataSelection;
     }
   }
 );
@@ -84,5 +90,5 @@ export const selectAction = createSelector(
 export const selectPaginationMapper = createSelector(
   selectHttp,
   selectConst,
-  (state, id) => pathOr({}, [id, 'action'], state)
+  (state, id) => pathOr({}, [id, 'paginationMapper'], state)
 );

@@ -1,20 +1,38 @@
 
-
-export interface PaginationMapper {
+export interface PaginationMapperElements {
   elements: string;
   totalElements: string;
   totalPages: string;
-  index: string;
   size: string;
+  page: string;
   numberOfElements: string;
   nestedSplitChar: string;
+}
+
+export interface PaginationMapper {
+  fromData: PaginationMapperElements;
+  toParam: PaginationMapperElements;
+}
+
+export interface Pagination {
+  numberOfElements: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  page: number;
+}
+
+export interface PaginationModifier {
+  onNext: Function;
+  onPref: Function;
+  onPageSelect: Function;
 }
 
 export type RequestId = string;
 
 export interface RequestAction {
   url: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' |'OPTIONS' | 'HEAD' | 'CONNECT' | string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'CONNECT' | string;
   params?: Record<string, any>;
   data?: Record<string, any>;
   segments?: Record<string, any>;
@@ -36,11 +54,21 @@ export interface UseRequestProps {
 
 
 export type GoFunc = (force?: boolean) => Promise<any>;
+
 export interface ChainedSetter {
   go: GoFunc;
 }
 
-export interface UseRequestApi {
+export interface RequestDataSelection {
+  data: Record<string, any>;
+  pagination?: Pagination & PaginationModifier;
+  loading: boolean;
+  error: Record<string, any>;
+  hasError: boolean;
+}
+
+
+export interface UseRequestApi extends RequestDataSelection {
   go: GoFunc;
   id: RequestId;
   setParams: (params: Record<string, any>) => ChainedSetter;
@@ -95,3 +123,4 @@ export interface SetPageAction {
   mod: (page?: number) => number;
   id: RequestId;
 }
+

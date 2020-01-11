@@ -1,18 +1,37 @@
-interface PaginationMapper {
+interface PaginationMapperElements {
   elements: string;
   totalElements: string;
   totalPages: string;
-  index: string;
   size: string;
+  page: string;
   numberOfElements: string;
   nestedSplitChar: string;
+}
+
+interface PaginationMapper {
+  fromData: PaginationMapperElements;
+  toParam: PaginationMapperElements;
+}
+
+interface Pagination {
+  numberOfElements: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  page: number;
+}
+
+interface PaginationModifier {
+  onNext: Function;
+  onPref: Function;
+  onPageSelect: Function;
 }
 
 type RequestId = string;
 
 interface RequestAction {
   url: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' |'OPTIONS' | 'HEAD' | 'CONNECT' | string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'CONNECT' | string;
   params?: Record<string, any>;
   data?: Record<string, any>;
   segments?: Record<string, any>;
@@ -34,11 +53,21 @@ interface UseRequestProps {
 
 
 type GoFunc = (force?: boolean) => Promise<any>;
+
 interface ChainedSetter {
   go: GoFunc;
 }
 
-interface UseRequestApi {
+interface RequestDataSelection {
+  data: Record<string, any>;
+  pagination?: Pagination & PaginationModifier;
+  loading: boolean;
+  error: Record<string, any>;
+  hasError: boolean;
+}
+
+
+interface UseRequestApi extends RequestDataSelection {
   go: GoFunc;
   id: RequestId;
   setParams: (params: Record<string, any>) => ChainedSetter;
@@ -94,4 +123,4 @@ interface SetPageAction {
   id: RequestId;
 }
 
-export { ChainedSetter, ChangeRequestAction, Filter, GoFunc, PaginationMapper, RegisterRequestAction, RequestAction, RequestId, RequestTemplate, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction, Sort, UseDataProps, UseRequestApi, UseRequestProps };
+export { ChainedSetter, ChangeRequestAction, Filter, GoFunc, Pagination, PaginationMapper, PaginationMapperElements, PaginationModifier, RegisterRequestAction, RequestAction, RequestDataSelection, RequestId, RequestTemplate, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction, Sort, UseDataProps, UseRequestApi, UseRequestProps };

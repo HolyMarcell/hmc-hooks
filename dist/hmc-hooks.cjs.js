@@ -11593,21 +11593,26 @@ var selectHttp = function (state) { return prop$2(config.reduxTopLevelKey, state
 var selectConst = function (_, v) { return v; };
 var selectRequest = createSelector(selectHttp, selectConst, function (state, id) { return prop$2(id, state); });
 var selectPageParam = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2(0, [id, 'action', 'page'], state); });
+var selectNotAction = createSelector(selectRequest, selectConst, function (_a) {
+    var action = _a.action, notAction = __rest(_a, ["action"]);
+    return notAction;
+});
 var mapPagination = function (data, paginationMapper) {
-    var split = paginationMapper.nestedSplitChar, pm = __rest(paginationMapper, ["nestedSplitChar"]);
+    var mapper = paginationMapper.fromData;
+    var split = mapper.nestedSplitChar, pm = __rest(mapper, ["nestedSplitChar"]);
     return {
         data: pathOr$2([], pm.elements.split(split), data),
         pagination: {
             totalElements: path$2(pm.totalElements.split(split), data),
             totalPages: path$2(pm.totalPages.split(split), data),
-            index: path$2(pm.index.split(split), data),
             size: path$2(pm.size.split(split), data),
+            page: path$2(pm.page.split(split), data),
             numberOfElements: path$2(pm.numberOfElements.split(split), data),
         },
     };
 };
-var selectData = createDeepEqualSelector(selectHttp, selectConst, function (state, id) {
-    var _a = propOr$2({}, id, state), data = _a.data, hasError = _a.hasError, error = _a.error, loading = _a.loading, hasData = _a.hasData, paginated = _a.paginated, paginationMapper = _a.paginationMapper;
+var selectData = createDeepEqualSelector(selectNotAction, selectConst, function (state) {
+    var data = state.data, hasError = state.hasError, error = state.error, loading = state.loading, hasData = state.hasData, paginated = state.paginated, paginationMapper = state.paginationMapper;
     if (!paginated) {
         return {
             data: hasData ? data : {},
@@ -11623,16 +11628,28 @@ var selectData = createDeepEqualSelector(selectHttp, selectConst, function (stat
     }
 });
 var selectAction = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'action'], state); });
-var selectPaginationMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'action'], state); });
+var selectPaginationMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'paginationMapper'], state); });
+//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
-    elements: 'elements',
-    totalElements: 'totalElements',
-    totalPages: 'totalPages',
-    index: 'index',
-    size: 'size',
-    numberOfElements: 'numberOfElements',
-    nestedSplitChar: '.'
+    fromData: {
+        elements: 'elements',
+        totalElements: 'totalElements',
+        totalPages: 'totalPages',
+        size: 'size',
+        numberOfElements: 'numberOfElements',
+        nestedSplitChar: '.',
+        page: 'index'
+    },
+    toParam: {
+        elements: 'elements',
+        totalElements: 'totalElements',
+        totalPages: 'totalPages',
+        size: 'size',
+        numberOfElements: 'numberOfElements',
+        nestedSplitChar: '.',
+        page: 'page'
+    }
 };
 //# sourceMappingURL=defaultPaginationMapper.js.map
 
@@ -11683,6 +11700,17 @@ var setSort = function (_a) {
         });
     };
 };
+var setPage = function (_a) {
+    var id = _a.id, mod = _a.mod;
+    return function (dispatch, getState) {
+        var _a;
+        var state = getState();
+        var mapper = selectPaginationMapper(state, id).toParam;
+        var pageProp = prop$2('page', mapper);
+        var page = selectPageParam(state, id);
+        return dispatch(changeRequest({ id: id, type: 'params', value: (_a = {}, _a[pageProp] = mod(page), _a) }));
+    };
+};
 var sendRequest = function (_a) {
     var id = _a.id;
     return function (dispatch, getState) {
@@ -11702,10 +11730,10 @@ var requestReducer = function (state, action) {
     var type = action.type, payload = action.payload, meta = action.meta, error = action.error;
     switch (type) {
         case REGISTER_REQUEST: {
-            var action_1 = payload.action, paginated = payload.paginated, _a = payload.paginationMapper, paginationMapper = _a === void 0 ? defaultPaginationMapper : _a, id = payload.id;
+            var action_1 = payload.action, _a = payload.paginationMapper, paginationMapper = _a === void 0 ? defaultPaginationMapper : _a, id = payload.id;
             return assoc$2(id, {
                 action: action_1,
-                paginated: paginated,
+                paginated: propOr$2(false, 'paginated', action_1),
                 paginationMapper: paginationMapper,
                 id: id,
                 loading: false,
@@ -11861,7 +11889,22 @@ var useRequest = function (_a) {
         isGone.current = false;
         return { go: go };
     };
-    return {
+    var onPageSelect = function (page) {
+        dispatch(setPage({ id: requestId.current, mod: function () { return page; } }));
+        isGone.current = false;
+        return { go: go };
+    };
+    var onNext = function () {
+        dispatch(setPage({ id: requestId.current, mod: function (p) { return p + 1; } }));
+        isGone.current = false;
+        return { go: go };
+    };
+    var onPrev = function () {
+        dispatch(setPage({ id: requestId.current, mod: function (p) { return p - 1; } }));
+        isGone.current = false;
+        return { go: go };
+    };
+    return __assign({ 
         // ...requestData,
         go: go,
         id: id,
@@ -11870,8 +11913,9 @@ var useRequest = function (_a) {
         setData: setData,
         setHeaders: setHeaders,
         setFilter: setFilter$1,
-        setSort: setSort$1,
-    };
+        setSort: setSort$1, pagination: __assign(__assign({}, pagination), { onNext: onNext,
+            onPageSelect: onPageSelect,
+            onPrev: onPrev }) }, requestData);
 };
 
 var useData = function (_a) {
@@ -11879,6 +11923,7 @@ var useData = function (_a) {
     var data = reactRedux.useSelector(function (state) { return selectData(state, id); });
     return data;
 };
+//# sourceMappingURL=useData.js.map
 
 var useRequest$1 = useRequest;
 var useData$1 = useData;

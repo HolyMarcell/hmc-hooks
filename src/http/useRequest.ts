@@ -1,7 +1,7 @@
 import {Filter, Sort, UseRequestApi, UseRequestProps} from "./types";
 import rid from "../util/rid";
 import {intersection, isEmpty, isNil, keys, last, prop} from "../util/ram";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef} from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import {
   changeRequest,
@@ -37,7 +37,6 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   dispatch(registerRequest({action, paginationMapper, paginated, id: requestId.current}));
 
   const {pagination, ...requestData} = useSelector((state) => selectData(state, requestId.current));
-
 
   // -- Setup dependencies
 
@@ -160,6 +159,13 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     setHeaders,
     setFilter,
     setSort,
+    pagination: {
+      ...pagination,
+      onNext,
+      onPageSelect,
+      onPrev
+    },
+    ...requestData,
   };
 };
 
