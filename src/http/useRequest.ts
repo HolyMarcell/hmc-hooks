@@ -152,7 +152,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   return {
     // ...requestData,
     go,
-    id,
+    id: requestId.current,
     setParams,
     setSegments,
     setData,
