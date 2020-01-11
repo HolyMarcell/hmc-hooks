@@ -1,6 +1,6 @@
 {
   "name": "@hmc/hooks",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "react hooks shared for me",
   "module": "dist/hmc-hooks.esm.js",
   "main": "dist/hmc-hooks.cjs.js",
