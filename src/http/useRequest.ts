@@ -88,6 +88,9 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     });
   };
 
+  const reload = () => {
+    return go(true);
+  };
 
   // -- Setters
 
@@ -152,6 +155,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   return {
     // ...requestData,
     go,
+    reload,
     id: requestId.current,
     setParams,
     setSegments,

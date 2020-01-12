@@ -60,7 +60,7 @@ export interface ChainedSetter {
 }
 
 export interface RequestDataSelection {
-  data: Record<string, any>;
+  data: Record<string, any> | Array<any> | any;
   pagination?: Pagination & PaginationModifier;
   loading: boolean;
   error: Record<string, any>;
@@ -70,6 +70,7 @@ export interface RequestDataSelection {
 
 export interface UseRequestApi extends RequestDataSelection {
   go: GoFunc;
+  reload: () => any;
   id: RequestId;
   setParams: (params: Record<string, any>) => ChainedSetter;
   setSegments: (segments: Record<string, any>) => ChainedSetter;
