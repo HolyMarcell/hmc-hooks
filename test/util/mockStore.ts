@@ -2,13 +2,19 @@ import {applyMiddleware, combineReducers, createStore} from "redux";
 import thunk from "redux-thunk";
 import {hasPath} from "../../src/util/ram";
 import {requestReducer, SEND_REQUEST_FAIL, SEND_REQUEST_SUCCESS} from "../../src/http/requestDuck";
-import {mockResponse, mockTemplateFails} from "../useRequest.spec";
 import {config} from "../../src/config";
+import {
+  mockResponse,
+  mockResponseCustomPagination,
+  mockTemplate,
+  mockTemplateCustomPagination,
+  mockTemplateFails
+} from "./mocks";
 
 
 export const saveActionsReducer = (state = [], action) => {
 
-  if(action.type === 'RESET') {
+  if (action.type === 'RESET') {
     return [];
   }
   return state.concat(action);
@@ -19,12 +25,21 @@ const fakeAxiosMiddleware = ({getState, dispatch}) => next => action => {
     return next(action);
   }
   const isFailUrl = action.payload.request.url === mockTemplateFails.action.url;
+  const isCustomPaginationUrl = action.payload.request.url === mockTemplateCustomPagination.action.url;
+  const isDefaultUrl = action.payload.request.url === mockTemplate.action.url;
   const meta = {previousAction: {payload: {id: action.payload.id}}};
-  if(isFailUrl) {
+
+  // -- Diffrent urls: diffrent responses
+  if (isFailUrl) {
     dispatch({type: SEND_REQUEST_FAIL, meta, error: {message: 'he he'}});
-  } else {
+  }
+  if (isCustomPaginationUrl) {
+    dispatch({type: SEND_REQUEST_SUCCESS, meta, payload: {data: mockResponseCustomPagination}});
+  }
+  if (isDefaultUrl) {
     dispatch({type: SEND_REQUEST_SUCCESS, meta, payload: {data: mockResponse}});
   }
+
   next(action);
 
   // (!!!!!!) This promise is returned from the dispatch() call instead of the usual "action" object
