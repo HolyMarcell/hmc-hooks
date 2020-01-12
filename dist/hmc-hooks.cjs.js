@@ -237,7 +237,6 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
-//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -11472,7 +11471,6 @@ var intersection$2 = function () {
     }
     return intersection$1.apply(R, args);
 };
-//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil$1(segments)) {
@@ -11481,12 +11479,10 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
     return compose$1.apply(void 0, segs)(url);
 };
-//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     reduxTopLevelKey: 'httpv3'
 };
-//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11928,7 +11924,6 @@ var useRequest$1 = useRequest;
 var useData$1 = useData;
 var requestReducer$1 = requestReducer;
 var defaultPaginationMapper$1 = defaultPaginationMapper;
-//# sourceMappingURL=index.js.map
 
 exports.defaultPaginationMapper = defaultPaginationMapper$1;
 exports.requestReducer = requestReducer$1;
