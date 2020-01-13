@@ -237,6 +237,7 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
+//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -11422,13 +11423,6 @@ var prop$2 = function () {
     }
     return prop$1.apply(R, args);
 };
-var propOr$2 = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    return propOr$1.apply(R, args);
-};
 var last$2 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -11471,6 +11465,7 @@ var intersection$2 = function () {
     }
     return intersection$1.apply(R, args);
 };
+//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil$1(segments)) {
@@ -11479,10 +11474,12 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
     return compose$1.apply(void 0, segs)(url);
 };
+//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     reduxTopLevelKey: 'httpv3'
 };
+//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11625,6 +11622,7 @@ var selectData = createDeepEqualSelector(selectNotAction, selectConst, function 
 });
 var selectAction = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'action'], state); });
 var selectPaginationMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'paginationMapper'], state); });
+//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
     fromData: {
@@ -11646,6 +11644,7 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
+//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -11724,10 +11723,10 @@ var requestReducer = function (state, action) {
     var type = action.type, payload = action.payload, meta = action.meta, error = action.error;
     switch (type) {
         case REGISTER_REQUEST: {
-            var action_1 = payload.action, _a = payload.paginationMapper, paginationMapper = _a === void 0 ? defaultPaginationMapper : _a, id = payload.id;
+            var action_1 = payload.action, _a = payload.paginationMapper, paginationMapper = _a === void 0 ? defaultPaginationMapper : _a, id = payload.id, paginated = payload.paginated;
             return assoc$2(id, {
                 action: action_1,
-                paginated: propOr$2(false, 'paginated', action_1),
+                paginated: paginated,
                 paginationMapper: paginationMapper,
                 id: id,
                 loading: false,
@@ -11919,6 +11918,7 @@ var useData = function (_a) {
     var data = reactRedux.useSelector(function (state) { return selectData(state, id); });
     return data;
 };
+//# sourceMappingURL=useData.js.map
 
 var useRequest$1 = useRequest;
 var useData$1 = useData;

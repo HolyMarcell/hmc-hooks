@@ -100,10 +100,10 @@ export const requestReducer = (state = {}, action) => {
 
   switch (type) {
     case REGISTER_REQUEST: {
-      const {action, paginationMapper = defaultPaginationMapper, id} = payload;
+      const {action, paginationMapper = defaultPaginationMapper, id, paginated} = payload;
       return assoc(id, {
         action,
-        paginated: propOr(false, 'paginated', action),
+        paginated,
         paginationMapper,
         id,
         loading: false,
