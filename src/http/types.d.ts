@@ -14,6 +14,14 @@ export interface PaginationMapper {
   toParam: PaginationMapperElements;
 }
 
+export interface SortMapper {
+  strategy: 'two-field';
+  field: string;
+  direction: string;
+  asc: string;
+  desc: string;
+}
+
 export interface Pagination {
   numberOfElements: number;
   size: number;
@@ -44,7 +52,7 @@ export interface RequestTemplate {
   dependencies?: Array<any>;
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
-
+  sortMapper?: SortMapper;
 }
 
 export interface UseRequestProps {
@@ -65,6 +73,17 @@ export interface RequestDataSelection {
   loading: boolean;
   error: Record<string, any>;
   hasError: boolean;
+  filter?: Record<string, any>;
+  sort?: Record<string, any>;
+}
+
+export interface RequestApiSortField extends Sort {
+  setSort: (sort: Sort) => ChainedSetter;
+}
+
+export interface RequestApiFilterField {
+  setFilter: (filter: Filter) => ChainedSetter;
+  [_: string]: any;
 }
 
 
@@ -76,14 +95,15 @@ export interface UseRequestApi extends RequestDataSelection {
   setSegments: (segments: Record<string, any>) => ChainedSetter;
   setHeaders: (headers: Record<string, any>) => ChainedSetter;
   setData: (data: Record<string, any>) => ChainedSetter;
-  setFilter: (filter: Filter) => ChainedSetter;
-  setSort: (sort: Sort) => ChainedSetter;
+  sort: RequestApiSortField;
+  filter: RequestApiFilterField;
 }
 
 export interface RegisterRequestAction {
   action: RequestAction;
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
+  sortMapper?: SortMapper;
   id: RequestId;
 }
 
@@ -102,7 +122,8 @@ export interface UseDataProps {
 }
 
 export interface Filter {
-  [_]: string;
+  value: string;
+  field: string;
 }
 
 export interface SetFilterAction {
@@ -112,7 +133,8 @@ export interface SetFilterAction {
 
 
 export interface Sort {
-  [_]: string;
+  field: string;
+  direction?: 'asc' | 'desc' | string;
 }
 
 export interface SetSortAction {

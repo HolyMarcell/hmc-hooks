@@ -60,6 +60,8 @@ export const selectData = createDeepEqualSelector(
       loading,
       hasData,
       paginated,
+      sort,
+      filter,
       paginationMapper
     } = state;
 
@@ -76,6 +78,8 @@ export const selectData = createDeepEqualSelector(
         loading,
         error,
         hasError,
+        sort,
+        filter,
       } as RequestDataSelection;
     }
   }
@@ -91,4 +95,10 @@ export const selectPaginationMapper = createSelector(
   selectHttp,
   selectConst,
   (state, id) => pathOr({}, [id, 'paginationMapper'], state)
+);
+
+export const selectSortMapper = createSelector(
+  selectHttp,
+  selectConst,
+  (state, id) => pathOr({}, [id, 'sortMapper'], state)
 );

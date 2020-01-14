@@ -4,12 +4,20 @@ import {
   RegisterRequestAction,
   SendRequestAction,
   SetFilterAction, SetPageAction,
-  SetSortAction
+  SetSortAction, SortMapper
 } from "./types";
 import {assoc, assocPath, isNil, path, pathOr, prop, propOr, reject} from "../util/ram";
 import parseUrlSegments from "../util/parseUrlSegments";
-import {selectAction, selectPageParam, selectPaginationMapper, selectRequest} from "./useDataSelectors";
+import {
+  selectAction,
+  selectPageParam,
+  selectPaginationMapper,
+  selectRequest,
+  selectSortMapper
+} from "./useDataSelectors";
 import defaultPaginationMapper from "../util/defaultPaginationMapper";
+import defaultSortMapper from "../util/defaultSortMapper";
+import sortMapToParams from "../util/sortMapToParams";
 
 export const REGISTER_REQUEST = 'http/useRequest/registerRequest';
 export const CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -19,16 +27,15 @@ export const SEND_REQUEST = 'http/useRequest/sendRequest';
 export const SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
 export const SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
 
-export const registerRequest = ({action, paginated, paginationMapper, id}: RegisterRequestAction) => {
-
+export const registerRequest = ({action, paginated, paginationMapper, sortMapper, id}: RegisterRequestAction) => {
   return (dispatch, getState) => {
     const state = getState();
     const req = selectRequest(state, id);
-    if(isNil(req)) {
+    if (isNil(req)) {
       return dispatch(
         {
           type: REGISTER_REQUEST,
-          payload: {action, paginated, paginationMapper, id}
+          payload: {action, paginated, paginationMapper, sortMapper, id}
         }
       )
     }
@@ -44,8 +51,8 @@ export const changeRequest = ({id, type, value}: ChangeRequestAction) => {
 
 export const setFilter = ({id, filter}: SetFilterAction) => {
   return (dispatch) => {
-
-    dispatch(changeRequest({id, type: 'params', value: filter}));
+    const {field, value} = filter;
+    dispatch(changeRequest({id, type: 'params', value: {[field]: value}}));
     return dispatch({
       type: SET_FILTER,
       payload: {id, filter}
@@ -54,11 +61,15 @@ export const setFilter = ({id, filter}: SetFilterAction) => {
 };
 
 export const setSort = ({id, sort}: SetSortAction) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const sortMapper: SortMapper = selectSortMapper(state, id);
 
-    dispatch(changeRequest({id, type: 'params', value: sort}));
+    const params = sortMapToParams(sortMapper, sort);
+
+    dispatch(changeRequest({id, type: 'params', value: params}));
     return dispatch({
-      type: SET_FILTER,
+      type: SET_SORT,
       payload: {id, sort}
     });
   }
@@ -100,11 +111,18 @@ export const requestReducer = (state = {}, action) => {
 
   switch (type) {
     case REGISTER_REQUEST: {
-      const {action, paginationMapper = defaultPaginationMapper, id, paginated} = payload;
+      const {
+        action,
+        paginationMapper = defaultPaginationMapper,
+        sortMapper = defaultSortMapper,
+        id,
+        paginated = false
+      } = payload;
       return assoc(id, {
         action,
         paginated,
         paginationMapper,
+        sortMapper,
         id,
         loading: false,
         hasRun: false,
@@ -160,16 +178,17 @@ export const requestReducer = (state = {}, action) => {
     }
 
     case SET_FILTER: {
-      const {id, filter} = payload;
-      const f = path([id, 'filter'], state);
-      const newF = reject(isNil, {...f, ...filter});
+      const {id, filter: {value, field}} = payload;
+      const f = pathOr({}, [id, 'filter'], state);
+      const newF = reject(isNil, {...f, [field]: value});
       return assocPath([id, 'filter'], newF, state);
     }
 
     case SET_SORT: {
       const {id, sort} = payload;
-      const s = path([id, 'sort'], state);
-      const newS = reject(isNil, {...s, ...sort});
+      const s = pathOr({}, [id, 'sort'], state);
+      const {field, direction} = sort;
+      const newS = reject(isNil, {...s, field, direction});
       return assocPath([id, 'sort'], newS, state);
     }
 

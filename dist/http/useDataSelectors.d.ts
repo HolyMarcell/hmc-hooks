@@ -7,3 +7,4 @@ export declare const selectNotAction: import("reselect").OutputParametricSelecto
 export declare const selectData: import("reselect").OutputParametricSelector<any, any, RequestDataSelection, (res1: any, res2: any) => RequestDataSelection>;
 export declare const selectAction: import("reselect").OutputParametricSelector<any, any, any, (res1: any, res2: any) => any>;
 export declare const selectPaginationMapper: import("reselect").OutputParametricSelector<any, any, any, (res1: any, res2: any) => any>;
+export declare const selectSortMapper: import("reselect").OutputParametricSelector<any, any, any, (res1: any, res2: any) => any>;

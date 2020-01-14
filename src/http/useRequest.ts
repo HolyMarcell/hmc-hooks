@@ -17,7 +17,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     console.warn('useRequest: template may not be null or empty');
     return;
   }
-  const {action, dependencies, paginated, paginationMapper} = template;
+  const {action, dependencies, paginated, paginationMapper, sortMapper} = template;
   if (isNil(action) || isEmpty(action)) {
     console.warn('useRequest: template.action may not be null or empty');
     return;
@@ -34,9 +34,9 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   // -- Setup request
   requestId.current = isNil(requestId.current) ? rid() : requestId.current;
 
-  dispatch(registerRequest({action, paginationMapper, paginated, id: requestId.current}));
+  dispatch(registerRequest({action, paginationMapper, sortMapper, paginated, id: requestId.current}));
 
-  const {pagination, ...requestData} = useSelector((state) => selectData(state, requestId.current));
+  const {pagination, sort: sortData, filter: filterData, ...requestData} = useSelector((state) => selectData(state, requestId.current));
 
   // -- Setup dependencies
 
@@ -161,8 +161,14 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     setSegments,
     setData,
     setHeaders,
-    setFilter,
-    setSort,
+    filter: {
+      setFilter,
+      ...filterData
+    },
+    sort: {
+      setSort,
+      ...sortData
+    },
     pagination: {
       ...pagination,
       onNext,

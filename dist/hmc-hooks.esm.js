@@ -231,7 +231,6 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
-//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -11459,7 +11458,6 @@ var intersection$2 = function () {
     }
     return intersection$1.apply(R, args);
 };
-//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil$1(segments)) {
@@ -11468,12 +11466,10 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
     return compose$1.apply(void 0, segs)(url);
 };
-//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     reduxTopLevelKey: 'httpv3'
 };
-//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11599,7 +11595,7 @@ var mapPagination = function (data, paginationMapper) {
     };
 };
 var selectData = createDeepEqualSelector(selectNotAction, selectConst, function (state) {
-    var data = state.data, hasError = state.hasError, error = state.error, loading = state.loading, hasData = state.hasData, paginated = state.paginated, paginationMapper = state.paginationMapper;
+    var data = state.data, hasError = state.hasError, error = state.error, loading = state.loading, hasData = state.hasData, paginated = state.paginated, sort = state.sort, filter = state.filter, paginationMapper = state.paginationMapper;
     if (!paginated) {
         return {
             data: hasData ? data : {},
@@ -11611,12 +11607,14 @@ var selectData = createDeepEqualSelector(selectNotAction, selectConst, function 
     else {
         return __assign(__assign({}, mapPagination(hasData ? data : {}, paginationMapper)), { loading: loading,
             error: error,
-            hasError: hasError });
+            hasError: hasError,
+            sort: sort,
+            filter: filter });
     }
 });
 var selectAction = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'action'], state); });
 var selectPaginationMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'paginationMapper'], state); });
-//# sourceMappingURL=useDataSelectors.js.map
+var selectSortMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'sortMapper'], state); });
 
 var defaultPaginationMapper = {
     fromData: {
@@ -11638,7 +11636,29 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
-//# sourceMappingURL=defaultPaginationMapper.js.map
+
+var defaultSortMapper = {
+    strategy: 'two-field',
+    field: 'sortField',
+    direction: 'direction',
+    asc: 'ASC',
+    desc: 'DESC'
+};
+
+var sortMapToParams = function (sortMapper, values) {
+    var _a;
+    var strategy = sortMapper.strategy, asc = sortMapper.asc, desc = sortMapper.desc, field = sortMapper.field, direction = sortMapper.direction;
+    if (strategy === 'two-field') {
+        var dir = prop$2('direction', values) === 'asc' ? asc : desc;
+        return _a = {},
+            _a[field] = prop$2('field', values),
+            _a[direction] = dir,
+            _a;
+    }
+    else {
+        console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
+    }
+};
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -11648,14 +11668,14 @@ var SEND_REQUEST = 'http/useRequest/sendRequest';
 var SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
 var SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
 var registerRequest = function (_a) {
-    var action = _a.action, paginated = _a.paginated, paginationMapper = _a.paginationMapper, id = _a.id;
+    var action = _a.action, paginated = _a.paginated, paginationMapper = _a.paginationMapper, sortMapper = _a.sortMapper, id = _a.id;
     return function (dispatch, getState) {
         var state = getState();
         var req = selectRequest(state, id);
         if (isNil$2(req)) {
             return dispatch({
                 type: REGISTER_REQUEST,
-                payload: { action: action, paginated: paginated, paginationMapper: paginationMapper, id: id }
+                payload: { action: action, paginated: paginated, paginationMapper: paginationMapper, sortMapper: sortMapper, id: id }
             });
         }
     };
@@ -11670,7 +11690,9 @@ var changeRequest = function (_a) {
 var setFilter = function (_a) {
     var id = _a.id, filter = _a.filter;
     return function (dispatch) {
-        dispatch(changeRequest({ id: id, type: 'params', value: filter }));
+        var _a;
+        var field = filter.field, value = filter.value;
+        dispatch(changeRequest({ id: id, type: 'params', value: (_a = {}, _a[field] = value, _a) }));
         return dispatch({
             type: SET_FILTER,
             payload: { id: id, filter: filter }
@@ -11679,10 +11701,13 @@ var setFilter = function (_a) {
 };
 var setSort = function (_a) {
     var id = _a.id, sort = _a.sort;
-    return function (dispatch) {
-        dispatch(changeRequest({ id: id, type: 'params', value: sort }));
+    return function (dispatch, getState) {
+        var state = getState();
+        var sortMapper = selectSortMapper(state, id);
+        var params = sortMapToParams(sortMapper, sort);
+        dispatch(changeRequest({ id: id, type: 'params', value: params }));
         return dispatch({
-            type: SET_FILTER,
+            type: SET_SORT,
             payload: { id: id, sort: sort }
         });
     };
@@ -11713,15 +11738,17 @@ var sendRequest = function (_a) {
     };
 };
 var requestReducer = function (state, action) {
+    var _a;
     if (state === void 0) { state = {}; }
     var type = action.type, payload = action.payload, meta = action.meta, error = action.error;
     switch (type) {
         case REGISTER_REQUEST: {
-            var action_1 = payload.action, _a = payload.paginationMapper, paginationMapper = _a === void 0 ? defaultPaginationMapper : _a, id = payload.id, paginated = payload.paginated;
+            var action_1 = payload.action, _b = payload.paginationMapper, paginationMapper = _b === void 0 ? defaultPaginationMapper : _b, _c = payload.sortMapper, sortMapper = _c === void 0 ? defaultSortMapper : _c, id = payload.id, _d = payload.paginated, paginated = _d === void 0 ? false : _d;
             return assoc$2(id, {
                 action: action_1,
                 paginated: paginated,
                 paginationMapper: paginationMapper,
+                sortMapper: sortMapper,
                 id: id,
                 loading: false,
                 hasRun: false,
@@ -11756,15 +11783,16 @@ var requestReducer = function (state, action) {
             return assoc$2(id, merger, state);
         }
         case SET_FILTER: {
-            var id = payload.id, filter = payload.filter;
-            var f = path$2([id, 'filter'], state);
-            var newF = reject$2(isNil$2, __assign(__assign({}, f), filter));
+            var id = payload.id, _e = payload.filter, value = _e.value, field = _e.field;
+            var f = pathOr$2({}, [id, 'filter'], state);
+            var newF = reject$2(isNil$2, __assign(__assign({}, f), (_a = {}, _a[field] = value, _a)));
             return assocPath$2([id, 'filter'], newF, state);
         }
         case SET_SORT: {
             var id = payload.id, sort = payload.sort;
-            var s = path$2([id, 'sort'], state);
-            var newS = reject$2(isNil$2, __assign(__assign({}, s), sort));
+            var s = pathOr$2({}, [id, 'sort'], state);
+            var field = sort.field, direction = sort.direction;
+            var newS = reject$2(isNil$2, __assign(__assign({}, s), { field: field, direction: direction }));
             return assocPath$2([id, 'sort'], newS, state);
         }
         default: {
@@ -11779,7 +11807,7 @@ var useRequest = function (_a) {
         console.warn('useRequest: template may not be null or empty');
         return;
     }
-    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper;
+    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper;
     if (isNil$2(action) || isEmpty$2(action)) {
         console.warn('useRequest: template.action may not be null or empty');
         return;
@@ -11793,8 +11821,8 @@ var useRequest = function (_a) {
     var requestId = useRef(id);
     // -- Setup request
     requestId.current = isNil$2(requestId.current) ? rid() : requestId.current;
-    dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, paginated: paginated, id: requestId.current }));
-    var _b = useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _b.pagination, requestData = __rest(_b, ["pagination"]);
+    dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, sortMapper: sortMapper, paginated: paginated, id: requestId.current }));
+    var _b = useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _b.pagination, sortData = _b.sort, filterData = _b.filter, requestData = __rest(_b, ["pagination", "sort", "filter"]);
     // -- Setup dependencies
     var deps = useRef({});
     // -- helpers
@@ -11900,9 +11928,7 @@ var useRequest = function (_a) {
         reload: reload, id: requestId.current, setParams: setParams,
         setSegments: setSegments,
         setData: setData,
-        setHeaders: setHeaders,
-        setFilter: setFilter$1,
-        setSort: setSort$1, pagination: __assign(__assign({}, pagination), { onNext: onNext,
+        setHeaders: setHeaders, filter: __assign({ setFilter: setFilter$1 }, filterData), sort: __assign({ setSort: setSort$1 }, sortData), pagination: __assign(__assign({}, pagination), { onNext: onNext,
             onPageSelect: onPageSelect,
             onPrev: onPrev }) }, requestData);
 };
@@ -11912,7 +11938,6 @@ var useData = function (_a) {
     var data = useSelector(function (state) { return selectData(state, id); });
     return data;
 };
-//# sourceMappingURL=useData.js.map
 
 var useRequest$1 = useRequest;
 var useData$1 = useData;

@@ -1,8 +1,11 @@
-export const mockTemplate = {
+import {Filter, RequestTemplate} from "../../src/http/types";
+
+export const mockTemplate: RequestTemplate = {
   action: {
     url: 'http://example.com',
     method: 'GET'
-  }
+  },
+
 };
 
 
@@ -10,8 +13,8 @@ export const mockTemplateCustomPagination = {
   action: {
     url: 'http://paginate-foo.com',
     method: 'GET',
-    paginated: true,
   },
+  paginated: true,
   paginationMapper: {
     fromData: {
       elements: 'elements',
@@ -62,4 +65,15 @@ export const mockResponseCustomPagination = {
   indexFoo: 4412,
   numberOfElementsFoo: 23,
   sizeFoo: 2323
+};
+
+
+export const mockSortBy = {
+  direction: 'asc',
+  field: 'zarquon'
+};
+
+export const mockFilterBy: Filter = {
+  value: 'zaphod',
+  field: 'zarquon'
 };

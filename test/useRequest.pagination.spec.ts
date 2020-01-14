@@ -40,7 +40,7 @@ describe('useRequest hook paginations', () => {
 
 
   it('generates mapped pagination data if "is paginated"', async () => {
-    const tpl = {...mockTemplate, action: {...mockTemplate.action, paginated: true}};
+    const tpl = {...mockTemplate, paginated: true, action: {...mockTemplate.action}};
     const {result} = runHook({template: tpl, id: mockId});
 
     await act(async () => {
