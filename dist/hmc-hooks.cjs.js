@@ -11666,6 +11666,11 @@ var sortMapToParams = function (sortMapper, values) {
     }
 };
 
+var defaultArrayParamsStrategy = {
+    strategy: 'csv',
+    splitChar: ','
+};
+
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
 var SET_FILTER = 'http/useRequest/setFilter';
@@ -11674,14 +11679,14 @@ var SEND_REQUEST = 'http/useRequest/sendRequest';
 var SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
 var SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
 var registerRequest = function (_a) {
-    var action = _a.action, paginated = _a.paginated, paginationMapper = _a.paginationMapper, sortMapper = _a.sortMapper, id = _a.id;
+    var action = _a.action, paginated = _a.paginated, paginationMapper = _a.paginationMapper, arrayParamsStrategy = _a.arrayParamsStrategy, sortMapper = _a.sortMapper, id = _a.id;
     return function (dispatch, getState) {
         var state = getState();
         var req = selectRequest(state, id);
         if (isNil$2(req)) {
             return dispatch({
                 type: REGISTER_REQUEST,
-                payload: { action: action, paginated: paginated, paginationMapper: paginationMapper, sortMapper: sortMapper, id: id }
+                payload: { action: action, paginated: paginated, paginationMapper: paginationMapper, arrayParamsStrategy: arrayParamsStrategy, sortMapper: sortMapper, id: id }
             });
         }
     };
@@ -11749,11 +11754,12 @@ var requestReducer = function (state, action) {
     var type = action.type, payload = action.payload, meta = action.meta, error = action.error;
     switch (type) {
         case REGISTER_REQUEST: {
-            var action_1 = payload.action, _b = payload.paginationMapper, paginationMapper = _b === void 0 ? defaultPaginationMapper : _b, _c = payload.sortMapper, sortMapper = _c === void 0 ? defaultSortMapper : _c, id = payload.id, _d = payload.paginated, paginated = _d === void 0 ? false : _d;
+            var action_1 = payload.action, _b = payload.paginationMapper, paginationMapper = _b === void 0 ? defaultPaginationMapper : _b, _c = payload.sortMapper, sortMapper = _c === void 0 ? defaultSortMapper : _c, _d = payload.arrayParamsStrategy, arrayParamsStrategy = _d === void 0 ? defaultArrayParamsStrategy : _d, id = payload.id, _e = payload.paginated, paginated = _e === void 0 ? false : _e;
             return assoc$2(id, {
                 action: action_1,
                 paginated: paginated,
                 paginationMapper: paginationMapper,
+                arrayParamsStrategy: arrayParamsStrategy,
                 sortMapper: sortMapper,
                 id: id,
                 loading: false,
@@ -11789,7 +11795,7 @@ var requestReducer = function (state, action) {
             return assoc$2(id, merger, state);
         }
         case SET_FILTER: {
-            var id = payload.id, _e = payload.filter, value = _e.value, field = _e.field;
+            var id = payload.id, _f = payload.filter, value = _f.value, field = _f.field;
             var f = pathOr$2({}, [id, 'filter'], state);
             var newF = reject$2(isNil$2, __assign(__assign({}, f), (_a = {}, _a[field] = value, _a)));
             return assocPath$2([id, 'filter'], newF, state);
@@ -11813,7 +11819,7 @@ var useRequest = function (_a) {
         console.warn('useRequest: template may not be null or empty');
         return;
     }
-    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper;
+    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper, arrayParamsStrategy = template.arrayParamsStrategy;
     if (isNil$2(action) || isEmpty$2(action)) {
         console.warn('useRequest: template.action may not be null or empty');
         return;
@@ -11827,7 +11833,7 @@ var useRequest = function (_a) {
     var requestId = react.useRef(id);
     // -- Setup request
     requestId.current = isNil$2(requestId.current) ? rid() : requestId.current;
-    dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, sortMapper: sortMapper, paginated: paginated, id: requestId.current }));
+    dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, arrayParamsStrategy: arrayParamsStrategy, sortMapper: sortMapper, paginated: paginated, id: requestId.current }));
     var _b = reactRedux.useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _b.pagination, sortData = _b.sort, filterData = _b.filter, requestData = __rest(_b, ["pagination", "sort", "filter"]);
     // -- Setup dependencies
     var deps = react.useRef({});

@@ -22,7 +22,14 @@ export interface SortMapper {
   desc: string;
 }
 
-export interface Pagination {
+
+export interface PaginationModifier {
+  onNext: () => {go: () => Promise<any>};
+  onPrev: () => {go: () => Promise<any>};
+  onPageSelect: (page: number) => {go: () => Promise<any>};
+}
+
+export interface Pagination extends PaginationModifier{
   numberOfElements: number;
   size: number;
   totalElements: number;
@@ -30,11 +37,6 @@ export interface Pagination {
   page: number;
 }
 
-export interface PaginationModifier {
-  onNext: Function;
-  onPref: Function;
-  onPageSelect: Function;
-}
 
 export type RequestId = string;
 
@@ -69,7 +71,7 @@ export interface ChainedSetter {
 
 export interface RequestDataSelection {
   data: Record<string, any> | Array<any> | any;
-  pagination?: Pagination & PaginationModifier;
+  pagination?: Pagination;
   loading: boolean;
   error: Record<string, any>;
   hasError: boolean;

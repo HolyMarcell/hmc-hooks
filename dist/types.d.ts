@@ -51,6 +51,7 @@ interface RequestTemplate {
   dependencies?: Array<any>;
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
+  arrayParamsStrategy?: ArrayParamsStrategyConfig;
   sortMapper?: SortMapper;
 }
 
@@ -103,6 +104,7 @@ interface RegisterRequestAction {
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
   sortMapper?: SortMapper;
+  arrayParamsStrategy?: ArrayParamsStrategyConfig;
   id: RequestId;
 }
 
@@ -146,4 +148,9 @@ interface SetPageAction {
   id: RequestId;
 }
 
-export { ChainedSetter, ChangeRequestAction, Filter, GoFunc, Pagination, PaginationMapper, PaginationMapperElements, PaginationModifier, RegisterRequestAction, RequestAction, RequestApiFilterField, RequestApiSortField, RequestDataSelection, RequestId, RequestTemplate, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction, Sort, SortMapper, UseDataProps, UseRequestApi, UseRequestProps };
+interface ArrayParamsStrategyConfig {
+  strategy: 'csv' | string;
+  splitChar?: string;
+}
+
+export { ArrayParamsStrategyConfig, ChainedSetter, ChangeRequestAction, Filter, GoFunc, Pagination, PaginationMapper, PaginationMapperElements, PaginationModifier, RegisterRequestAction, RequestAction, RequestApiFilterField, RequestApiSortField, RequestDataSelection, RequestId, RequestTemplate, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction, Sort, SortMapper, UseDataProps, UseRequestApi, UseRequestProps };

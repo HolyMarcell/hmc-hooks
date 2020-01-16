@@ -135,6 +135,20 @@ export const ComplexComponent = ({externalId}) => {
 ```
 
 
+### Caveats:
+
+* Array to GET-param conversion:
+
+Change the config of your local Axios client to use QS (or whatever you want) to:
+
+```js
+
+config.paramsSerializer = p => {
+  return qs.stringify(p, {arrayFormat: 'comma'})
+}
+```
+See also: 'arrayFormat' in QS https://www.npmjs.com/package/qs
+
 
 ### Development:
 
