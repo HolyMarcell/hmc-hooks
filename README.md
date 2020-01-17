@@ -85,21 +85,45 @@ export const ComplexComponent = ({externalId}) => {
     }
   };
   
+  const customSortMapper: SortMapper = {
+     strategy: 'two-field', // Only accepted mode for now
+     field: 'sortField',
+     direction: 'direction',
+     asc: 'ASC',
+     desc: 'DESC'
+   };
+  
   const template = {
     action: {
       url: 'https://foo.bar/baz/{replaced_segment}',
       method: 'GET',
       segments: {'replaced_segment': externalId},
       params: {search: 'whatever'},
-      paginated: true
     },
-    paginationMapper: customPaginationMapper // is actually the defaultPaginationMapper
-  }
+    paginated: true,
+    paginationMapper: customPaginationMapper, // is actually a copy of the defaultPaginationMapper
+    sortMapper: customSortMapper, // is actually a copy of the defaultSortMapper
+  };
   
   const {go, loading, error, hasError, data, 
-    setData, setFilter, setHeaders, setParams, setSegments, setSort, reload, 
+    setData, filter, setHeaders, setParams, setSegments, sort, reload, 
     id, pagination} = useRequest({template, id: 'set-custom-id'});
+
+  const {setFilter, ...filters} = filter;
+  // filters == {query: 'hello', isActive: 'true'} (for example)
   
+  const {setSort, direction, field} = sort;
+  // try: setSort({field: 'name', direction: 'asc'});
+  // -> direction == 'asc' && field == 'name'
+  // -> requestedURL == '...?sortField=name&direction=ASC via the mapper above  
+
+
+  const {onNext, onPrev, onPageSelect, ...paginationData} = pagination;
+  // where paginationData has the same shape as the paginationMapper properties e.g. {totalElements, page, ...}
+
+  
+
+
   useEffect(() => {
     setData({foo: 'bar'}); // does nothing on GET request xD
     setParams({foo: 1});
