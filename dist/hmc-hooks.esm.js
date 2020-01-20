@@ -231,7 +231,6 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
-//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -11466,7 +11465,6 @@ var intersection$2 = function () {
     }
     return intersection$1.apply(R, args);
 };
-//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil$1(segments)) {
@@ -11475,12 +11473,10 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
     return compose$1.apply(void 0, segs)(url);
 };
-//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     reduxTopLevelKey: 'httpv3'
 };
-//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11627,7 +11623,6 @@ var selectAction = createSelector(selectHttp, selectConst, function (state, id) 
 var selectPaginationMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'paginationMapper'], state); });
 var selectSortMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'sortMapper'], state); });
 var selectFilter = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'filter'], state); });
-//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
     fromData: {
@@ -11649,7 +11644,6 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
-//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -11658,7 +11652,6 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
-//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
@@ -11674,7 +11667,6 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
-//# sourceMappingURL=sortMapToParams.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -11851,7 +11843,6 @@ var requestReducer = function (state, action) {
         }
     }
 };
-//# sourceMappingURL=requestDuck.js.map
 
 var useRequest = function (_a) {
     var id = _a.id, template = _a.template;
@@ -11859,7 +11850,7 @@ var useRequest = function (_a) {
         console.warn('useRequest: template may not be null or empty');
         return;
     }
-    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper, reloadOn = template.reloadOn;
+    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper, _b = template.reloadOn, reloadOn = _b === void 0 ? [] : _b;
     if (isNil$2(action) || isEmpty$2(action)) {
         console.warn('useRequest: template.action may not be null or empty');
         return;
@@ -11874,7 +11865,7 @@ var useRequest = function (_a) {
     // -- Setup request
     requestId.current = isNil$2(requestId.current) ? rid() : requestId.current;
     dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, sortMapper: sortMapper, paginated: paginated, id: requestId.current }));
-    var _b = useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _b.pagination, sortData = _b.sort, filterData = _b.filter, requestData = __rest(_b, ["pagination", "sort", "filter"]);
+    var _c = useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _c.pagination, sortData = _c.sort, filterData = _c.filter, requestData = __rest(_c, ["pagination", "sort", "filter"]);
     // -- Setup dependencies
     var deps = useRef({});
     // -- helpers
@@ -12027,7 +12018,6 @@ var useData = function (_a) {
     var data = useSelector(function (state) { return selectData(state, id); });
     return data;
 };
-//# sourceMappingURL=useData.js.map
 
 var useRequest$1 = useRequest;
 var useData$1 = useData;
