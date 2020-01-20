@@ -20,7 +20,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     console.warn('useRequest: template may not be null or empty');
     return;
   }
-  const {action, dependencies, paginated, paginationMapper, sortMapper, reloadOn} = template;
+  const {action, dependencies, paginated, paginationMapper, sortMapper, reloadOn = []} = template;
   if (isNil(action) || isEmpty(action)) {
     console.warn('useRequest: template.action may not be null or empty');
     return;

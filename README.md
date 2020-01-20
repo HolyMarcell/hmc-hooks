@@ -4,7 +4,7 @@
 
 #### 1.2.0
 * 'reloadsOn' property in Templates implemented. Usage: Set `reloadsOn: ['sort']` -> `sort.setSort(...)` reloads the request.
-
+* resetSort functionality added to `{sort} = useRequest(...)` with usage: `sort.resetSort()`
 
 ### Peer Dependencies:
 

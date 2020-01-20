@@ -3,13 +3,7 @@ import {Provider} from 'react-redux';
 import {act, renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
 import {config} from "../src/config";
-import {
-  mockId,
-  mockResponse,
-  mockResponseCustomPagination, mockSortBy,
-  mockTemplate,
-  mockTemplateCustomPagination
-} from "./util/mocks";
+import {mockId, mockSortBy, mockTemplate} from "./util/mocks";
 import {SET_SORT} from "../src/http/requestDuck";
 import sortMapToParams from "../src/util/sortMapToParams";
 import defaultSortMapper from "../src/util/defaultSortMapper";
