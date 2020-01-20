@@ -24,6 +24,7 @@ export const CHANGE_REQUEST = 'http/useRequest/changeRequest';
 export const SET_FILTER = 'http/useRequest/setFilter';
 export const RESET_FILTER = 'http/useRequest/resetFilter';
 export const SET_SORT = 'http/useRequest/setSort';
+export const RESET_SORT = 'http/useRequest/resetSort';
 export const SEND_REQUEST = 'http/useRequest/sendRequest';
 export const SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
 export const SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
@@ -100,7 +101,7 @@ export const resetSort = ({id}: ResetSortAction) => {
 
     dispatch(changeRequest({id, type: 'params', value: params}));
     return dispatch({
-      type: SET_SORT,
+      type: RESET_SORT,
       payload: {id}
     });
   }
@@ -226,6 +227,11 @@ export const requestReducer = (state = {}, action) => {
       const {field, direction} = sort;
       const newS = reject(isNil, {...s, field, direction});
       return assocPath([id, 'sort'], newS, state);
+    }
+
+    case RESET_SORT: {
+      const {id, sort} = payload;
+      return assocPath([id, 'sort'], {}, state);
     }
 
     default: {

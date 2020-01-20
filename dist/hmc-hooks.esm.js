@@ -11673,6 +11673,7 @@ var CHANGE_REQUEST = 'http/useRequest/changeRequest';
 var SET_FILTER = 'http/useRequest/setFilter';
 var RESET_FILTER = 'http/useRequest/resetFilter';
 var SET_SORT = 'http/useRequest/setSort';
+var RESET_SORT = 'http/useRequest/resetSort';
 var SEND_REQUEST = 'http/useRequest/sendRequest';
 var SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
 var SEND_REQUEST_SUCCESS = 'http/useRequest/sendRequest_SUCCESS';
@@ -11746,7 +11747,7 @@ var resetSort = function (_a) {
         var params = (_a = {}, _a[sortMapper.field] = null, _a[sortMapper.direction] = null, _a);
         dispatch(changeRequest({ id: id, type: 'params', value: params }));
         return dispatch({
-            type: SET_SORT,
+            type: RESET_SORT,
             payload: { id: id }
         });
     };
@@ -11837,6 +11838,10 @@ var requestReducer = function (state, action) {
             var field = sort.field, direction = sort.direction;
             var newS = reject$2(isNil$2, __assign(__assign({}, s), { field: field, direction: direction }));
             return assocPath$2([id, 'sort'], newS, state);
+        }
+        case RESET_SORT: {
+            var id = payload.id, sort = payload.sort;
+            return assocPath$2([id, 'sort'], {}, state);
         }
         default: {
             return state;

@@ -4,6 +4,7 @@ export declare const CHANGE_REQUEST = "http/useRequest/changeRequest";
 export declare const SET_FILTER = "http/useRequest/setFilter";
 export declare const RESET_FILTER = "http/useRequest/resetFilter";
 export declare const SET_SORT = "http/useRequest/setSort";
+export declare const RESET_SORT = "http/useRequest/resetSort";
 export declare const SEND_REQUEST = "http/useRequest/sendRequest";
 export declare const SEND_REQUEST_FAIL = "http/useRequest/sendRequest_FAIL";
 export declare const SEND_REQUEST_SUCCESS = "http/useRequest/sendRequest_SUCCESS";

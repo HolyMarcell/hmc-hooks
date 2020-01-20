@@ -4,7 +4,7 @@ import {act, renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
 import {config} from "../src/config";
 import {mockId, mockSortBy, mockTemplate} from "./util/mocks";
-import {SET_SORT} from "../src/http/requestDuck";
+import {RESET_SORT, SET_SORT} from "../src/http/requestDuck";
 import sortMapToParams from "../src/util/sortMapToParams";
 import defaultSortMapper from "../src/util/defaultSortMapper";
 import {SortMapper} from "../src/http/types";
@@ -111,6 +111,46 @@ describe('useRequest hook sort', () => {
     expect(state[config.reduxTopLevelKey][result.current.id].action.params).toEqual(sortParams);
 
   });
+
+  it('resetSort works', async () => {
+
+
+    const {result} = runHook({template: {...mockTemplate}});
+
+    await act(async () => {
+      await result.current.go();
+    });
+
+    const sortShape = {
+      resetSort: expect.any(Function),
+    };
+
+
+    expect(result.current.sort).toBeDefined();
+    expect(result.current.sort).toEqual(expect.objectContaining(sortShape));
+
+    await act(async () => {
+      await result.current.sort.setSort(mockSortBy).go();
+    });
+    const sortParams = sortMapToParams(defaultSortMapper, mockSortBy);
+
+    const state = mockStore.getState();
+    expect(state[config.reduxTopLevelKey][result.current.id].sort).toBeDefined();
+    expect(state[config.reduxTopLevelKey][result.current.id].action.params).toEqual(sortParams);
+
+    await act(async () => {
+      result.current.sort.resetSort().go();
+    });
+
+    const actions = getActions(RESET_SORT);
+    expect(actions).toHaveLength(1);
+
+    const state2 = mockStore.getState();
+    expect(state2[config.reduxTopLevelKey][result.current.id].sort).toEqual({});
+    expect(state2[config.reduxTopLevelKey][result.current.id].action.params).toEqual({});
+
+  });
+
 
 
 });
