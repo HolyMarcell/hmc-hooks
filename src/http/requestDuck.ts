@@ -1,15 +1,15 @@
 import {
   ChangeRequestAction,
   PaginationMapper,
-  RegisterRequestAction,
+  RegisterRequestAction, ResetFilterAction,
   SendRequestAction,
   SetFilterAction, SetPageAction,
   SetSortAction, SortMapper
 } from "./types";
-import {assoc, assocPath, isNil, path, pathOr, prop, propOr, reject} from "../util/ram";
+import {assoc, assocPath, isNil, path, pathOr, prop, propOr, reject, keys} from "../util/ram";
 import parseUrlSegments from "../util/parseUrlSegments";
 import {
-  selectAction,
+  selectAction, selectFilter,
   selectPageParam,
   selectPaginationMapper,
   selectRequest,
@@ -22,6 +22,7 @@ import sortMapToParams from "../util/sortMapToParams";
 export const REGISTER_REQUEST = 'http/useRequest/registerRequest';
 export const CHANGE_REQUEST = 'http/useRequest/changeRequest';
 export const SET_FILTER = 'http/useRequest/setFilter';
+export const RESET_FILTER = 'http/useRequest/resetFilter';
 export const SET_SORT = 'http/useRequest/setSort';
 export const SEND_REQUEST = 'http/useRequest/sendRequest';
 export const SEND_REQUEST_FAIL = 'http/useRequest/sendRequest_FAIL';
@@ -56,6 +57,21 @@ export const setFilter = ({id, filter}: SetFilterAction) => {
     return dispatch({
       type: SET_FILTER,
       payload: {id, filter}
+    });
+  }
+};
+
+export const resetFilter = ({id}: ResetFilterAction) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const filter = selectFilter(state, id);
+    // Unset all Params from the current filters
+    keys(filter).map((fil) => {
+      dispatch(changeRequest({id, type: 'params', value: {[fil]: null}}));
+    });
+    return dispatch({
+      type: RESET_FILTER,
+      payload: {id}
     });
   }
 };
@@ -182,6 +198,11 @@ export const requestReducer = (state = {}, action) => {
       const f = pathOr({}, [id, 'filter'], state);
       const newF = reject(isNil, {...f, [field]: value});
       return assocPath([id, 'filter'], newF, state);
+    }
+
+    case RESET_FILTER: {
+      const {id} = payload;
+      return assocPath([id, 'filter'], {}, state);
     }
 
     case SET_SORT: {

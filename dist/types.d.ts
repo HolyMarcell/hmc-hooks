@@ -21,7 +21,14 @@ interface SortMapper {
   desc: string;
 }
 
-interface Pagination {
+
+interface PaginationModifier {
+  onNext: () => {go: () => Promise<any>};
+  onPrev: () => {go: () => Promise<any>};
+  onPageSelect: (page: number) => {go: () => Promise<any>};
+}
+
+interface Pagination extends PaginationModifier{
   numberOfElements: number;
   size: number;
   totalElements: number;
@@ -29,11 +36,6 @@ interface Pagination {
   page: number;
 }
 
-interface PaginationModifier {
-  onNext: Function;
-  onPref: Function;
-  onPageSelect: Function;
-}
 
 type RequestId = string;
 
@@ -51,7 +53,6 @@ interface RequestTemplate {
   dependencies?: Array<any>;
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
-  arrayParamsStrategy?: ArrayParamsStrategyConfig;
   sortMapper?: SortMapper;
 }
 
@@ -69,7 +70,7 @@ interface ChainedSetter {
 
 interface RequestDataSelection {
   data: Record<string, any> | Array<any> | any;
-  pagination?: Pagination & PaginationModifier;
+  pagination?: Pagination;
   loading: boolean;
   error: Record<string, any>;
   hasError: boolean;
@@ -83,7 +84,8 @@ interface RequestApiSortField extends Sort {
 
 interface RequestApiFilterField {
   setFilter: (filter: Filter) => ChainedSetter;
-  [_: string]: any;
+  resetFilters: () => ChainedSetter;
+  filters?: Record<string, any>;
 }
 
 
@@ -104,7 +106,6 @@ interface RegisterRequestAction {
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
   sortMapper?: SortMapper;
-  arrayParamsStrategy?: ArrayParamsStrategyConfig;
   id: RequestId;
 }
 
@@ -132,6 +133,10 @@ interface SetFilterAction {
   id: RequestId;
 }
 
+interface ResetFilterAction {
+  id: RequestId;
+}
+
 
 interface Sort {
   field: string;
@@ -148,9 +153,4 @@ interface SetPageAction {
   id: RequestId;
 }
 
-interface ArrayParamsStrategyConfig {
-  strategy: 'csv' | string;
-  splitChar?: string;
-}
-
-export { ArrayParamsStrategyConfig, ChainedSetter, ChangeRequestAction, Filter, GoFunc, Pagination, PaginationMapper, PaginationMapperElements, PaginationModifier, RegisterRequestAction, RequestAction, RequestApiFilterField, RequestApiSortField, RequestDataSelection, RequestId, RequestTemplate, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction, Sort, SortMapper, UseDataProps, UseRequestApi, UseRequestProps };
+export { ChainedSetter, ChangeRequestAction, Filter, GoFunc, Pagination, PaginationMapper, PaginationMapperElements, PaginationModifier, RegisterRequestAction, RequestAction, RequestApiFilterField, RequestApiSortField, RequestDataSelection, RequestId, RequestTemplate, ResetFilterAction, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction, Sort, SortMapper, UseDataProps, UseRequestApi, UseRequestProps };

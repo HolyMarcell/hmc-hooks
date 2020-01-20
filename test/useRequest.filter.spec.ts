@@ -3,14 +3,11 @@ import {Provider} from 'react-redux';
 import {act, renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
 import {config} from "../src/config";
-import {mockFilterBy, mockId, mockSortBy, mockTemplate} from "./util/mocks";
-import {SET_FILTER, SET_SORT} from "../src/http/requestDuck";
-import sortMapToParams from "../src/util/sortMapToParams";
-import defaultSortMapper from "../src/util/defaultSortMapper";
-import {SortMapper} from "../src/http/types";
+import {mockFilterBy, mockId, mockTemplate} from "./util/mocks";
+import {SET_FILTER} from "../src/http/requestDuck";
 
 
-fdescribe('useRequest hook filter', () => {
+describe('useRequest hook filter', () => {
 
   beforeEach(() => {
     mockStore.reset();
@@ -78,6 +75,27 @@ fdescribe('useRequest hook filter', () => {
 
   });
 
+  it('filter results are correct', async () => {
+    const {result} = runHook({template: mockTemplate});
+
+    await act(async () => {
+      await result.current.go();
+    });
+
+    const filterShape = {
+      setFilter: expect.any(Function),
+      resetFilters: expect.any(Function),
+      // filters: expect.any
+    };
+
+    expect(result.current.filter).toBeDefined();
+    expect(result.current.filter).toEqual(expect.objectContaining(filterShape));
+
+    await act(async () => {
+      await result.current.filter.setFilter(mockFilterBy).go();
+    });
+
+  })
 
 });
 

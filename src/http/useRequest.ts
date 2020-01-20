@@ -7,7 +7,9 @@ import {
   changeRequest,
   registerRequest,
   sendRequest,
-  setFilter as setFilterAction, setPage,
+  setFilter as setFilterAction,
+  resetFilter as resetFilterAction,
+  setPage,
   setSort as setSortAction
 } from "./requestDuck";
 import {selectData} from "./useDataSelectors";
@@ -128,6 +130,12 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     return {go};
   };
 
+  const resetFilters = () => {
+    dispatch(resetFilterAction({id: requestId.current}));
+    isGone.current = false;
+    return {go};
+  };
+
   const setSort = (sort: Sort) => {
     dispatch(setSortAction({id: requestId.current, sort}));
     isGone.current = false;
@@ -163,7 +171,8 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     setHeaders,
     filter: {
       setFilter,
-      ...filterData
+      resetFilters,
+      filters: filterData
     },
     sort: {
       setSort,

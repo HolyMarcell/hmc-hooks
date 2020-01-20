@@ -109,7 +109,7 @@ export const ComplexComponent = ({externalId}) => {
     setData, filter, setHeaders, setParams, setSegments, sort, reload, 
     id, pagination} = useRequest({template, id: 'set-custom-id'});
 
-  const {setFilter, ...filters} = filter;
+  const {setFilter, resetFilters, filters} = filter;
   // filters == {query: 'hello', isActive: 'true'} (for example)
   
   const {setSort, direction, field} = sort;

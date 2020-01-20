@@ -102,3 +102,9 @@ export const selectSortMapper = createSelector(
   selectConst,
   (state, id) => pathOr({}, [id, 'sortMapper'], state)
 );
+
+export const selectFilter = createSelector(
+  selectHttp,
+  selectConst,
+  (state, id) => pathOr({}, [id, 'filter'], state)
+);

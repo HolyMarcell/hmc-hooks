@@ -85,7 +85,8 @@ export interface RequestApiSortField extends Sort {
 
 export interface RequestApiFilterField {
   setFilter: (filter: Filter) => ChainedSetter;
-  [_: string]: any;
+  resetFilters: () => ChainedSetter;
+  filters?: Record<string, any>;
 }
 
 
@@ -130,6 +131,10 @@ export interface Filter {
 
 export interface SetFilterAction {
   filter: Filter;
+  id: RequestId;
+}
+
+export interface ResetFilterAction {
   id: RequestId;
 }
 
