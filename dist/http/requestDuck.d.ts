@@ -1,4 +1,4 @@
-import { ChangeRequestAction, RegisterRequestAction, ResetFilterAction, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction } from "./types";
+import { ChangeRequestAction, RegisterRequestAction, ResetFilterAction, ResetSortAction, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction } from "./types";
 export declare const REGISTER_REQUEST = "http/useRequest/registerRequest";
 export declare const CHANGE_REQUEST = "http/useRequest/changeRequest";
 export declare const SET_FILTER = "http/useRequest/setFilter";
@@ -19,6 +19,7 @@ export declare const changeRequest: ({ id, type, value }: ChangeRequestAction) =
 export declare const setFilter: ({ id, filter }: SetFilterAction) => (dispatch: any) => any;
 export declare const resetFilter: ({ id }: ResetFilterAction) => (dispatch: any, getState: any) => any;
 export declare const setSort: ({ id, sort }: SetSortAction) => (dispatch: any, getState: any) => any;
+export declare const resetSort: ({ id }: ResetSortAction) => (dispatch: any, getState: any) => any;
 export declare const setPage: ({ id, mod }: SetPageAction) => (dispatch: any, getState: any) => any;
 export declare const sendRequest: ({ id }: SendRequestAction) => (dispatch: any, getState: any) => any;
 export declare const requestReducer: (state: {}, action: any) => any;

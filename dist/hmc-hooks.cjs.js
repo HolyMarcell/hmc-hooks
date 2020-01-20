@@ -237,6 +237,7 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
+//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -11457,6 +11458,13 @@ var equals$2 = function () {
     }
     return equals$1.apply(R, args);
 };
+var contains$3 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return contains$2.apply(R, args);
+};
 var intersection$2 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -11464,6 +11472,7 @@ var intersection$2 = function () {
     }
     return intersection$1.apply(R, args);
 };
+//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil$1(segments)) {
@@ -11472,10 +11481,12 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
     return compose$1.apply(void 0, segs)(url);
 };
+//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     reduxTopLevelKey: 'httpv3'
 };
+//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11622,6 +11633,7 @@ var selectAction = createSelector(selectHttp, selectConst, function (state, id) 
 var selectPaginationMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'paginationMapper'], state); });
 var selectSortMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'sortMapper'], state); });
 var selectFilter = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'filter'], state); });
+//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
     fromData: {
@@ -11643,6 +11655,7 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
+//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -11651,6 +11664,7 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
+//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
@@ -11666,6 +11680,7 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
+//# sourceMappingURL=sortMapToParams.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -11733,6 +11748,20 @@ var setSort = function (_a) {
         return dispatch({
             type: SET_SORT,
             payload: { id: id, sort: sort }
+        });
+    };
+};
+var resetSort = function (_a) {
+    var id = _a.id;
+    return function (dispatch, getState) {
+        var _a;
+        var state = getState();
+        var sortMapper = selectSortMapper(state, id);
+        var params = (_a = {}, _a[sortMapper.field] = null, _a[sortMapper.direction] = null, _a);
+        dispatch(changeRequest({ id: id, type: 'params', value: params }));
+        return dispatch({
+            type: SET_SORT,
+            payload: { id: id }
         });
     };
 };
@@ -11828,6 +11857,7 @@ var requestReducer = function (state, action) {
         }
     }
 };
+//# sourceMappingURL=requestDuck.js.map
 
 var useRequest = function (_a) {
     var id = _a.id, template = _a.template;
@@ -11835,7 +11865,7 @@ var useRequest = function (_a) {
         console.warn('useRequest: template may not be null or empty');
         return;
     }
-    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper;
+    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper, reloadOn = template.reloadOn;
     if (isNil$2(action) || isEmpty$2(action)) {
         console.warn('useRequest: template.action may not be null or empty');
         return;
@@ -11877,17 +11907,17 @@ var useRequest = function (_a) {
         }
     }, []);
     // -- Fire request if all deps are resolved
-    var isGone = react.useRef(false);
+    var isFirst = react.useRef(true);
     var go = function (force) {
         if (force === void 0) { force = false; }
         if (!depsResolved()) {
             return Promise.reject({ error: { message: 'Dependencies not met', deps: __assign({}, deps.current) } });
         }
         // -- run only once
-        if (isGone.current && !force) {
+        if (!isFirst.current && !force) {
             return Promise.resolve();
         }
-        isGone.current = true;
+        isFirst.current = false;
         var reqProm = dispatch(sendRequest({ id: requestId.current }));
         return reqProm.then(function (resultAction) {
             var type = last$2(prop$2('type', resultAction).split('_'));
@@ -11903,57 +11933,84 @@ var useRequest = function (_a) {
     // -- Setters
     var setParams = function (params) {
         dispatch(changeRequest({ id: requestId.current, type: 'params', value: params }));
-        isGone.current = false;
+        if (contains$3('params', reloadOn)) {
+            reload();
+        }
         resolveDeps(params);
-        return { go: go };
+        return { go: reload };
     };
     var setSegments = function (segments) {
         dispatch(changeRequest({ id: requestId.current, type: 'segments', value: segments }));
-        isGone.current = false;
+        if (contains$3('segments', reloadOn)) {
+            reload();
+        }
         resolveDeps(segments);
-        return { go: go };
+        return { go: reload };
     };
     var setData = function (data) {
         dispatch(changeRequest({ id: requestId.current, type: 'data', value: data }));
-        isGone.current = false;
+        if (contains$3('data', reloadOn)) {
+            reload();
+        }
         resolveDeps(data);
-        return { go: go };
+        return { go: reload };
     };
     var setHeaders = function (headers) {
         dispatch(changeRequest({ id: requestId.current, type: 'headers', value: headers }));
-        isGone.current = false;
+        if (contains$3('headers', reloadOn)) {
+            reload();
+        }
         resolveDeps(headers);
-        return { go: go };
+        return { go: reload };
     };
     var setFilter$1 = function (filter) {
         dispatch(setFilter({ id: requestId.current, filter: filter }));
-        isGone.current = false;
-        return { go: go };
+        if (contains$3('filter', reloadOn)) {
+            reload();
+        }
+        return { go: reload };
     };
     var resetFilters = function () {
         dispatch(resetFilter({ id: requestId.current }));
-        isGone.current = false;
-        return { go: go };
+        if (contains$3('filter', reloadOn)) {
+            reload();
+        }
+        return { go: reload };
     };
     var setSort$1 = function (sort) {
         dispatch(setSort({ id: requestId.current, sort: sort }));
-        isGone.current = false;
-        return { go: go };
+        if (contains$3('sort', reloadOn)) {
+            reload();
+        }
+        return { go: reload };
+    };
+    var resetSort$1 = function () {
+        dispatch(resetSort({ id: requestId.current }));
+        if (contains$3('sort', reloadOn)) {
+            reload();
+        }
+        return { go: reload };
     };
     var onPageSelect = function (page) {
         dispatch(setPage({ id: requestId.current, mod: function () { return page; } }));
-        isGone.current = false;
-        return { go: go };
+        if (contains$3('pagination', reloadOn)) {
+            reload();
+        }
+        return { go: reload };
     };
     var onNext = function () {
         dispatch(setPage({ id: requestId.current, mod: function (p) { return p + 1; } }));
-        isGone.current = false;
-        return { go: go };
+        if (contains$3('pagination', reloadOn)) {
+            reload();
+        }
+        return { go: reload };
     };
     var onPrev = function () {
         dispatch(setPage({ id: requestId.current, mod: function (p) { return p - 1; } }));
-        isGone.current = false;
-        return { go: go };
+        if (contains$3('pagination', reloadOn)) {
+            reload();
+        }
+        return { go: reload };
     };
     return __assign({ 
         // ...requestData,
@@ -11965,7 +12022,8 @@ var useRequest = function (_a) {
             setFilter: setFilter$1,
             resetFilters: resetFilters,
             filters: filterData
-        }, sort: __assign({ setSort: setSort$1 }, sortData), pagination: __assign(__assign({}, pagination), { onNext: onNext,
+        }, sort: __assign({ setSort: setSort$1,
+            resetSort: resetSort$1 }, sortData), pagination: __assign(__assign({}, pagination), { onNext: onNext,
             onPageSelect: onPageSelect,
             onPrev: onPrev }) }, requestData);
 };
@@ -11975,6 +12033,7 @@ var useData = function (_a) {
     var data = reactRedux.useSelector(function (state) { return selectData(state, id); });
     return data;
 };
+//# sourceMappingURL=useData.js.map
 
 var useRequest$1 = useRequest;
 var useData$1 = useData;

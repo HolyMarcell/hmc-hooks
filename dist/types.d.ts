@@ -48,12 +48,15 @@ interface RequestAction {
   headers?: Record<string, any>;
 }
 
+type ReloadEnum = 'sort' | 'filter' | 'params' | 'segments' | 'data' | 'headers' | 'pagination' | string;
+
 interface RequestTemplate {
   action: RequestAction;
   dependencies?: Array<any>;
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
   sortMapper?: SortMapper;
+  reloadOn?: ReloadEnum[];
 }
 
 interface UseRequestProps {
@@ -80,6 +83,7 @@ interface RequestDataSelection {
 
 interface RequestApiSortField extends Sort {
   setSort: (sort: Sort) => ChainedSetter;
+  resetSort: () => ChainedSetter;
 }
 
 interface RequestApiFilterField {
@@ -148,9 +152,13 @@ interface SetSortAction {
   id: RequestId;
 }
 
+interface ResetSortAction {
+  id: RequestId;
+}
+
 interface SetPageAction {
   mod: (page?: number) => number;
   id: RequestId;
 }
 
-export { ChainedSetter, ChangeRequestAction, Filter, GoFunc, Pagination, PaginationMapper, PaginationMapperElements, PaginationModifier, RegisterRequestAction, RequestAction, RequestApiFilterField, RequestApiSortField, RequestDataSelection, RequestId, RequestTemplate, ResetFilterAction, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction, Sort, SortMapper, UseDataProps, UseRequestApi, UseRequestProps };
+export { ChainedSetter, ChangeRequestAction, Filter, GoFunc, Pagination, PaginationMapper, PaginationMapperElements, PaginationModifier, RegisterRequestAction, ReloadEnum, RequestAction, RequestApiFilterField, RequestApiSortField, RequestDataSelection, RequestId, RequestTemplate, ResetFilterAction, ResetSortAction, SendRequestAction, SetFilterAction, SetPageAction, SetSortAction, Sort, SortMapper, UseDataProps, UseRequestApi, UseRequestProps };

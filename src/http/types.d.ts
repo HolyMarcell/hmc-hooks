@@ -49,12 +49,15 @@ export interface RequestAction {
   headers?: Record<string, any>;
 }
 
+export type ReloadEnum = 'sort' | 'filter' | 'params' | 'segments' | 'data' | 'headers' | 'pagination' | string;
+
 export interface RequestTemplate {
   action: RequestAction;
   dependencies?: Array<any>;
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
   sortMapper?: SortMapper;
+  reloadOn?: ReloadEnum[];
 }
 
 export interface UseRequestProps {
@@ -81,6 +84,7 @@ export interface RequestDataSelection {
 
 export interface RequestApiSortField extends Sort {
   setSort: (sort: Sort) => ChainedSetter;
+  resetSort: () => ChainedSetter;
 }
 
 export interface RequestApiFilterField {
@@ -146,6 +150,10 @@ export interface Sort {
 
 export interface SetSortAction {
   sort: Sort;
+  id: RequestId;
+}
+
+export interface ResetSortAction {
   id: RequestId;
 }
 

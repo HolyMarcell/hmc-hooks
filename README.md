@@ -1,5 +1,11 @@
 ## @hmc/hooks | HolyMarcell/hmc-hooks
 
+### Changelog
+
+#### 1.2.0
+* 'reloadsOn' property in Templates implemented. Usage: Set `reloadsOn: ['sort']` -> `sort.setSort(...)` reloads the request.
+
+
 ### Peer Dependencies:
 
 * axios
@@ -94,6 +100,7 @@ export const ComplexComponent = ({externalId}) => {
    };
   
   const template = {
+    reloadsOn: ['sort', 'filter', 'params', 'segments', 'data', 'headers'],
     action: {
       url: 'https://foo.bar/baz/{replaced_segment}',
       method: 'GET',

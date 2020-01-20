@@ -1,7 +1,7 @@
 import {
   ChangeRequestAction,
   PaginationMapper,
-  RegisterRequestAction, ResetFilterAction,
+  RegisterRequestAction, ResetFilterAction, ResetSortAction,
   SendRequestAction,
   SetFilterAction, SetPageAction,
   SetSortAction, SortMapper
@@ -87,6 +87,21 @@ export const setSort = ({id, sort}: SetSortAction) => {
     return dispatch({
       type: SET_SORT,
       payload: {id, sort}
+    });
+  }
+};
+
+export const resetSort = ({id}: ResetSortAction) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const sortMapper: SortMapper = selectSortMapper(state, id);
+
+    const params = {[sortMapper.field]: null, [sortMapper.direction]: null};
+
+    dispatch(changeRequest({id, type: 'params', value: params}));
+    return dispatch({
+      type: SET_SORT,
+      payload: {id}
     });
   }
 };
