@@ -11612,6 +11612,7 @@ var selectData = createDeepEqualSelector(selectNotAction, selectConst, function 
     if (!paginated) {
         return {
             data: hasData ? data : {},
+            hasData: hasData,
             loading: loading,
             error: error,
             hasError: hasError,
@@ -11619,6 +11620,7 @@ var selectData = createDeepEqualSelector(selectNotAction, selectConst, function 
     }
     else {
         return __assign(__assign({}, mapPagination(hasData ? data : {}, paginationMapper)), { loading: loading,
+            hasData: hasData,
             error: error,
             hasError: hasError,
             sort: sort,

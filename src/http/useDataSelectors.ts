@@ -68,6 +68,7 @@ export const selectData = createDeepEqualSelector(
     if (!paginated) {
       return {
         data: hasData ? data : {},
+        hasData,
         loading,
         error,
         hasError,
@@ -76,6 +77,7 @@ export const selectData = createDeepEqualSelector(
       return {
         ...mapPagination(hasData ? data : {}, paginationMapper),
         loading,
+        hasData,
         error,
         hasError,
         sort,

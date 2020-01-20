@@ -74,6 +74,7 @@ export interface ChainedSetter {
 
 export interface RequestDataSelection {
   data: Record<string, any> | Array<any> | any;
+  hasData: boolean;
   pagination?: Pagination;
   loading: boolean;
   error: Record<string, any>;
