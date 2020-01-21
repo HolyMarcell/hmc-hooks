@@ -1,16 +1,22 @@
 import {
   ChangeRequestAction,
   PaginationMapper,
-  RegisterRequestAction, ResetFilterAction, ResetSortAction,
+  RegisterRequestAction,
+  ResetFilterAction,
+  ResetSortAction,
   SendRequestAction,
-  SetFilterAction, SetPageAction,
-  SetSortAction, SortMapper
+  SetFilterAction,
+  SetPageAction,
+  SetSortAction,
+  SortMapper
 } from "./types";
-import {assoc, assocPath, isNil, path, pathOr, prop, propOr, reject, keys} from "../util/ram";
+import {assoc, assocPath, isNil, keys, path, pathOr, prop, reject} from "../util/ram";
 import parseUrlSegments from "../util/parseUrlSegments";
 import {
-  selectAction, selectFilter,
-  selectPageParam,
+  selectAction,
+  selectData,
+  selectFilter,
+  selectIsPaginated,
   selectPaginationMapper,
   selectRequest,
   selectSortMapper
@@ -110,9 +116,14 @@ export const resetSort = ({id}: ResetSortAction) => {
 export const setPage = ({id, mod}: SetPageAction) => {
   return (dispatch, getState) => {
     const state = getState();
+    const paginated = selectIsPaginated(state, id);
+    if(!paginated) {
+      return;
+    }
     const {toParam: mapper}: PaginationMapper = selectPaginationMapper(state, id);
     const pageProp = prop('page', mapper);
-    const page = selectPageParam(state, id);
+    const {pagination} = selectData(state, id);
+    const {page} = pagination;
     return dispatch(changeRequest({id, type: 'params', value: {[pageProp]: mod(page)}}));
   }
 };

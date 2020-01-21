@@ -78,14 +78,16 @@ function bytesToUuid(buf, offset) {
   var i = offset || 0;
   var bth = byteToHex;
   // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
-  return ([bth[buf[i++]], bth[buf[i++]], 
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]]]).join('');
+  return ([
+    bth[buf[i++]], bth[buf[i++]],
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]],
+    bth[buf[i++]], bth[buf[i++]],
+    bth[buf[i++]], bth[buf[i++]]
+  ]).join('');
 }
 
 var bytesToUuid_1 = bytesToUuid;
@@ -237,6 +239,7 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
+//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -11471,6 +11474,7 @@ var intersection$2 = function () {
     }
     return intersection$1.apply(R, args);
 };
+//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil$1(segments)) {
@@ -11479,10 +11483,12 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
     return compose$1.apply(void 0, segs)(url);
 };
+//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     reduxTopLevelKey: 'httpv3'
 };
+//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11588,7 +11594,6 @@ var createDeepEqualSelector = createSelectorCreator(defaultMemoize, equals$2);
 var selectHttp = function (state) { return prop$2(config.reduxTopLevelKey, state); };
 var selectConst = function (_, v) { return v; };
 var selectRequest = createSelector(selectHttp, selectConst, function (state, id) { return prop$2(id, state); });
-var selectPageParam = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2(0, [id, 'action', 'page'], state); });
 var selectNotAction = createSelector(selectRequest, selectConst, function (_a) {
     var action = _a.action, notAction = __rest(_a, ["action"]);
     return notAction;
@@ -11628,9 +11633,10 @@ var selectData = createDeepEqualSelector(selectNotAction, selectConst, function 
     }
 });
 var selectAction = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'action'], state); });
-var selectPaginationMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'paginationMapper'], state); });
-var selectSortMapper = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'sortMapper'], state); });
-var selectFilter = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'filter'], state); });
+var selectPaginationMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['paginationMapper'], state); });
+var selectSortMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['sortMapper'], state); });
+var selectFilter = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['filter'], state); });
+var selectIsPaginated = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2(false, ['paginated'], state); });
 
 var defaultPaginationMapper = {
     fromData: {
@@ -11652,6 +11658,7 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
+//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -11660,6 +11667,7 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
+//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
@@ -11675,6 +11683,7 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
+//# sourceMappingURL=sortMapToParams.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -11765,9 +11774,14 @@ var setPage = function (_a) {
     return function (dispatch, getState) {
         var _a;
         var state = getState();
+        var paginated = selectIsPaginated(state, id);
+        if (!paginated) {
+            return;
+        }
         var mapper = selectPaginationMapper(state, id).toParam;
         var pageProp = prop$2('page', mapper);
-        var page = selectPageParam(state, id);
+        var pagination = selectData(state, id).pagination;
+        var page = pagination.page;
         return dispatch(changeRequest({ id: id, type: 'params', value: (_a = {}, _a[pageProp] = mod(page), _a) }));
     };
 };
@@ -11879,6 +11893,7 @@ var useRequest = function (_a) {
     requestId.current = isNil$2(requestId.current) ? rid() : requestId.current;
     dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, sortMapper: sortMapper, paginated: paginated, id: requestId.current }));
     var _c = reactRedux.useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _c.pagination, sortData = _c.sort, filterData = _c.filter, requestData = __rest(_c, ["pagination", "sort", "filter"]);
+    console.log('pag', pagination);
     // -- Setup dependencies
     var deps = react.useRef({});
     // -- helpers
@@ -11962,6 +11977,7 @@ var useRequest = function (_a) {
         return { go: reload };
     };
     var setFilter$1 = function (filter) {
+        dispatch(setPage({ id: requestId.current, mod: function () { return 0; } }));
         dispatch(setFilter({ id: requestId.current, filter: filter }));
         if (contains$3('filter', reloadOn)) {
             reload();
@@ -11969,6 +11985,7 @@ var useRequest = function (_a) {
         return { go: reload };
     };
     var resetFilters = function () {
+        dispatch(setPage({ id: requestId.current, mod: function () { return 0; } }));
         dispatch(resetFilter({ id: requestId.current }));
         if (contains$3('filter', reloadOn)) {
             reload();
@@ -11976,6 +11993,7 @@ var useRequest = function (_a) {
         return { go: reload };
     };
     var setSort$1 = function (sort) {
+        dispatch(setPage({ id: requestId.current, mod: function () { return 0; } }));
         dispatch(setSort({ id: requestId.current, sort: sort }));
         if (contains$3('sort', reloadOn)) {
             reload();
@@ -11983,6 +12001,7 @@ var useRequest = function (_a) {
         return { go: reload };
     };
     var resetSort$1 = function () {
+        dispatch(setPage({ id: requestId.current, mod: function () { return 0; } }));
         dispatch(resetSort({ id: requestId.current }));
         if (contains$3('sort', reloadOn)) {
             reload();

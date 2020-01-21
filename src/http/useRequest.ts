@@ -40,7 +40,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   dispatch(registerRequest({action, paginationMapper, sortMapper, paginated, id: requestId.current}));
 
   const {pagination, sort: sortData, filter: filterData, ...requestData} = useSelector((state) => selectData(state, requestId.current));
-
+  console.log('pag', pagination)
   // -- Setup dependencies
 
   const deps = useRef({});
@@ -134,6 +134,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   };
 
   const setFilter = (filter: Filter) => {
+    dispatch(setPage({id: requestId.current, mod: () => 0}));
     dispatch(setFilterAction({id: requestId.current, filter}));
     if(contains('filter', reloadOn)) {
       reload()
@@ -142,6 +143,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   };
 
   const resetFilters = () => {
+    dispatch(setPage({id: requestId.current, mod: () => 0}));
     dispatch(resetFilterAction({id: requestId.current}));
     if(contains('filter', reloadOn)) {
       reload()
@@ -150,6 +152,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   };
 
   const setSort = (sort: Sort) => {
+    dispatch(setPage({id: requestId.current, mod: () => 0}));
     dispatch(setSortAction({id: requestId.current, sort}));
     if(contains('sort', reloadOn)) {
       reload()
@@ -158,6 +161,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   };
 
   const resetSort = () => {
+    dispatch(setPage({id: requestId.current, mod: () => 0}));
     dispatch(resetSortAction({id: requestId.current}));
     if(contains('sort', reloadOn)) {
       reload()

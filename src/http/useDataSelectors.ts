@@ -18,11 +18,6 @@ export const selectRequest = createSelector(
   (state, id) => prop(id, state)
 );
 
-export const selectPageParam = createSelector(
-  selectHttp,
-  selectConst,
-  (state, id) => pathOr(0, [id, 'action', 'page'], state)
-);
 
 export const selectNotAction = createSelector(
   selectRequest,
@@ -94,19 +89,25 @@ export const selectAction = createSelector(
 );
 
 export const selectPaginationMapper = createSelector(
-  selectHttp,
+  selectNotAction,
   selectConst,
-  (state, id) => pathOr({}, [id, 'paginationMapper'], state)
+  (state, id) => pathOr({}, ['paginationMapper'], state)
 );
 
 export const selectSortMapper = createSelector(
-  selectHttp,
+  selectNotAction,
   selectConst,
-  (state, id) => pathOr({}, [id, 'sortMapper'], state)
+  (state, id) => pathOr({}, ['sortMapper'], state)
 );
 
 export const selectFilter = createSelector(
-  selectHttp,
+  selectNotAction,
   selectConst,
-  (state, id) => pathOr({}, [id, 'filter'], state)
+  (state, id) => pathOr({}, ['filter'], state)
+);
+
+export const selectIsPaginated = createSelector(
+  selectNotAction,
+  selectConst,
+  (state, id) => pathOr(false, ['paginated'], state)
 );
