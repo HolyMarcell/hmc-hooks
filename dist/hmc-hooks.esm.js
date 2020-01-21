@@ -233,7 +233,6 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
-//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -11468,7 +11467,6 @@ var intersection$2 = function () {
     }
     return intersection$1.apply(R, args);
 };
-//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil$1(segments)) {
@@ -11477,12 +11475,10 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
     return compose$1.apply(void 0, segs)(url);
 };
-//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     reduxTopLevelKey: 'httpv3'
 };
-//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11652,7 +11648,6 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
-//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -11661,7 +11656,6 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
-//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
@@ -11677,7 +11671,6 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
-//# sourceMappingURL=sortMapToParams.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
