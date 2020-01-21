@@ -11886,7 +11886,6 @@ var useRequest = function (_a) {
     requestId.current = isNil$2(requestId.current) ? rid() : requestId.current;
     dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, sortMapper: sortMapper, paginated: paginated, id: requestId.current }));
     var _c = reactRedux.useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _c.pagination, sortData = _c.sort, filterData = _c.filter, requestData = __rest(_c, ["pagination", "sort", "filter"]);
-    console.log('pag', pagination);
     // -- Setup dependencies
     var deps = react.useRef({});
     // -- helpers
