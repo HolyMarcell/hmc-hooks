@@ -45,8 +45,8 @@ describe('useRequest hook sort', () => {
 
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][mockId].sort).toBeDefined();
-    expect(state[config.reduxTopLevelKey][mockId].sort).toEqual(mockSortBy);
+    expect(state[config.httpKey][mockId].sort).toBeDefined();
+    expect(state[config.httpKey][mockId].sort).toEqual(mockSortBy);
 
   });
 
@@ -72,8 +72,8 @@ describe('useRequest hook sort', () => {
     const sortParams = sortMapToParams(defaultSortMapper, mockSortBy);
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][mockId].sort).toBeDefined();
-    expect(state[config.reduxTopLevelKey][mockId].action.params).toEqual(sortParams);
+    expect(state[config.httpKey][mockId].sort).toBeDefined();
+    expect(state[config.httpKey][mockId].action.params).toEqual(sortParams);
 
   });
 
@@ -107,8 +107,8 @@ describe('useRequest hook sort', () => {
     const sortParams = sortMapToParams(customSortMapper, mockSortBy);
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][result.current.id].sort).toBeDefined();
-    expect(state[config.reduxTopLevelKey][result.current.id].action.params).toEqual(sortParams);
+    expect(state[config.httpKey][result.current.id].sort).toBeDefined();
+    expect(state[config.httpKey][result.current.id].action.params).toEqual(sortParams);
 
   });
 
@@ -135,8 +135,8 @@ describe('useRequest hook sort', () => {
     const sortParams = sortMapToParams(defaultSortMapper, mockSortBy);
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][result.current.id].sort).toBeDefined();
-    expect(state[config.reduxTopLevelKey][result.current.id].action.params).toEqual(sortParams);
+    expect(state[config.httpKey][result.current.id].sort).toBeDefined();
+    expect(state[config.httpKey][result.current.id].action.params).toEqual(sortParams);
 
     await act(async () => {
       result.current.sort.resetSort().go();
@@ -146,8 +146,8 @@ describe('useRequest hook sort', () => {
     expect(actions).toHaveLength(1);
 
     const state2 = mockStore.getState();
-    expect(state2[config.reduxTopLevelKey][result.current.id].sort).toEqual({});
-    expect(state2[config.reduxTopLevelKey][result.current.id].action.params).toEqual({});
+    expect(state2[config.httpKey][result.current.id].sort).toEqual({});
+    expect(state2[config.httpKey][result.current.id].action.params).toEqual({});
 
   });
 

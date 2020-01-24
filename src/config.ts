@@ -1,5 +1,6 @@
 
 
 export const config = {
-  reduxTopLevelKey: 'httpv3'
+  httpKey: 'httpv3',
+  formKey: 'formv3',
 };

@@ -43,8 +43,8 @@ describe('useRequest hook filter', () => {
     const res = {[mockFilterBy.field]: mockFilterBy.value};
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][mockId].filter).toBeDefined();
-    expect(state[config.reduxTopLevelKey][mockId].filter).toEqual(res);
+    expect(state[config.httpKey][mockId].filter).toBeDefined();
+    expect(state[config.httpKey][mockId].filter).toEqual(res);
 
   });
 
@@ -70,8 +70,8 @@ describe('useRequest hook filter', () => {
     const res = {[mockFilterBy.field]: mockFilterBy.value};
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][mockId].action.params).toBeDefined();
-    expect(state[config.reduxTopLevelKey][mockId].action.params).toEqual(res);
+    expect(state[config.httpKey][mockId].action.params).toBeDefined();
+    expect(state[config.httpKey][mockId].action.params).toEqual(res);
 
   });
 

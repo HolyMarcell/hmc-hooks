@@ -11477,7 +11477,7 @@ var parseUrlSegments = function (url, segments) {
 };
 
 var config = {
-    reduxTopLevelKey: 'httpv3'
+    httpKey: 'httpv3'
 };
 
 function defaultEqualityCheck(a, b) {
@@ -12015,7 +12015,7 @@ var useRequest = function (_a) {
         }
         return { go: reload };
     };
-    return __assign({ 
+    return __assign({
         // ...requestData,
         go: go,
         reload: reload, id: requestId.current, setParams: setParams,

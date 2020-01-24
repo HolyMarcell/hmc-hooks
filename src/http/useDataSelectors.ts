@@ -9,7 +9,7 @@ const createDeepEqualSelector = createSelectorCreator(
 );
 
 
-export const selectHttp = state => prop(config.reduxTopLevelKey, state);
+export const selectHttp = state => prop(config.httpKey, state);
 export const selectConst = (_, v) => v;
 
 export const selectRequest = createSelector(

@@ -10,6 +10,7 @@ import {
   mockTemplateCustomPagination,
   mockTemplateFails
 } from "./mocks";
+import {formReducer} from "../../src";
 
 
 export const saveActionsReducer = (state = [], action) => {
@@ -49,7 +50,8 @@ const fakeAxiosMiddleware = ({getState, dispatch}) => next => action => {
 
 const mockStore = createStore(combineReducers({
   actions: saveActionsReducer,
-  [config.reduxTopLevelKey]: requestReducer,
+  [config.httpKey]: requestReducer,
+  [config.formKey]: formReducer,
 }), applyMiddleware(fakeAxiosMiddleware, thunk)) as any;
 
 mockStore.getActions = () => {

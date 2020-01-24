@@ -1,25 +1,15 @@
-import {defaultPaginationMapper, useRequest} from "../src";
+import {useRequest} from "../src";
 import {Provider} from 'react-redux';
-import {renderHook, act} from "@testing-library/react-hooks";
+import {act, renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
-import {
-  CHANGE_REQUEST,
-  REGISTER_REQUEST,
-  SEND_REQUEST,
-  SEND_REQUEST_FAIL,
-  SEND_REQUEST_SUCCESS
-} from "../src/http/requestDuck";
 import {config} from "../src/config";
 import {
-  mockHttpParam,
   mockId,
-  mockResponse, mockResponseCustomPagination,
+  mockResponse,
+  mockResponseCustomPagination,
   mockTemplate,
-  mockTemplateCustomPagination,
-  mockTemplateFails
+  mockTemplateCustomPagination
 } from "./util/mocks";
-import mock = jest.mock;
-
 
 
 describe('useRequest hook paginations', () => {
@@ -58,8 +48,8 @@ describe('useRequest hook paginations', () => {
 
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][mockId]).toBeDefined();
-    expect(state[config.reduxTopLevelKey][mockId].paginated).toEqual(true);
+    expect(state[config.httpKey][mockId]).toBeDefined();
+    expect(state[config.httpKey][mockId].paginated).toEqual(true);
 
     expect(result.current.pagination).toEqual(expect.objectContaining(expectedPagination));
   });
@@ -85,8 +75,8 @@ describe('useRequest hook paginations', () => {
     };
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][result.current.id]).toBeDefined();
-    expect(state[config.reduxTopLevelKey][result.current.id].paginated).toEqual(true);
+    expect(state[config.httpKey][result.current.id]).toBeDefined();
+    expect(state[config.httpKey][result.current.id].paginated).toEqual(true);
 
     expect(result.current.pagination).toEqual(expect.objectContaining(expectedPagination));
   });

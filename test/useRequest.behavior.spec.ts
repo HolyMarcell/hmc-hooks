@@ -41,10 +41,10 @@ describe('useRequest hook behavior', () => {
     expect(actions[0].type).toEqual(REGISTER_REQUEST);
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][mockId]).toBeDefined();
-    expect(state[config.reduxTopLevelKey][mockId].action).toEqual(mockTemplate.action);
-    expect(state[config.reduxTopLevelKey][mockId].paginated).toEqual(false);
-    expect(state[config.reduxTopLevelKey][mockId].paginationMapper).toEqual(defaultPaginationMapper);
+    expect(state[config.httpKey][mockId]).toBeDefined();
+    expect(state[config.httpKey][mockId].action).toEqual(mockTemplate.action);
+    expect(state[config.httpKey][mockId].paginated).toEqual(false);
+    expect(state[config.httpKey][mockId].paginationMapper).toEqual(defaultPaginationMapper);
   });
 
 
@@ -60,7 +60,7 @@ describe('useRequest hook behavior', () => {
     expect(actions[0].payload.type).toEqual('params');
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][api.id].action.params).toEqual(mockHttpParam);
+    expect(state[config.httpKey][api.id].action.params).toEqual(mockHttpParam);
 
   });
 
@@ -76,7 +76,7 @@ describe('useRequest hook behavior', () => {
     expect(actions[0].payload.type).toEqual('headers');
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][api.id].action.headers).toEqual(mockHttpParam);
+    expect(state[config.httpKey][api.id].action.headers).toEqual(mockHttpParam);
   });
 
   it('dispatches set data action', () => {
@@ -91,7 +91,7 @@ describe('useRequest hook behavior', () => {
     expect(actions[0].payload.type).toEqual('data');
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][api.id].action.data).toEqual(mockHttpParam);
+    expect(state[config.httpKey][api.id].action.data).toEqual(mockHttpParam);
   });
 
   it('dispatches set segmment action', () => {
@@ -106,7 +106,7 @@ describe('useRequest hook behavior', () => {
     expect(actions[0].payload.type).toEqual('segments');
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][api.id].action.segments).toEqual(mockHttpParam);
+    expect(state[config.httpKey][api.id].action.segments).toEqual(mockHttpParam);
   });
 
   it('dispatches go action', async () => {
@@ -121,11 +121,11 @@ describe('useRequest hook behavior', () => {
     expect(actions[0].payload.id).toEqual(api.id);
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][api.id].loading).toEqual(true);
-    expect(state[config.reduxTopLevelKey][api.id].data).toBeDefined();
-    expect(state[config.reduxTopLevelKey][api.id].hasError).toEqual(false);
-    expect(state[config.reduxTopLevelKey][api.id].hasData).toEqual(true);
-    expect(state[config.reduxTopLevelKey][api.id].error).toEqual({});
+    expect(state[config.httpKey][api.id].loading).toEqual(true);
+    expect(state[config.httpKey][api.id].data).toBeDefined();
+    expect(state[config.httpKey][api.id].hasError).toEqual(false);
+    expect(state[config.httpKey][api.id].hasData).toEqual(true);
+    expect(state[config.httpKey][api.id].error).toEqual({});
   });
 
   it('sets data correctly', async () => {
@@ -140,7 +140,7 @@ describe('useRequest hook behavior', () => {
     expect(actions[0].meta.previousAction.payload.id).toEqual(api.id)
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][api.id].data).toEqual(mockResponse);
+    expect(state[config.httpKey][api.id].data).toEqual(mockResponse);
   });
 
 
@@ -156,10 +156,10 @@ describe('useRequest hook behavior', () => {
     expect(actions[0].meta.previousAction.payload.id).toEqual(api.id);
 
     const state = mockStore.getState();
-    expect(state[config.reduxTopLevelKey][api.id].data).toEqual({});
-    expect(state[config.reduxTopLevelKey][api.id].hasError).toEqual(true);
-    expect(state[config.reduxTopLevelKey][api.id].error).toBeDefined();
-    expect(state[config.reduxTopLevelKey][api.id].error).not.toEqual({});
+    expect(state[config.httpKey][api.id].data).toEqual({});
+    expect(state[config.httpKey][api.id].hasError).toEqual(true);
+    expect(state[config.httpKey][api.id].error).toBeDefined();
+    expect(state[config.httpKey][api.id].error).not.toEqual({});
   });
 
 
