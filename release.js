@@ -25,6 +25,7 @@ const run = async () => {
   }
   await exec('npm version ' + level).then(print);
   await exec('git add --all').then(print);
+  await exec('git commit -am "Chore: build"').then(print);
   await exec('git push --all && git push --tags').then(print);
 
 };
