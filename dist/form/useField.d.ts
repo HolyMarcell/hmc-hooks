@@ -1,15 +1,3 @@
-export interface UseFieldApi {
-    onChange: any;
-    value: any;
-    name: any;
-    formId: string;
-    valid: boolean;
-    touched: boolean;
-    dirty: boolean;
-}
-export interface UseFieldProps {
-    formId: string;
-    name: string;
-}
-declare const useField: ({ formId, name }: UseFieldProps) => UseFieldApi;
+import { UseFieldApi, UseFieldProps } from "./types";
+declare const useField: ({ formId, name, validator, asyncValidator }: UseFieldProps) => UseFieldApi;
 export default useField;

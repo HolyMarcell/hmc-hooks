@@ -233,7 +233,6 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
-//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -11426,6 +11425,13 @@ var propOr$2 = function () {
     }
     return propOr$1.apply(R, args);
 };
+var is$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return is$1.apply(R, args);
+};
 var last$2 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -11439,6 +11445,13 @@ var reject$2 = function () {
         args[_i] = arguments[_i];
     }
     return reject$1.apply(R, args);
+};
+var hasPath$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return hasPath$1.apply(R, args);
 };
 var isEmpty$2 = function () {
     var args = [];
@@ -11454,12 +11467,26 @@ var keys$2 = function () {
     }
     return keys$1.apply(R, args);
 };
+var mergeDeepRight$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return mergeDeepRight$1.apply(R, args);
+};
 var equals$2 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
     return equals$1.apply(R, args);
+};
+var flatten$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return flatten$1.apply(R, args);
 };
 var contains$3 = function () {
     var args = [];
@@ -11475,7 +11502,6 @@ var intersection$2 = function () {
     }
     return intersection$1.apply(R, args);
 };
-//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil$1(segments)) {
@@ -11484,13 +11510,11 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
     return compose$1.apply(void 0, segs)(url);
 };
-//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     httpKey: 'httpv3',
     formKey: 'formv3',
 };
-//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11639,7 +11663,6 @@ var selectPaginationMapper = createSelector(selectNotAction, selectConst, functi
 var selectSortMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['sortMapper'], state); });
 var selectFilter = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['filter'], state); });
 var selectIsPaginated = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2(false, ['paginated'], state); });
-//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
     fromData: {
@@ -11661,7 +11684,6 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
-//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -11670,7 +11692,6 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
-//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
@@ -11686,7 +11707,6 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
-//# sourceMappingURL=sortMapToParams.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -11873,7 +11893,6 @@ var requestReducer = function (state, action) {
         }
     }
 };
-//# sourceMappingURL=requestDuck.js.map
 
 var useRequest = function (_a) {
     var id = _a.id, template = _a.template;
@@ -12047,14 +12066,12 @@ var useRequest = function (_a) {
             onPageSelect: onPageSelect,
             onPrev: onPrev }) }, requestData);
 };
-//# sourceMappingURL=useRequest.js.map
 
 var useData = function (_a) {
     var id = _a.id;
     var data = useSelector(function (state) { return selectData(state, id); });
     return data;
 };
-//# sourceMappingURL=useData.js.map
 
 /*
   Creates an object _including if neccessary arrays_ from paths
@@ -12072,7 +12089,6 @@ var assocPathArray = function (path, value, target) {
     });
     return set$1(lensPath$1(pathElements), value, target);
 };
-//# sourceMappingURL=assocPathArray.js.map
 
 var createDeepEqualSelector$1 = createSelectorCreator(defaultMemoize, equals$2);
 var selectFormState = function (state) { return prop$2(config.formKey, state); };
@@ -12087,14 +12103,30 @@ var selectAggregateValues = createSelector(selectFields, secondArg, function (fi
     }, {});
 });
 var selectField = createSelector(selectFormState, secondArg, thirdArg, function (state, formId, name) { return path$2([formId, 'fields', name], state); });
-//# sourceMappingURL=formSelectors.js.map
+
+// -- Returns a list of Strings that denotes all property paths:
+var objectToFlatKeys = function (obj, prefix) {
+    if (prefix === void 0) { prefix = ''; }
+    var list = keys$2(obj).map(function (key) {
+        if (!is$2(Object, prop$2(key, obj))) {
+            return "" + (prefix === '' ? '' : prefix + ".") + key;
+        }
+        else {
+            return objectToFlatKeys(prop$2(key, obj), "" + (prefix === '' ? '' : prefix + ".") + key);
+        }
+    });
+    return flatten$2(list);
+};
 
 var REGISTER_FORM = 'form/useForm/registerForm';
 var UNSET_FORM = 'form/useForm/unsetForm';
+var SET_FORM_VALUES = 'form/useForm/setFormValues';
+var SET_INITIAL_FORM_VALUES = 'form/useForm/setFormInitialValues';
 var SUBMIT_FORM = 'form/useForm/submitForm';
 var REGISTER_FIELD = 'form/useForm/registerField';
-var CHANGE_FIELD_VALUE = 'form/useForm/changeFieldValue';
+var CHANGE_FIELD_PROP = 'form/useForm/changeFieldProp';
 var SET_ALL_VALUES = 'form/useForm/setAllValues';
+var RESET_FIELD = 'form/useForm/resetField';
 var registerField = function (_a) {
     var field = _a.field, formId = _a.formId;
     return {
@@ -12102,27 +12134,50 @@ var registerField = function (_a) {
         payload: { field: field, formId: formId }
     };
 };
-var changeFieldValue = function (_a) {
-    var name = _a.name, formId = _a.formId, value = _a.value;
-    return {
-        type: CHANGE_FIELD_VALUE,
-        payload: { name: name, formId: formId, value: value }
+var changeFieldProp = function (_a) {
+    var name = _a.name, formId = _a.formId, prop = _a.prop, value = _a.value;
+    return function (dispatch) {
+        dispatch({
+            type: CHANGE_FIELD_PROP,
+            payload: { name: name, formId: formId, prop: prop, value: value }
+        });
+        return Promise.resolve();
     };
 };
 var registerForm = function (_a) {
-    var fields = _a.fields, id = _a.id;
+    var fields = _a.fields, formId = _a.formId;
     return function (dispatch, getState) {
         var state = getState();
-        var form = selectForm(state, id);
+        var form = selectForm(state, formId);
         if (isNil$2(form)) {
             dispatch({
                 type: REGISTER_FORM,
-                payload: { id: id }
+                payload: { formId: formId }
             });
             fields.map(function (field) {
-                dispatch(registerField({ field: field, formId: id }));
+                dispatch(registerField({ field: field, formId: formId }));
             });
         }
+    };
+};
+var setFormValues = function (_a) {
+    var formId = _a.formId, values = _a.values;
+    return {
+        type: SET_FORM_VALUES,
+        payload: { formId: formId, values: values }
+    };
+};
+var setInitialFormValues = function (_a) {
+    var formId = _a.formId, values = _a.values;
+    return function (dispatch) {
+        dispatch({
+            type: SET_INITIAL_FORM_VALUES,
+            payload: { formId: formId, values: values }
+        });
+        dispatch({
+            type: SET_FORM_VALUES,
+            payload: { formId: formId, values: values }
+        });
     };
 };
 var submitForm = function (_a) {
@@ -12137,14 +12192,21 @@ var submitForm = function (_a) {
         return onSubmit(values);
     };
 };
+var resetField = function (_a) {
+    var formId = _a.formId, name = _a.name;
+    return {
+        type: RESET_FIELD,
+        payload: { formId: formId, name: name }
+    };
+};
 var formReducer = function (state, action) {
-    var _a;
+    var _a, _b, _c;
     if (state === void 0) { state = {}; }
     var type = action.type, payload = action.payload;
     switch (type) {
         case REGISTER_FORM: {
-            var id = payload.id;
-            return assoc$2(id, {
+            var formId = payload.formId;
+            return assoc$2(formId, {
                 allValues: {},
                 fields: {},
             }, state);
@@ -12153,6 +12215,26 @@ var formReducer = function (state, action) {
             var formId = payload.formId;
             return assoc$2(formId, {}, state);
         }
+        case SET_FORM_VALUES: {
+            var formId_1 = payload.formId, values_1 = payload.values;
+            var names = objectToFlatKeys(values_1)
+                .filter(function (name) { return hasPath$2([formId_1, 'fields', name], state); });
+            var mergeValues = names.reduce(function (acc, curr) {
+                var _a;
+                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { value: path$2(curr.split('.'), values_1) }, _a));
+            }, {});
+            return mergeDeepRight$2(state, (_a = {}, _a[formId_1] = { fields: mergeValues }, _a));
+        }
+        case SET_INITIAL_FORM_VALUES: {
+            var formId_2 = payload.formId, values_2 = payload.values;
+            var names = objectToFlatKeys(values_2)
+                .filter(function (name) { return hasPath$2([formId_2, 'fields', name], state); });
+            var mergeValues = names.reduce(function (acc, curr) {
+                var _a;
+                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { initialValue: path$2(curr.split('.'), values_2) }, _a));
+            }, {});
+            return mergeDeepRight$2(state, (_b = {}, _b[formId_2] = { fields: mergeValues }, _b));
+        }
         case SUBMIT_FORM: {
             var formId = payload.formId;
             return state;
@@ -12160,12 +12242,18 @@ var formReducer = function (state, action) {
         case REGISTER_FIELD: {
             var formId = payload.formId, field = payload.field;
             var name_1 = prop$2('name', field);
-            var fields = __assign(__assign({}, path$2([formId, 'fields'], state)), (_a = {}, _a[name_1] = field, _a));
+            var defaultedField = __assign({ dirty: false, touched: false, valid: null }, field);
+            var fields = __assign(__assign({}, path$2([formId, 'fields'], state)), (_c = {}, _c[name_1] = defaultedField, _c));
             return assocPath$2([formId, 'fields'], fields, state);
         }
-        case CHANGE_FIELD_VALUE: {
-            var formId = payload.formId, name_2 = payload.name, value = payload.value;
-            return assocPath$2([formId, 'fields', name_2, 'value'], value, state);
+        case RESET_FIELD: {
+            var formId = payload.formId, name_2 = payload.name;
+            var initialValue = path$2([formId, 'fields', name_2, 'initialValue'], state);
+            return assocPath$2([formId, 'fields', name_2, 'value'], initialValue, state);
+        }
+        case CHANGE_FIELD_PROP: {
+            var formId = payload.formId, name_3 = payload.name, prop_1 = payload.prop, value = payload.value;
+            return assocPath$2([formId, 'fields', name_3, prop_1], value, state);
         }
         case SET_ALL_VALUES: {
             var formId = payload.formId, values = payload.values;
@@ -12178,8 +12266,8 @@ var formReducer = function (state, action) {
 };
 
 var useForm = function (_a) {
-    var fields = _a.fields, id = _a.id, onSubmit = _a.onSubmit;
-    if (isNil$2(id) || isEmpty$2(id)) {
+    var fields = _a.fields, formId = _a.id, onSubmit = _a.onSubmit, initialValues = _a.initialValues;
+    if (isNil$2(formId) || isEmpty$2(formId)) {
         console.warn('useForm: id may not be null or empty');
         return;
     }
@@ -12189,41 +12277,50 @@ var useForm = function (_a) {
     }
     var dispatch = useDispatch();
     useEffect(function () {
-        dispatch(registerForm({ fields: fields, id: id }));
+        dispatch(registerForm({ fields: fields, formId: formId }));
+        if (!isNil$2(initialValues)) {
+            dispatch(setInitialFormValues({ formId: formId, values: initialValues }));
+        }
     }, []);
     var submit = function () {
-        return dispatch(submitForm({ formId: id, onSubmit: onSubmit }));
+        return dispatch(submitForm({ formId: formId, onSubmit: onSubmit }));
+    };
+    var setValues = function (values) {
+        return dispatch(setFormValues({ formId: formId, values: values }));
     };
     var regField = function (_a) {
         var field = _a.field;
-        dispatch(registerField({ field: field, formId: id }));
+        return dispatch(registerField({ field: field, formId: formId }));
     };
     return {
         registerField: regField,
         submit: submit,
+        setValues: setValues,
     };
 };
 
 var useField = function (_a) {
-    var formId = _a.formId, name = _a.name;
+    var formId = _a.formId, name = _a.name, validator = _a.validator, asyncValidator = _a.asyncValidator;
     var dispatch = useDispatch();
     var field = useSelector(function (state) { return selectField(state, formId, name); });
-    var value = prop$2('value', field);
-    useEffect(function () {
-        console.log('field rerendered');
-    });
     var onChange = function (value) {
-        dispatch(changeFieldValue({ formId: formId, name: name, value: value }));
+        if (!isNil$2(validator)) {
+            dispatch(changeFieldProp({ formId: formId, name: name, prop: 'valid', value: validator(value) }));
+        }
+        if (!isNil$2(asyncValidator)) {
+            asyncValidator(value)
+                .then(function (isValid) {
+                dispatch(changeFieldProp({ formId: formId, name: name, prop: 'valid', value: isValid }));
+            });
+        }
+        return dispatch(changeFieldProp({ formId: formId, name: name, prop: 'value', value: value }));
     };
-    return {
-        onChange: onChange,
-        value: prop$2('value', field),
-        name: name,
+    var reset = function () {
+        return dispatch(resetField({ formId: formId, name: name }));
+    };
+    return __assign({ onChange: onChange,
         formId: formId,
-        valid: true,
-        touched: false,
-        dirty: false
-    };
+        reset: reset }, field);
 };
 
 var useRequest$1 = useRequest;
