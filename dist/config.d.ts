@@ -1,3 +1,4 @@
 export declare const config: {
-    reduxTopLevelKey: string;
+    httpKey: string;
+    formKey: string;
 };

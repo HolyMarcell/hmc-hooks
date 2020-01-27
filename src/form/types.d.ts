@@ -1,11 +1,15 @@
 // entities
 
 export type FieldType = 'string' | 'number' | string;
-
+export type SubmitFunction = (values: any) => any;
 
 export interface FormField {
   name: string;
   type: FieldType;
+  dirty?: boolean;
+  touched?: boolean;
+  valid?: boolean;
+  initialValue?: any;
   [_]: any;
 
 }
@@ -14,13 +18,15 @@ export interface FormField {
 
 export interface UseFormApi {
   registerField: ({field}: {field: FormField}) => void;
-  getValues: () => Record<string, any>;
-  fieldNames: string[];
+  submit: () => any;
+  setValues: (values: Record<string, any>) => any;
 }
 
 export interface UseFormProps {
   fields: FormField[];
   id: string;
+  onSubmit: SubmitFunction;
+  initialValues?: Record<string, any>;
 }
 
 
@@ -28,7 +34,7 @@ export interface UseFormProps {
 
 
 export interface RegisterFormAction {
-  id: string;
+  formId: string;
   fields: FormField[];
 }
 
@@ -37,6 +43,43 @@ export interface RegisterFieldAction {
   field: FormField;
 }
 
-export interface PrepareFormValuesAction {
+export interface SubmitFormAction {
   formId: string;
+  onSubmit: SubmitFunction;
+}
+
+export interface ResetFieldAction {
+  formId: string;
+  name: string;
+}
+
+export interface SetFormValuesAction {
+  formId: string;
+  values: Record<string, any>;
+}
+
+export interface SetInitialFormValuesAction {
+  formId: string;
+  values: Record<string, any>;
+}
+
+
+// use Field
+
+export interface UseFieldApi {
+  onChange: any;
+  value: any;
+  reset: () => any;
+  name: any;
+  formId: string;
+  valid: boolean;
+  touched: boolean;
+  dirty: boolean;
+}
+
+export interface UseFieldProps {
+  formId: string;
+  name: string;
+  validator?: (value: any) => boolean;
+  asyncValidator?: (value: any) => Promise<boolean>;
 }

@@ -211,8 +211,8 @@ const uuidv4 = function () {
 };
 exports.uuid = uuidv4;
 const regex = {
-    v4: /^(?:[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12})|(?:0{8}-0{4}-0{4}-0{4}-0{12})$/u,
-    v5: /^(?:[a-f0-9]{8}-[a-f0-9]{4}-5[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12})|(?:0{8}-0{4}-0{4}-0{4}-0{12})$/u
+    v4: /(?:^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}$)|(?:^0{8}-0{4}-0{4}-0{4}-0{12}$)/u,
+    v5: /(?:^[a-f0-9]{8}-[a-f0-9]{4}-5[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}$)|(?:^0{8}-0{4}-0{4}-0{4}-0{12}$)/u
 };
 exports.regex = regex;
 const isUuid = function (value) {
@@ -239,6 +239,7 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
+//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -11424,6 +11425,13 @@ var prop$2 = function () {
     }
     return prop$1.apply(R, args);
 };
+var propOr$2 = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    return propOr$1.apply(R, args);
+};
 var last$2 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -11473,6 +11481,7 @@ var intersection$2 = function () {
     }
     return intersection$1.apply(R, args);
 };
+//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil$1(segments)) {
@@ -11481,10 +11490,13 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
     return compose$1.apply(void 0, segs)(url);
 };
+//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
-    httpKey: 'httpv3'
+    httpKey: 'httpv3',
+    formKey: 'formv3',
 };
+//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11587,7 +11599,7 @@ function createSelectorCreator(memoize) {
 var createSelector = createSelectorCreator(defaultMemoize);
 
 var createDeepEqualSelector = createSelectorCreator(defaultMemoize, equals$2);
-var selectHttp = function (state) { return prop$2(config.reduxTopLevelKey, state); };
+var selectHttp = function (state) { return prop$2(config.httpKey, state); };
 var selectConst = function (_, v) { return v; };
 var selectRequest = createSelector(selectHttp, selectConst, function (state, id) { return prop$2(id, state); });
 var selectNotAction = createSelector(selectRequest, selectConst, function (_a) {
@@ -11633,6 +11645,7 @@ var selectPaginationMapper = createSelector(selectNotAction, selectConst, functi
 var selectSortMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['sortMapper'], state); });
 var selectFilter = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['filter'], state); });
 var selectIsPaginated = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2(false, ['paginated'], state); });
+//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
     fromData: {
@@ -11654,6 +11667,7 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
+//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -11662,6 +11676,7 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
+//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
@@ -11677,6 +11692,7 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
+//# sourceMappingURL=sortMapToParams.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -11863,6 +11879,7 @@ var requestReducer = function (state, action) {
         }
     }
 };
+//# sourceMappingURL=requestDuck.js.map
 
 var useRequest = function (_a) {
     var id = _a.id, template = _a.template;
@@ -12021,7 +12038,7 @@ var useRequest = function (_a) {
         }
         return { go: reload };
     };
-    return __assign({
+    return __assign({ 
         // ...requestData,
         go: go,
         reload: reload, id: requestId.current, setParams: setParams,
@@ -12036,19 +12053,197 @@ var useRequest = function (_a) {
             onPageSelect: onPageSelect,
             onPrev: onPrev }) }, requestData);
 };
+//# sourceMappingURL=useRequest.js.map
 
 var useData = function (_a) {
     var id = _a.id;
     var data = reactRedux.useSelector(function (state) { return selectData(state, id); });
     return data;
 };
+//# sourceMappingURL=useData.js.map
+
+/*
+  Creates an object _including if neccessary arrays_ from paths
+
+  Usage:
+
+  const res = assocPathArray(['foo', 0, 'bar'], 'wacken', {})
+  res === {foo: [{bar: 'wacken}]};
+
+ */
+var assocPathArray = function (path, value, target) {
+    var pathElements = path.map(function (ele) {
+        // -- Map Numbers back to number-type
+        return isNaN(+ele) ? ele : +ele;
+    });
+    return set$1(lensPath$1(pathElements), value, target);
+};
+//# sourceMappingURL=assocPathArray.js.map
+
+var createDeepEqualSelector$1 = createSelectorCreator(defaultMemoize, equals$2);
+var selectFormState = function (state) { return prop$2(config.formKey, state); };
+var secondArg = function (_, v) { return v; };
+var thirdArg = function (_, __, v) { return v; };
+var selectForm = createSelector(selectFormState, secondArg, function (state, id) { return prop$2(id, state); });
+var selectFields = createSelector(selectForm, secondArg, function (form, id) { return propOr$2({}, 'fields', form); });
+var selectFieldNames = createSelector(selectFields, secondArg, function (fields, id) { return keys$2(fields); });
+var selectAggregateValues = createSelector(selectFields, secondArg, function (fields, id) {
+    return keys$2(fields).reduce(function (acc, curr) {
+        return assocPathArray(curr.split('.'), path$2([curr, 'value'], fields), acc);
+    }, {});
+});
+var selectField = createSelector(selectFormState, secondArg, thirdArg, function (state, formId, name) { return path$2([formId, 'fields', name], state); });
+//# sourceMappingURL=formSelectors.js.map
+
+var REGISTER_FORM = 'form/useForm/registerForm';
+var UNSET_FORM = 'form/useForm/unsetForm';
+var SUBMIT_FORM = 'form/useForm/submitForm';
+var REGISTER_FIELD = 'form/useForm/registerField';
+var CHANGE_FIELD_VALUE = 'form/useForm/changeFieldValue';
+var SET_ALL_VALUES = 'form/useForm/setAllValues';
+var registerField = function (_a) {
+    var field = _a.field, formId = _a.formId;
+    return {
+        type: REGISTER_FIELD,
+        payload: { field: field, formId: formId }
+    };
+};
+var changeFieldValue = function (_a) {
+    var name = _a.name, formId = _a.formId, value = _a.value;
+    return {
+        type: CHANGE_FIELD_VALUE,
+        payload: { name: name, formId: formId, value: value }
+    };
+};
+var registerForm = function (_a) {
+    var fields = _a.fields, id = _a.id;
+    return function (dispatch, getState) {
+        var state = getState();
+        var form = selectForm(state, id);
+        if (isNil$2(form)) {
+            dispatch({
+                type: REGISTER_FORM,
+                payload: { id: id }
+            });
+            fields.map(function (field) {
+                dispatch(registerField({ field: field, formId: id }));
+            });
+        }
+    };
+};
+var submitForm = function (_a) {
+    var formId = _a.formId, onSubmit = _a.onSubmit;
+    return function (dispatch, getState) {
+        var state = getState();
+        var values = selectAggregateValues(state, formId);
+        dispatch({
+            type: SUBMIT_FORM,
+            payload: { formId: formId }
+        });
+        return onSubmit(values);
+    };
+};
+var formReducer = function (state, action) {
+    var _a;
+    if (state === void 0) { state = {}; }
+    var type = action.type, payload = action.payload;
+    switch (type) {
+        case REGISTER_FORM: {
+            var id = payload.id;
+            return assoc$2(id, {
+                allValues: {},
+                fields: {},
+            }, state);
+        }
+        case UNSET_FORM: {
+            var formId = payload.formId;
+            return assoc$2(formId, {}, state);
+        }
+        case SUBMIT_FORM: {
+            var formId = payload.formId;
+            return state;
+        }
+        case REGISTER_FIELD: {
+            var formId = payload.formId, field = payload.field;
+            var name_1 = prop$2('name', field);
+            var fields = __assign(__assign({}, path$2([formId, 'fields'], state)), (_a = {}, _a[name_1] = field, _a));
+            return assocPath$2([formId, 'fields'], fields, state);
+        }
+        case CHANGE_FIELD_VALUE: {
+            var formId = payload.formId, name_2 = payload.name, value = payload.value;
+            return assocPath$2([formId, 'fields', name_2, 'value'], value, state);
+        }
+        case SET_ALL_VALUES: {
+            var formId = payload.formId, values = payload.values;
+            return assocPath$2([formId, 'allValues'], values, state);
+        }
+        default: {
+            return state;
+        }
+    }
+};
+
+var useForm = function (_a) {
+    var fields = _a.fields, id = _a.id, onSubmit = _a.onSubmit;
+    if (isNil$2(id) || isEmpty$2(id)) {
+        console.warn('useForm: id may not be null or empty');
+        return;
+    }
+    if (isNil$2(fields) || isEmpty$2(fields)) {
+        console.warn('useForm: fields may not be null or empty');
+        return;
+    }
+    var dispatch = reactRedux.useDispatch();
+    react.useEffect(function () {
+        dispatch(registerForm({ fields: fields, id: id }));
+    }, []);
+    var submit = function () {
+        return dispatch(submitForm({ formId: id, onSubmit: onSubmit }));
+    };
+    var regField = function (_a) {
+        var field = _a.field;
+        dispatch(registerField({ field: field, formId: id }));
+    };
+    return {
+        registerField: regField,
+        submit: submit,
+    };
+};
+
+var useField = function (_a) {
+    var formId = _a.formId, name = _a.name;
+    var dispatch = reactRedux.useDispatch();
+    var field = reactRedux.useSelector(function (state) { return selectField(state, formId, name); });
+    var value = prop$2('value', field);
+    react.useEffect(function () {
+        console.log('field rerendered');
+    });
+    var onChange = function (value) {
+        dispatch(changeFieldValue({ formId: formId, name: name, value: value }));
+    };
+    return {
+        onChange: onChange,
+        value: prop$2('value', field),
+        name: name,
+        formId: formId,
+        valid: true,
+        touched: false,
+        dirty: false
+    };
+};
 
 var useRequest$1 = useRequest;
 var useData$1 = useData;
 var requestReducer$1 = requestReducer;
 var defaultPaginationMapper$1 = defaultPaginationMapper;
+var useForm$1 = useForm;
+var useField$1 = useField;
+var formReducer$1 = formReducer;
 
 exports.defaultPaginationMapper = defaultPaginationMapper$1;
+exports.formReducer = formReducer$1;
 exports.requestReducer = requestReducer$1;
 exports.useData = useData$1;
+exports.useField = useField$1;
+exports.useForm = useForm$1;
 exports.useRequest = useRequest$1;

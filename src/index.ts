@@ -5,6 +5,7 @@ import defaultPaginationMapperE from './util/defaultPaginationMapper';
 
 
 import useFormE from './form/useForm';
+import useFieldE from './form/useField';
 import {formReducer as formReducerE} from './form/formDuck';
 
 export const useRequest = useRequestE;
@@ -15,4 +16,5 @@ export const defaultPaginationMapper = defaultPaginationMapperE;
 
 
 export const useForm = useFormE;
+export const useField = useFieldE;
 export const formReducer = formReducerE;

@@ -1,6 +1,5 @@
-
 import {config} from "../config";
-import {equals, path, pathOr, prop, propOr} from "../util/ram";
+import {equals, keys, path, prop, propOr} from "../util/ram";
 import {createSelector, createSelectorCreator, defaultMemoize} from "reselect";
 import assocPathArray from "../util/assocPathArray";
 
@@ -11,41 +10,43 @@ const createDeepEqualSelector = createSelectorCreator(
 
 
 export const selectFormState = state => prop(config.formKey, state);
-export const selectConst = (_, v) => v;
+export const secondArg = (_, v) => v;
+export const thirdArg = (_, __, v) => v;
 
 
-export const selectForm = createDeepEqualSelector(
+export const selectForm = createSelector(
   selectFormState,
-  selectConst,
+  secondArg,
   (state, id) => prop(id, state)
 );
 
-export const selectFields = createDeepEqualSelector(
+export const selectFields = createSelector(
   selectForm,
-  selectConst,
-  (form, id) => propOr([], 'fields', form)
+  secondArg,
+  (form, id) => propOr({}, 'fields', form)
 );
 
-export const selectFieldNames = createDeepEqualSelector(
+export const selectFieldNames = createSelector(
   selectFields,
-  selectConst,
-  (fields, id) =>  fields.map((f) => prop('name', f))
+  secondArg,
+  (fields, id) => keys(fields)
 );
 
-export const selectAllFieldValues = createDeepEqualSelector(
+export const selectAggregateValues = createSelector(
   selectFields,
-  selectConst,
+  secondArg,
   (fields, id) => {
-    let res = {};
-    for(const field of fields) {
-      res = assocPathArray(prop('name', field).split('.'), prop('value', field), res);
-    }
-    return res;
+    return keys(fields).reduce((acc, curr) => {
+      return assocPathArray(curr.split('.'), path([curr, 'value'], fields), acc);
+    }, {})
   }
 );
 
-export const selectAllValues = createDeepEqualSelector(
-  selectForm,
-  selectConst,
-  (form, id) => prop('allValues', form)
+
+
+export const selectField = createSelector(
+  selectFormState,
+  secondArg,
+  thirdArg,
+  (state, formId, name) =>  path([formId, 'fields', name], state)
 );

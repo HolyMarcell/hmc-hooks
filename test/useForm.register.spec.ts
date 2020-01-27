@@ -4,13 +4,15 @@ import {renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
 import {mockId} from "./util/mocks";
 import {config} from "../src/config";
-import {REGISTER_FIELD, REGISTER_FORM} from "../src/form/formDuck";
+import {REGISTER_FORM} from "../src/form/formDuck";
 
 
 const mockFormFields = [
   {name: 'email', type: 'text'},
   {name: 'wacken.hacken', type: 'number'}
 ];
+
+const mockSubmit = (values) => values;
 
 describe('useForm hook register', () => {
 
@@ -31,11 +33,10 @@ describe('useForm hook register', () => {
 
 
   it('dispatches the register action once', () => {
-    runHook({fields: mockFormFields, id: mockId});
+    runHook({fields: mockFormFields, id: mockId, onSubmit: mockSubmit});
 
-    const newForm = {
-      allValues: {},
-      fields: mockFormFields
+    const newFormShape = {
+      fields: expect.any(Object)
     };
 
     const actions = getActions(REGISTER_FORM);
@@ -45,10 +46,40 @@ describe('useForm hook register', () => {
 
     const state = mockStore.getState();
     expect(state[config.formKey][mockId]).toBeDefined();
-    expect(state[config.formKey][mockId]).toEqual(newForm);
+    expect(state[config.formKey][mockId]).toEqual(expect.objectContaining(newFormShape));
 
-    expect(state[config.formKey][mockId].fields).toEqual(mockFormFields)
   });
+
+  it('aggregates values and passes to onSubmit', () => {
+    const form = runHook({fields: mockFormFields, id: mockId, onSubmit: mockSubmit});
+
+    expect(form.submit).toBeDefined();
+
+    const vals = form.submit();
+    expect(vals).toEqual({email: undefined, wacken: {hacken: undefined}});
+
+  });
+
+  it('inserts initial values correctly', () => {
+
+    const initialValues = {
+      email: 'dream evil',
+      wacken: {
+        hacken: 'avantasia'
+      },
+      something: 'else'
+    };
+
+    runHook({fields: mockFormFields, id: mockId, onSubmit: mockSubmit, initialValues});
+
+    const state = mockStore.getState();
+    expect(state[config.formKey][mockId]).toBeDefined();
+    expect(state[config.formKey][mockId].fields.email.initialValue).toEqual(initialValues.email);
+    expect(state[config.formKey][mockId].fields.email.value).toEqual(initialValues.email);
+    expect(state[config.formKey][mockId].fields['wacken.hacken'].initialValue).toEqual(initialValues.wacken.hacken);
+    expect(state[config.formKey][mockId].fields['wacken.hacken'].value).toEqual(initialValues.wacken.hacken);
+
+  })
 
 
 });
