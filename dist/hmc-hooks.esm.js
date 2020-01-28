@@ -233,6 +233,7 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
+//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -252,7 +253,6 @@ var rid = function () { return uuidv4_2(); };
 var F = function () {
   return false;
 };
-var F_1 = F;
 
 /**
  * A function that always returns `true`. Any passed in parameters are ignored.
@@ -272,7 +272,6 @@ var F_1 = F;
 var T = function () {
   return true;
 };
-var T_1 = T;
 
 /**
  * A special placeholder value used to specify "gaps" within curried functions,
@@ -306,7 +305,6 @@ var __ = { '@@functional/placeholder': true };
 function _isPlaceholder(a) {
        return a != null && typeof a === 'object' && a['@@functional/placeholder'] === true;
 }
-var _isPlaceholder_1 = _isPlaceholder;
 
 /**
  * Optimized internal one-arity curry function.
@@ -316,18 +314,15 @@ var _isPlaceholder_1 = _isPlaceholder;
  * @param {Function} fn The function to curry.
  * @return {Function} The curried function.
  */
-
-
 function _curry1(fn) {
   return function f1(a) {
-    if (arguments.length === 0 || _isPlaceholder_1(a)) {
+    if (arguments.length === 0 || _isPlaceholder(a)) {
       return f1;
     } else {
       return fn.apply(this, arguments);
     }
   };
 }
-var _curry1_1 = _curry1;
 
 /**
  * Optimized internal two-arity curry function.
@@ -337,27 +332,24 @@ var _curry1_1 = _curry1;
  * @param {Function} fn The function to curry.
  * @return {Function} The curried function.
  */
-
-
 function _curry2(fn) {
   return function f2(a, b) {
     switch (arguments.length) {
       case 0:
         return f2;
       case 1:
-        return _isPlaceholder_1(a) ? f2 : _curry1_1(function (_b) {
+        return _isPlaceholder(a) ? f2 : _curry1(function (_b) {
           return fn(a, _b);
         });
       default:
-        return _isPlaceholder_1(a) && _isPlaceholder_1(b) ? f2 : _isPlaceholder_1(a) ? _curry1_1(function (_a) {
+        return _isPlaceholder(a) && _isPlaceholder(b) ? f2 : _isPlaceholder(a) ? _curry1(function (_a) {
           return fn(_a, b);
-        }) : _isPlaceholder_1(b) ? _curry1_1(function (_b) {
+        }) : _isPlaceholder(b) ? _curry1(function (_b) {
           return fn(a, _b);
         }) : fn(a, b);
     }
   };
 }
-var _curry2_1 = _curry2;
 
 /**
  * Adds two values.
@@ -376,12 +368,9 @@ var _curry2_1 = _curry2;
  *      R.add(2, 3);       //=>  5
  *      R.add(7)(10);      //=> 17
  */
-
-
-var add = /*#__PURE__*/_curry2_1(function add(a, b) {
+var add = /*#__PURE__*/_curry2(function add(a, b) {
   return Number(a) + Number(b);
 });
-var add_1 = add;
 
 /**
  * Private `concat` function to merge two array-like objects.
@@ -414,7 +403,6 @@ function _concat(set1, set2) {
   }
   return result;
 }
-var _concat_1 = _concat;
 
 function _arity(n, fn) {
   /* eslint-disable no-unused-vars */
@@ -467,7 +455,6 @@ function _arity(n, fn) {
       throw new Error('First argument to _arity must be a non-negative integer no greater than ten');
   }
 }
-var _arity_1 = _arity;
 
 /**
  * Internal curryN function.
@@ -479,8 +466,6 @@ var _arity_1 = _arity;
  * @param {Function} fn The function to curry.
  * @return {Function} The curried function.
  */
-
-
 function _curryN(length, received, fn) {
   return function () {
     var combined = [];
@@ -489,22 +474,21 @@ function _curryN(length, received, fn) {
     var combinedIdx = 0;
     while (combinedIdx < received.length || argsIdx < arguments.length) {
       var result;
-      if (combinedIdx < received.length && (!_isPlaceholder_1(received[combinedIdx]) || argsIdx >= arguments.length)) {
+      if (combinedIdx < received.length && (!_isPlaceholder(received[combinedIdx]) || argsIdx >= arguments.length)) {
         result = received[combinedIdx];
       } else {
         result = arguments[argsIdx];
         argsIdx += 1;
       }
       combined[combinedIdx] = result;
-      if (!_isPlaceholder_1(result)) {
+      if (!_isPlaceholder(result)) {
         left -= 1;
       }
       combinedIdx += 1;
     }
-    return left <= 0 ? fn.apply(this, combined) : _arity_1(left, _curryN(length, combined, fn));
+    return left <= 0 ? fn.apply(this, combined) : _arity(left, _curryN(length, combined, fn));
   };
 }
-var _curryN_1 = _curryN;
 
 /**
  * Returns a curried equivalent of the provided function, with the specified
@@ -548,15 +532,12 @@ var _curryN_1 = _curryN;
  *      const g = f(3);
  *      g(4); //=> 10
  */
-
-
-var curryN = /*#__PURE__*/_curry2_1(function curryN(length, fn) {
+var curryN = /*#__PURE__*/_curry2(function curryN(length, fn) {
   if (length === 1) {
-    return _curry1_1(fn);
+    return _curry1(fn);
   }
-  return _arity_1(length, _curryN_1(length, [], fn));
+  return _arity(length, _curryN(length, [], fn));
 });
-var curryN_1 = curryN;
 
 /**
  * Creates a new list iteration function from an existing one by adding two new
@@ -582,23 +563,20 @@ var curryN_1 = curryN;
  *      mapIndexed((val, idx) => idx + '-' + val, ['f', 'o', 'o', 'b', 'a', 'r']);
  *      //=> ['0-f', '1-o', '2-o', '3-b', '4-a', '5-r']
  */
-
-
-var addIndex = /*#__PURE__*/_curry1_1(function addIndex(fn) {
-  return curryN_1(fn.length, function () {
+var addIndex = /*#__PURE__*/_curry1(function addIndex(fn) {
+  return curryN(fn.length, function () {
     var idx = 0;
     var origFn = arguments[0];
     var list = arguments[arguments.length - 1];
     var args = Array.prototype.slice.call(arguments, 0);
     args[0] = function () {
-      var result = origFn.apply(this, _concat_1(arguments, [idx, list]));
+      var result = origFn.apply(this, _concat(arguments, [idx, list]));
       idx += 1;
       return result;
     };
     return fn.apply(this, args);
   });
 });
-var addIndex_1 = addIndex;
 
 /**
  * Optimized internal three-arity curry function.
@@ -608,43 +586,40 @@ var addIndex_1 = addIndex;
  * @param {Function} fn The function to curry.
  * @return {Function} The curried function.
  */
-
-
 function _curry3(fn) {
   return function f3(a, b, c) {
     switch (arguments.length) {
       case 0:
         return f3;
       case 1:
-        return _isPlaceholder_1(a) ? f3 : _curry2_1(function (_b, _c) {
+        return _isPlaceholder(a) ? f3 : _curry2(function (_b, _c) {
           return fn(a, _b, _c);
         });
       case 2:
-        return _isPlaceholder_1(a) && _isPlaceholder_1(b) ? f3 : _isPlaceholder_1(a) ? _curry2_1(function (_a, _c) {
+        return _isPlaceholder(a) && _isPlaceholder(b) ? f3 : _isPlaceholder(a) ? _curry2(function (_a, _c) {
           return fn(_a, b, _c);
-        }) : _isPlaceholder_1(b) ? _curry2_1(function (_b, _c) {
+        }) : _isPlaceholder(b) ? _curry2(function (_b, _c) {
           return fn(a, _b, _c);
-        }) : _curry1_1(function (_c) {
+        }) : _curry1(function (_c) {
           return fn(a, b, _c);
         });
       default:
-        return _isPlaceholder_1(a) && _isPlaceholder_1(b) && _isPlaceholder_1(c) ? f3 : _isPlaceholder_1(a) && _isPlaceholder_1(b) ? _curry2_1(function (_a, _b) {
+        return _isPlaceholder(a) && _isPlaceholder(b) && _isPlaceholder(c) ? f3 : _isPlaceholder(a) && _isPlaceholder(b) ? _curry2(function (_a, _b) {
           return fn(_a, _b, c);
-        }) : _isPlaceholder_1(a) && _isPlaceholder_1(c) ? _curry2_1(function (_a, _c) {
+        }) : _isPlaceholder(a) && _isPlaceholder(c) ? _curry2(function (_a, _c) {
           return fn(_a, b, _c);
-        }) : _isPlaceholder_1(b) && _isPlaceholder_1(c) ? _curry2_1(function (_b, _c) {
+        }) : _isPlaceholder(b) && _isPlaceholder(c) ? _curry2(function (_b, _c) {
           return fn(a, _b, _c);
-        }) : _isPlaceholder_1(a) ? _curry1_1(function (_a) {
+        }) : _isPlaceholder(a) ? _curry1(function (_a) {
           return fn(_a, b, c);
-        }) : _isPlaceholder_1(b) ? _curry1_1(function (_b) {
+        }) : _isPlaceholder(b) ? _curry1(function (_b) {
           return fn(a, _b, c);
-        }) : _isPlaceholder_1(c) ? _curry1_1(function (_c) {
+        }) : _isPlaceholder(c) ? _curry1(function (_c) {
           return fn(a, b, _c);
         }) : fn(a, b, c);
     }
   };
 }
-var _curry3_1 = _curry3;
 
 /**
  * Applies a function to the value at the given index of an array, returning a
@@ -671,19 +646,16 @@ var _curry3_1 = _curry3;
  * @symb R.adjust(-1, f, [a, b]) = [a, f(b)]
  * @symb R.adjust(0, f, [a, b]) = [f(a), b]
  */
-
-
-var adjust = /*#__PURE__*/_curry3_1(function adjust(idx, fn, list) {
+var adjust = /*#__PURE__*/_curry3(function adjust(idx, fn, list) {
   if (idx >= list.length || idx < -list.length) {
     return list;
   }
   var start = idx < 0 ? list.length : 0;
   var _idx = start + idx;
-  var _list = _concat_1(list);
+  var _list = _concat(list);
   _list[_idx] = fn(list[_idx]);
   return _list;
 });
-var adjust_1 = adjust;
 
 /**
  * Tests whether or not an object is an array.
@@ -704,7 +676,6 @@ var _isArray = Array.isArray || function _isArray(val) {
 function _isTransformer(obj) {
   return obj != null && typeof obj['@@transducer/step'] === 'function';
 }
-var _isTransformer_1 = _isTransformer;
 
 /**
  * Returns a function that dispatches with different strategies based on the
@@ -720,8 +691,6 @@ var _isTransformer_1 = _isTransformer;
  * @param {Function} fn default ramda implementation
  * @return {Function} A function that dispatches on object in list position
  */
-
-
 function _dispatchable(methodNames, xf, fn) {
   return function () {
     if (arguments.length === 0) {
@@ -737,7 +706,7 @@ function _dispatchable(methodNames, xf, fn) {
         }
         idx += 1;
       }
-      if (_isTransformer_1(obj)) {
+      if (_isTransformer(obj)) {
         var transducer = xf.apply(null, args);
         return transducer(obj);
       }
@@ -745,7 +714,6 @@ function _dispatchable(methodNames, xf, fn) {
     return fn.apply(this, arguments);
   };
 }
-var _dispatchable_1 = _dispatchable;
 
 function _reduced(x) {
   return x && x['@@transducer/reduced'] ? x : {
@@ -753,7 +721,6 @@ function _reduced(x) {
     '@@transducer/reduced': true
   };
 }
-var _reduced_1 = _reduced;
 
 var _xfBase = {
   init: function () {
@@ -765,7 +732,6 @@ var _xfBase = {
 };
 
 var XAll = /*#__PURE__*/function () {
-
   function XAll(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -781,7 +747,7 @@ var XAll = /*#__PURE__*/function () {
   XAll.prototype['@@transducer/step'] = function (result, input) {
     if (!this.f(input)) {
       this.all = false;
-      result = _reduced_1(this.xf['@@transducer/step'](result, false));
+      result = _reduced(this.xf['@@transducer/step'](result, false));
     }
     return result;
   };
@@ -789,10 +755,9 @@ var XAll = /*#__PURE__*/function () {
   return XAll;
 }();
 
-var _xall = /*#__PURE__*/_curry2_1(function _xall(f, xf) {
+var _xall = /*#__PURE__*/_curry2(function _xall(f, xf) {
   return new XAll(f, xf);
 });
-var _xall_1 = _xall;
 
 /**
  * Returns `true` if all elements of the list match the predicate, `false` if
@@ -818,9 +783,7 @@ var _xall_1 = _xall;
  *      R.all(equals3)([3, 3, 3, 3]); //=> true
  *      R.all(equals3)([3, 3, 1, 3]); //=> false
  */
-
-
-var all = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['all'], _xall_1, function all(fn, list) {
+var all = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['all'], _xall, function all(fn, list) {
   var idx = 0;
   while (idx < list.length) {
     if (!fn(list[idx])) {
@@ -830,7 +793,6 @@ var all = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['all'], _xall_1,
   }
   return true;
 }));
-var all_1 = all;
 
 /**
  * Returns the larger of its two arguments.
@@ -849,12 +811,9 @@ var all_1 = all;
  *      R.max(789, 123); //=> 789
  *      R.max('a', 'b'); //=> 'b'
  */
-
-
-var max = /*#__PURE__*/_curry2_1(function max(a, b) {
+var max = /*#__PURE__*/_curry2(function max(a, b) {
   return b > a ? b : a;
 });
-var max_1 = max;
 
 function _map(fn, functor) {
   var idx = 0;
@@ -866,12 +825,10 @@ function _map(fn, functor) {
   }
   return result;
 }
-var _map_1 = _map;
 
 function _isString(x) {
   return Object.prototype.toString.call(x) === '[object String]';
 }
-var _isString_1 = _isString;
 
 /**
  * Tests whether or not an object is similar to an array.
@@ -890,9 +847,7 @@ var _isString_1 = _isString;
  *      _isArrayLike({length: 10}); //=> false
  *      _isArrayLike({0: 'zero', 9: 'nine', length: 10}); //=> true
  */
-
-
-var _isArrayLike = /*#__PURE__*/_curry1_1(function isArrayLike(x) {
+var _isArrayLike = /*#__PURE__*/_curry1(function isArrayLike(x) {
   if (_isArray(x)) {
     return true;
   }
@@ -902,7 +857,7 @@ var _isArrayLike = /*#__PURE__*/_curry1_1(function isArrayLike(x) {
   if (typeof x !== 'object') {
     return false;
   }
-  if (_isString_1(x)) {
+  if (_isString(x)) {
     return false;
   }
   if (x.nodeType === 1) {
@@ -916,7 +871,6 @@ var _isArrayLike = /*#__PURE__*/_curry1_1(function isArrayLike(x) {
   }
   return false;
 });
-var _isArrayLike_1 = _isArrayLike;
 
 var XWrap = /*#__PURE__*/function () {
   function XWrap(fn) {
@@ -938,7 +892,6 @@ var XWrap = /*#__PURE__*/function () {
 function _xwrap(fn) {
   return new XWrap(fn);
 }
-var _xwrap_1 = _xwrap;
 
 /**
  * Creates a function that is bound to a context.
@@ -962,14 +915,11 @@ var _xwrap_1 = _xwrap;
  *      // logs {a: 2}
  * @symb R.bind(f, o)(a, b) = f.call(o, a, b)
  */
-
-
-var bind = /*#__PURE__*/_curry2_1(function bind(fn, thisObj) {
-  return _arity_1(fn.length, function () {
+var bind = /*#__PURE__*/_curry2(function bind(fn, thisObj) {
+  return _arity(fn.length, function () {
     return fn.apply(thisObj, arguments);
   });
 });
-var bind_1 = bind;
 
 function _arrayReduce(xf, acc, list) {
   var idx = 0;
@@ -999,16 +949,16 @@ function _iterableReduce(xf, acc, iter) {
 }
 
 function _methodReduce(xf, acc, obj, methodName) {
-  return xf['@@transducer/result'](obj[methodName](bind_1(xf['@@transducer/step'], xf), acc));
+  return xf['@@transducer/result'](obj[methodName](bind(xf['@@transducer/step'], xf), acc));
 }
 
 var symIterator = typeof Symbol !== 'undefined' ? Symbol.iterator : '@@iterator';
 
 function _reduce(fn, acc, list) {
   if (typeof fn === 'function') {
-    fn = _xwrap_1(fn);
+    fn = _xwrap(fn);
   }
-  if (_isArrayLike_1(list)) {
+  if (_isArrayLike(list)) {
     return _arrayReduce(fn, acc, list);
   }
   if (typeof list['fantasy-land/reduce'] === 'function') {
@@ -1026,10 +976,8 @@ function _reduce(fn, acc, list) {
 
   throw new TypeError('reduce: list must be array or iterable');
 }
-var _reduce_1 = _reduce;
 
 var XMap = /*#__PURE__*/function () {
-
   function XMap(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -1043,30 +991,24 @@ var XMap = /*#__PURE__*/function () {
   return XMap;
 }();
 
-var _xmap = /*#__PURE__*/_curry2_1(function _xmap(f, xf) {
+var _xmap = /*#__PURE__*/_curry2(function _xmap(f, xf) {
   return new XMap(f, xf);
 });
-var _xmap_1 = _xmap;
 
 function _has(prop, obj) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
-var _has_1 = _has;
 
 var toString = Object.prototype.toString;
 var _isArguments = /*#__PURE__*/function () {
   return toString.call(arguments) === '[object Arguments]' ? function _isArguments(x) {
     return toString.call(x) === '[object Arguments]';
   } : function _isArguments(x) {
-    return _has_1('callee', x);
+    return _has('callee', x);
   };
 }();
 
-var _isArguments_1 = _isArguments;
-
 // cover IE < 9 keys issues
-
-
 var hasEnumBug = ! /*#__PURE__*/{ toString: null }.propertyIsEnumerable('toString');
 var nonEnumerableProps = ['constructor', 'valueOf', 'isPrototypeOf', 'toString', 'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
 // Safari bug
@@ -1104,17 +1046,17 @@ var contains = function contains(list, item) {
  *
  *      R.keys({a: 1, b: 2, c: 3}); //=> ['a', 'b', 'c']
  */
-var keys = typeof Object.keys === 'function' && !hasArgsEnumBug ? /*#__PURE__*/_curry1_1(function keys(obj) {
+var keys = typeof Object.keys === 'function' && !hasArgsEnumBug ? /*#__PURE__*/_curry1(function keys(obj) {
   return Object(obj) !== obj ? [] : Object.keys(obj);
-}) : /*#__PURE__*/_curry1_1(function keys(obj) {
+}) : /*#__PURE__*/_curry1(function keys(obj) {
   if (Object(obj) !== obj) {
     return [];
   }
   var prop, nIdx;
   var ks = [];
-  var checkArgsLength = hasArgsEnumBug && _isArguments_1(obj);
+  var checkArgsLength = hasArgsEnumBug && _isArguments(obj);
   for (prop in obj) {
-    if (_has_1(prop, obj) && (!checkArgsLength || prop !== 'length')) {
+    if (_has(prop, obj) && (!checkArgsLength || prop !== 'length')) {
       ks[ks.length] = prop;
     }
   }
@@ -1122,7 +1064,7 @@ var keys = typeof Object.keys === 'function' && !hasArgsEnumBug ? /*#__PURE__*/_
     nIdx = nonEnumerableProps.length - 1;
     while (nIdx >= 0) {
       prop = nonEnumerableProps[nIdx];
-      if (_has_1(prop, obj) && !contains(ks, prop)) {
+      if (_has(prop, obj) && !contains(ks, prop)) {
         ks[ks.length] = prop;
       }
       nIdx -= 1;
@@ -1130,7 +1072,6 @@ var keys = typeof Object.keys === 'function' && !hasArgsEnumBug ? /*#__PURE__*/_
   }
   return ks;
 });
-var keys_1 = keys;
 
 /**
  * Takes a function and
@@ -1167,24 +1108,21 @@ var keys_1 = keys;
  * @symb R.map(f, { x: a, y: b }) = { x: f(a), y: f(b) }
  * @symb R.map(f, functor_o) = functor_o.map(f)
  */
-
-
-var map = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['fantasy-land/map', 'map'], _xmap_1, function map(fn, functor) {
+var map = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['fantasy-land/map', 'map'], _xmap, function map(fn, functor) {
   switch (Object.prototype.toString.call(functor)) {
     case '[object Function]':
-      return curryN_1(functor.length, function () {
+      return curryN(functor.length, function () {
         return fn.call(this, functor.apply(this, arguments));
       });
     case '[object Object]':
-      return _reduce_1(function (acc, key) {
+      return _reduce(function (acc, key) {
         acc[key] = fn(functor[key]);
         return acc;
-      }, {}, keys_1(functor));
+      }, {}, keys(functor));
     default:
-      return _map_1(fn, functor);
+      return _map(fn, functor);
   }
 }));
-var map_1 = map;
 
 /**
  * Retrieve the value at a given path.
@@ -1204,9 +1142,7 @@ var map_1 = map;
  *      R.path(['a', 'b'], {a: {b: 2}}); //=> 2
  *      R.path(['a', 'b'], {c: {b: 2}}); //=> undefined
  */
-
-
-var path = /*#__PURE__*/_curry2_1(function path(paths, obj) {
+var path = /*#__PURE__*/_curry2(function path(paths, obj) {
   var val = obj;
   var idx = 0;
   while (idx < paths.length) {
@@ -1218,7 +1154,6 @@ var path = /*#__PURE__*/_curry2_1(function path(paths, obj) {
   }
   return val;
 });
-var path_1 = path;
 
 /**
  * Returns a function that when supplied an object returns the indicated
@@ -1240,10 +1175,9 @@ var path_1 = path;
  *      R.compose(R.inc, R.prop('x'))({ x: 3 }) //=> 4
  */
 
-var prop = /*#__PURE__*/_curry2_1(function prop(p, obj) {
-  return path_1([p], obj);
+var prop = /*#__PURE__*/_curry2(function prop(p, obj) {
+  return path([p], obj);
 });
-var prop_1 = prop;
 
 /**
  * Returns a new list by plucking the same named property off all objects in
@@ -1272,12 +1206,9 @@ var prop_1 = prop;
  * @symb R.pluck('x', [{x: 1, y: 2}, {x: 3, y: 4}, {x: 5, y: 6}]) = [1, 3, 5]
  * @symb R.pluck(0, [[1, 2], [3, 4], [5, 6]]) = [1, 3, 5]
  */
-
-
-var pluck = /*#__PURE__*/_curry2_1(function pluck(p, list) {
-  return map_1(prop_1(p), list);
+var pluck = /*#__PURE__*/_curry2(function pluck(p, list) {
+  return map(prop(p), list);
 });
-var pluck_1 = pluck;
 
 /**
  * Returns a single item by iterating through the list, successively calling
@@ -1325,10 +1256,7 @@ var pluck_1 = pluck;
  *
  * @symb R.reduce(f, a, [b, c, d]) = f(f(f(a, b), c), d)
  */
-
-
-var reduce = /*#__PURE__*/_curry3_1(_reduce_1);
-var reduce_1 = reduce;
+var reduce = /*#__PURE__*/_curry3(_reduce);
 
 /**
  * Takes a list of predicates and returns a predicate that returns true for a
@@ -1355,10 +1283,8 @@ var reduce_1 = reduce;
  *      isQueenOfSpades({rank: 'Q', suit: '♣︎'}); //=> false
  *      isQueenOfSpades({rank: 'Q', suit: '♠︎'}); //=> true
  */
-
-
-var allPass = /*#__PURE__*/_curry1_1(function allPass(preds) {
-  return curryN_1(reduce_1(max_1, 0, pluck_1('length', preds)), function () {
+var allPass = /*#__PURE__*/_curry1(function allPass(preds) {
+  return curryN(reduce(max, 0, pluck('length', preds)), function () {
     var idx = 0;
     var len = preds.length;
     while (idx < len) {
@@ -1370,7 +1296,6 @@ var allPass = /*#__PURE__*/_curry1_1(function allPass(preds) {
     return true;
   });
 });
-var allPass_1 = allPass;
 
 /**
  * Returns a function that always returns the given value. Note that for
@@ -1391,14 +1316,11 @@ var allPass_1 = allPass;
  *      const t = R.always('Tee');
  *      t(); //=> 'Tee'
  */
-
-
-var always = /*#__PURE__*/_curry1_1(function always(val) {
+var always = /*#__PURE__*/_curry1(function always(val) {
   return function () {
     return val;
   };
 });
-var always_1 = always;
 
 /**
  * Returns `true` if both arguments are `true`; `false` otherwise.
@@ -1419,15 +1341,11 @@ var always_1 = always;
  *      R.and(false, true); //=> false
  *      R.and(false, false); //=> false
  */
-
-
-var and = /*#__PURE__*/_curry2_1(function and(a, b) {
+var and = /*#__PURE__*/_curry2(function and(a, b) {
   return a && b;
 });
-var and_1 = and;
 
 var XAny = /*#__PURE__*/function () {
-
   function XAny(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -1443,7 +1361,7 @@ var XAny = /*#__PURE__*/function () {
   XAny.prototype['@@transducer/step'] = function (result, input) {
     if (this.f(input)) {
       this.any = true;
-      result = _reduced_1(this.xf['@@transducer/step'](result, true));
+      result = _reduced(this.xf['@@transducer/step'](result, true));
     }
     return result;
   };
@@ -1451,10 +1369,9 @@ var XAny = /*#__PURE__*/function () {
   return XAny;
 }();
 
-var _xany = /*#__PURE__*/_curry2_1(function _xany(f, xf) {
+var _xany = /*#__PURE__*/_curry2(function _xany(f, xf) {
   return new XAny(f, xf);
 });
-var _xany_1 = _xany;
 
 /**
  * Returns `true` if at least one of the elements of the list match the predicate,
@@ -1481,9 +1398,7 @@ var _xany_1 = _xany;
  *      R.any(lessThan0)([1, 2]); //=> false
  *      R.any(lessThan2)([1, 2]); //=> true
  */
-
-
-var any = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['any'], _xany_1, function any(fn, list) {
+var any = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['any'], _xany, function any(fn, list) {
   var idx = 0;
   while (idx < list.length) {
     if (fn(list[idx])) {
@@ -1493,7 +1408,6 @@ var any = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['any'], _xany_1,
   }
   return false;
 }));
-var any_1 = any;
 
 /**
  * Takes a list of predicates and returns a predicate that returns true for a
@@ -1521,10 +1435,8 @@ var any_1 = any;
  *      isBlackCard({rank: 'Q', suit: '♠'}); //=> true
  *      isBlackCard({rank: 'Q', suit: '♦'}); //=> false
  */
-
-
-var anyPass = /*#__PURE__*/_curry1_1(function anyPass(preds) {
-  return curryN_1(reduce_1(max_1, 0, pluck_1('length', preds)), function () {
+var anyPass = /*#__PURE__*/_curry1(function anyPass(preds) {
+  return curryN(reduce(max, 0, pluck('length', preds)), function () {
     var idx = 0;
     var len = preds.length;
     while (idx < len) {
@@ -1536,7 +1448,6 @@ var anyPass = /*#__PURE__*/_curry1_1(function anyPass(preds) {
     return false;
   });
 });
-var anyPass_1 = anyPass;
 
 /**
  * ap applies a list of functions to a list of values.
@@ -1564,16 +1475,13 @@ var anyPass_1 = anyPass;
  *      R.ap(R.concat, R.toUpper)('Ramda') //=> 'RamdaRAMDA'
  * @symb R.ap([f, g], [a, b]) = [f(a), f(b), g(a), g(b)]
  */
-
-
-var ap = /*#__PURE__*/_curry2_1(function ap(applyF, applyX) {
+var ap = /*#__PURE__*/_curry2(function ap(applyF, applyX) {
   return typeof applyX['fantasy-land/ap'] === 'function' ? applyX['fantasy-land/ap'](applyF) : typeof applyF.ap === 'function' ? applyF.ap(applyX) : typeof applyF === 'function' ? function (x) {
     return applyF(x)(applyX(x));
-  } : _reduce_1(function (acc, f) {
-    return _concat_1(acc, map_1(f, applyX));
+  } : _reduce(function (acc, f) {
+    return _concat(acc, map(f, applyX));
   }, [], applyF);
 });
-var ap_1 = ap;
 
 function _aperture(n, list) {
   var idx = 0;
@@ -1585,10 +1493,8 @@ function _aperture(n, list) {
   }
   return acc;
 }
-var _aperture_1 = _aperture;
 
 var XAperture = /*#__PURE__*/function () {
-
   function XAperture(n, xf) {
     this.xf = xf;
     this.pos = 0;
@@ -1613,16 +1519,15 @@ var XAperture = /*#__PURE__*/function () {
     }
   };
   XAperture.prototype.getCopy = function () {
-    return _concat_1(Array.prototype.slice.call(this.acc, this.pos), Array.prototype.slice.call(this.acc, 0, this.pos));
+    return _concat(Array.prototype.slice.call(this.acc, this.pos), Array.prototype.slice.call(this.acc, 0, this.pos));
   };
 
   return XAperture;
 }();
 
-var _xaperture = /*#__PURE__*/_curry2_1(function _xaperture(n, xf) {
+var _xaperture = /*#__PURE__*/_curry2(function _xaperture(n, xf) {
   return new XAperture(n, xf);
 });
-var _xaperture_1 = _xaperture;
 
 /**
  * Returns a new list, composed of n-tuples of consecutive elements. If `n` is
@@ -1645,10 +1550,7 @@ var _xaperture_1 = _xaperture;
  *      R.aperture(3, [1, 2, 3, 4, 5]); //=> [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
  *      R.aperture(7, [1, 2, 3, 4, 5]); //=> []
  */
-
-
-var aperture = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xaperture_1, _aperture_1));
-var aperture_1 = aperture;
+var aperture = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable([], _xaperture, _aperture));
 
 /**
  * Returns a new list containing the contents of the given list, followed by
@@ -1670,12 +1572,9 @@ var aperture_1 = aperture;
  *      R.append('tests', []); //=> ['tests']
  *      R.append(['tests'], ['write', 'more']); //=> ['write', 'more', ['tests']]
  */
-
-
-var append = /*#__PURE__*/_curry2_1(function append(el, list) {
-  return _concat_1(list, [el]);
+var append = /*#__PURE__*/_curry2(function append(el, list) {
+  return _concat(list, [el]);
 });
-var append_1 = append;
 
 /**
  * Applies function `fn` to the argument list `args`. This is useful for
@@ -1697,12 +1596,9 @@ var append_1 = append;
  *      R.apply(Math.max, nums); //=> 42
  * @symb R.apply(f, [a, b, c]) = f(a, b, c)
  */
-
-
-var apply = /*#__PURE__*/_curry2_1(function apply(fn, args) {
+var apply = /*#__PURE__*/_curry2(function apply(fn, args) {
   return fn.apply(this, args);
 });
-var apply_1 = apply;
 
 /**
  * Returns a list of all the enumerable own properties of the supplied object.
@@ -1721,10 +1617,8 @@ var apply_1 = apply;
  *
  *      R.values({a: 1, b: 2, c: 3}); //=> [1, 2, 3]
  */
-
-
-var values = /*#__PURE__*/_curry1_1(function values(obj) {
-  var props = keys_1(obj);
+var values = /*#__PURE__*/_curry1(function values(obj) {
+  var props = keys(obj);
   var len = props.length;
   var vals = [];
   var idx = 0;
@@ -1734,14 +1628,11 @@ var values = /*#__PURE__*/_curry1_1(function values(obj) {
   }
   return vals;
 });
-var values_1 = values;
 
 // Use custom mapValues function to avoid issues with specs that include a "map" key and R.map
 // delegating calls to .map
-
-
 function mapValues(fn, obj) {
-  return keys_1(obj).reduce(function (acc, key) {
+  return keys(obj).reduce(function (acc, key) {
     acc[key] = fn(obj[key]);
     return acc;
   }, {});
@@ -1772,19 +1663,18 @@ function mapValues(fn, obj) {
  *      getMetrics(2, 4); // => { sum: 6, nested: { mul: 8 } }
  * @symb R.applySpec({ x: f, y: { z: g } })(a, b) = { x: f(a, b), y: { z: g(a, b) } }
  */
-var applySpec = /*#__PURE__*/_curry1_1(function applySpec(spec) {
+var applySpec = /*#__PURE__*/_curry1(function applySpec(spec) {
   spec = mapValues(function (v) {
     return typeof v == 'function' ? v : applySpec(v);
   }, spec);
 
-  return curryN_1(reduce_1(max_1, 0, pluck_1('length', values_1(spec))), function () {
+  return curryN(reduce(max, 0, pluck('length', values(spec))), function () {
     var args = arguments;
     return mapValues(function (f) {
-      return apply_1(f, args);
+      return apply(f, args);
     }, spec);
   });
 });
-var applySpec_1 = applySpec;
 
 /**
  * Takes a value and applies a function to it.
@@ -1805,12 +1695,9 @@ var applySpec_1 = applySpec;
  *      t42(R.identity); //=> 42
  *      t42(R.add(1)); //=> 43
  */
-
-
-var applyTo = /*#__PURE__*/_curry2_1(function applyTo(x, f) {
+var applyTo = /*#__PURE__*/_curry2(function applyTo(x, f) {
   return f(x);
 });
-var applyTo_1 = applyTo;
 
 /**
  * Makes an ascending comparator function out of a function that returns a value
@@ -1837,14 +1724,11 @@ var applyTo_1 = applyTo;
  *      const peopleByYoungestFirst = R.sort(byAge, people);
  *        //=> [{ name: 'Mikhail', age: 62 },{ name: 'Emma', age: 70 }, { name: 'Peter', age: 78 }]
  */
-
-
-var ascend = /*#__PURE__*/_curry3_1(function ascend(fn, a, b) {
+var ascend = /*#__PURE__*/_curry3(function ascend(fn, a, b) {
   var aa = fn(a);
   var bb = fn(b);
   return aa < bb ? -1 : aa > bb ? 1 : 0;
 });
-var ascend_1 = ascend;
 
 /**
  * Makes a shallow clone of an object, setting or overriding the specified
@@ -1866,9 +1750,7 @@ var ascend_1 = ascend;
  *
  *      R.assoc('c', 3, {a: 1, b: 2}); //=> {a: 1, b: 2, c: 3}
  */
-
-
-var assoc = /*#__PURE__*/_curry3_1(function assoc(prop, val, obj) {
+var assoc = /*#__PURE__*/_curry3(function assoc(prop, val, obj) {
   var result = {};
   for (var p in obj) {
     result[p] = obj[p];
@@ -1876,7 +1758,6 @@ var assoc = /*#__PURE__*/_curry3_1(function assoc(prop, val, obj) {
   result[prop] = val;
   return result;
 });
-var assoc_1 = assoc;
 
 /**
  * Determine if the passed argument is an integer.
@@ -1907,12 +1788,9 @@ var _isInteger = Number.isInteger || function _isInteger(n) {
  *      R.isNil(0); //=> false
  *      R.isNil([]); //=> false
  */
-
-
-var isNil = /*#__PURE__*/_curry1_1(function isNil(x) {
+var isNil = /*#__PURE__*/_curry1(function isNil(x) {
   return x == null;
 });
-var isNil_1 = isNil;
 
 /**
  * Makes a shallow clone of an object, setting or overriding the nodes required
@@ -1938,15 +1816,13 @@ var isNil_1 = isNil;
  *      // Any missing or non-object keys in path will be overridden
  *      R.assocPath(['a', 'b', 'c'], 42, {a: 5}); //=> {a: {b: {c: 42}}}
  */
-
-
-var assocPath = /*#__PURE__*/_curry3_1(function assocPath(path, val, obj) {
+var assocPath = /*#__PURE__*/_curry3(function assocPath(path, val, obj) {
   if (path.length === 0) {
     return val;
   }
   var idx = path[0];
   if (path.length > 1) {
-    var nextObj = !isNil_1(obj) && _has_1(idx, obj) ? obj[idx] : _isInteger(path[1]) ? [] : {};
+    var nextObj = !isNil(obj) && _has(idx, obj) ? obj[idx] : _isInteger(path[1]) ? [] : {};
     val = assocPath(Array.prototype.slice.call(path, 1), val, nextObj);
   }
   if (_isInteger(idx) && _isArray(obj)) {
@@ -1954,10 +1830,9 @@ var assocPath = /*#__PURE__*/_curry3_1(function assocPath(path, val, obj) {
     arr[idx] = val;
     return arr;
   } else {
-    return assoc_1(idx, val, obj);
+    return assoc(idx, val, obj);
   }
 });
-var assocPath_1 = assocPath;
 
 /**
  * Wraps a function of any arity (including nullary) in a function that accepts
@@ -1989,9 +1864,7 @@ var assocPath_1 = assocPath;
  * @symb R.nAry(1, f)(a, b) = f(a)
  * @symb R.nAry(2, f)(a, b) = f(a, b)
  */
-
-
-var nAry = /*#__PURE__*/_curry2_1(function nAry(n, fn) {
+var nAry = /*#__PURE__*/_curry2(function nAry(n, fn) {
   switch (n) {
     case 0:
       return function () {
@@ -2041,7 +1914,6 @@ var nAry = /*#__PURE__*/_curry2_1(function nAry(n, fn) {
       throw new Error('First argument to nAry must be a non-negative integer no greater than ten');
   }
 });
-var nAry_1 = nAry;
 
 /**
  * Wraps a function of any arity (including nullary) in a function that accepts
@@ -2071,17 +1943,13 @@ var nAry_1 = nAry;
  *      takesTwoArgs(1, 2, 3); //=> [1, 2, undefined]
  * @symb R.binary(f)(a, b, c) = f(a, b)
  */
-
-
-var binary = /*#__PURE__*/_curry1_1(function binary(fn) {
-  return nAry_1(2, fn);
+var binary = /*#__PURE__*/_curry1(function binary(fn) {
+  return nAry(2, fn);
 });
-var binary_1 = binary;
 
 function _isFunction(x) {
   return Object.prototype.toString.call(x) === '[object Function]';
 }
-var _isFunction_1 = _isFunction;
 
 /**
  * "lifts" a function to be the specified arity, so that it may "map over" that
@@ -2100,15 +1968,12 @@ var _isFunction_1 = _isFunction;
  *      const madd3 = R.liftN(3, (...args) => R.sum(args));
  *      madd3([1,2,3], [1,2,3], [1]); //=> [3, 4, 5, 4, 5, 6, 5, 6, 7]
  */
-
-
-var liftN = /*#__PURE__*/_curry2_1(function liftN(arity, fn) {
-  var lifted = curryN_1(arity, fn);
-  return curryN_1(arity, function () {
-    return _reduce_1(ap_1, map_1(lifted, arguments[0]), Array.prototype.slice.call(arguments, 1));
+var liftN = /*#__PURE__*/_curry2(function liftN(arity, fn) {
+  var lifted = curryN(arity, fn);
+  return curryN(arity, function () {
+    return _reduce(ap, map(lifted, arguments[0]), Array.prototype.slice.call(arguments, 1));
   });
 });
-var liftN_1 = liftN;
 
 /**
  * "lifts" a function of arity > 1 so that it may "map over" a list, Function or other
@@ -2132,12 +1997,9 @@ var liftN_1 = liftN;
  *
  *      madd5([1,2], [3], [4, 5], [6], [7, 8]); //=> [21, 22, 22, 23, 22, 23, 23, 24]
  */
-
-
-var lift = /*#__PURE__*/_curry1_1(function lift(fn) {
-  return liftN_1(fn.length, fn);
+var lift = /*#__PURE__*/_curry1(function lift(fn) {
+  return liftN(fn.length, fn);
 });
-var lift_1 = lift;
 
 /**
  * A function which calls the two provided functions and returns the `&&`
@@ -2170,14 +2032,11 @@ var lift_1 = lift;
  *      R.both(Maybe.Just(false), Maybe.Just(55)); // => Maybe.Just(false)
  *      R.both([false, false, 'a'], [11]); //=> [false, false, 11]
  */
-
-
-var both = /*#__PURE__*/_curry2_1(function both(f, g) {
-  return _isFunction_1(f) ? function _both() {
+var both = /*#__PURE__*/_curry2(function both(f, g) {
+  return _isFunction(f) ? function _both() {
     return f.apply(this, arguments) && g.apply(this, arguments);
-  } : lift_1(and_1)(f, g);
+  } : lift(and)(f, g);
 });
-var both_1 = both;
 
 /**
  * Returns a curried equivalent of the provided function. The curried function
@@ -2220,12 +2079,9 @@ var both_1 = both;
  *      const g = f(3);
  *      g(4); //=> 10
  */
-
-
-var curry = /*#__PURE__*/_curry1_1(function curry(fn) {
-  return curryN_1(fn.length, fn);
+var curry = /*#__PURE__*/_curry1(function curry(fn) {
+  return curryN(fn.length, fn);
 });
-var curry_1 = curry;
 
 /**
  * Returns the result of calling its first argument with the remaining
@@ -2259,12 +2115,9 @@ var curry_1 = curry;
  *      format({indent: 2, value: 'foo\nbar\nbaz\n'}); //=> '  foo\n  bar\n  baz\n'
  * @symb R.call(f, a, b) = f(a, b)
  */
-
-
-var call = /*#__PURE__*/curry_1(function call(fn) {
+var call = /*#__PURE__*/curry(function call(fn) {
   return fn.apply(this, Array.prototype.slice.call(arguments, 1));
 });
-var call_1 = call;
 
 /**
  * `_makeFlat` is a helper function that returns a one-level or fully recursive
@@ -2272,8 +2125,6 @@ var call_1 = call;
  *
  * @private
  */
-
-
 function _makeFlat(recursive) {
   return function flatt(list) {
     var value, jlen, j;
@@ -2282,7 +2133,7 @@ function _makeFlat(recursive) {
     var ilen = list.length;
 
     while (idx < ilen) {
-      if (_isArrayLike_1(list[idx])) {
+      if (_isArrayLike(list[idx])) {
         value = recursive ? flatt(list[idx]) : list[idx];
         j = 0;
         jlen = value.length;
@@ -2298,7 +2149,6 @@ function _makeFlat(recursive) {
     return result;
   };
 }
-var _makeFlat_1 = _makeFlat;
 
 function _forceReduced(x) {
   return {
@@ -2306,7 +2156,6 @@ function _forceReduced(x) {
     '@@transducer/reduced': true
   };
 }
-var _forceReduced_1 = _forceReduced;
 
 var preservingReduced = function (xf) {
   return {
@@ -2316,7 +2165,7 @@ var preservingReduced = function (xf) {
     },
     '@@transducer/step': function (result, input) {
       var ret = xf['@@transducer/step'](result, input);
-      return ret['@@transducer/reduced'] ? _forceReduced_1(ret) : ret;
+      return ret['@@transducer/reduced'] ? _forceReduced(ret) : ret;
     }
   };
 };
@@ -2329,17 +2178,14 @@ var _flatCat = function _xcat(xf) {
       return rxf['@@transducer/result'](result);
     },
     '@@transducer/step': function (result, input) {
-      return !_isArrayLike_1(input) ? _reduce_1(rxf, result, [input]) : _reduce_1(rxf, result, input);
+      return !_isArrayLike(input) ? _reduce(rxf, result, [input]) : _reduce(rxf, result, input);
     }
   };
 };
 
-var _flatCat_1 = _flatCat;
-
-var _xchain = /*#__PURE__*/_curry2_1(function _xchain(f, xf) {
-  return map_1(f, _flatCat_1(xf));
+var _xchain = /*#__PURE__*/_curry2(function _xchain(f, xf) {
+  return map(f, _flatCat(xf));
 });
-var _xchain_1 = _xchain;
 
 /**
  * `chain` maps a function over a list and concatenates the results. `chain`
@@ -2367,17 +2213,14 @@ var _xchain_1 = _xchain;
  *
  *      R.chain(R.append, R.head)([1, 2, 3]); //=> [1, 2, 3, 1]
  */
-
-
-var chain = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['fantasy-land/chain', 'chain'], _xchain_1, function chain(fn, monad) {
+var chain = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['fantasy-land/chain', 'chain'], _xchain, function chain(fn, monad) {
   if (typeof monad === 'function') {
     return function (x) {
       return fn(monad(x))(x);
     };
   }
-  return _makeFlat_1(false)(map_1(fn, monad));
+  return _makeFlat(false)(map(fn, monad));
 }));
-var chain_1 = chain;
 
 /**
  * Restricts a number to be within a range.
@@ -2399,20 +2242,16 @@ var chain_1 = chain;
  *      R.clamp(1, 10, 15) // => 10
  *      R.clamp(1, 10, 4)  // => 4
  */
-
-
-var clamp = /*#__PURE__*/_curry3_1(function clamp(min, max, value) {
+var clamp = /*#__PURE__*/_curry3(function clamp(min, max, value) {
   if (min > max) {
     throw new Error('min must not be greater than max in clamp(min, max, value)');
   }
   return value < min ? min : value > max ? max : value;
 });
-var clamp_1 = clamp;
 
 function _cloneRegExp(pattern) {
                                   return new RegExp(pattern.source, (pattern.global ? 'g' : '') + (pattern.ignoreCase ? 'i' : '') + (pattern.multiline ? 'm' : '') + (pattern.sticky ? 'y' : '') + (pattern.unicode ? 'u' : ''));
 }
-var _cloneRegExp_1 = _cloneRegExp;
 
 /**
  * Gives a single-word string description of the (native) type of a value,
@@ -2439,12 +2278,9 @@ var _cloneRegExp_1 = _cloneRegExp;
  *      R.type(() => {}); //=> "Function"
  *      R.type(undefined); //=> "Undefined"
  */
-
-
-var type = /*#__PURE__*/_curry1_1(function type(val) {
+var type = /*#__PURE__*/_curry1(function type(val) {
   return val === null ? 'Null' : val === undefined ? 'Undefined' : Object.prototype.toString.call(val).slice(8, -1);
 });
-var type_1 = type;
 
 /**
  * Copies an object.
@@ -2456,8 +2292,6 @@ var type_1 = type;
  * @param {Boolean} deep Whether or not to perform deep cloning.
  * @return {*} The copied value.
  */
-
-
 function _clone(value, refFrom, refTo, deep) {
   var copy = function copy(copiedValue) {
     var len = refFrom.length;
@@ -2475,7 +2309,7 @@ function _clone(value, refFrom, refTo, deep) {
     }
     return copiedValue;
   };
-  switch (type_1(value)) {
+  switch (type(value)) {
     case 'Object':
       return copy({});
     case 'Array':
@@ -2483,12 +2317,11 @@ function _clone(value, refFrom, refTo, deep) {
     case 'Date':
       return new Date(value.valueOf());
     case 'RegExp':
-      return _cloneRegExp_1(value);
+      return _cloneRegExp(value);
     default:
       return value;
   }
 }
-var _clone_1 = _clone;
 
 /**
  * Creates a deep copy of the value which may contain (nested) `Array`s and
@@ -2511,12 +2344,9 @@ var _clone_1 = _clone;
  *      objects === objectsClone; //=> false
  *      objects[0] === objectsClone[0]; //=> false
  */
-
-
-var clone = /*#__PURE__*/_curry1_1(function clone(value) {
-  return value != null && typeof value.clone === 'function' ? value.clone() : _clone_1(value, [], [], true);
+var clone = /*#__PURE__*/_curry1(function clone(value) {
+  return value != null && typeof value.clone === 'function' ? value.clone() : _clone(value, [], [], true);
 });
-var clone_1 = clone;
 
 /**
  * Makes a comparator function out of a function that reports whether the first
@@ -2541,14 +2371,11 @@ var clone_1 = clone;
  *      const peopleByIncreasingAge = R.sort(byAge, people);
  *        //=> [{ name: 'Mikhail', age: 62 },{ name: 'Emma', age: 70 }, { name: 'Peter', age: 78 }]
  */
-
-
-var comparator = /*#__PURE__*/_curry1_1(function comparator(pred) {
+var comparator = /*#__PURE__*/_curry1(function comparator(pred) {
   return function (a, b) {
     return pred(a, b) ? -1 : pred(b, a) ? 1 : 0;
   };
 });
-var comparator_1 = comparator;
 
 /**
  * A function that returns the `!` of its argument. It will return `true` when
@@ -2569,12 +2396,9 @@ var comparator_1 = comparator;
  *      R.not(0); //=> true
  *      R.not(1); //=> false
  */
-
-
-var not = /*#__PURE__*/_curry1_1(function not(a) {
+var not = /*#__PURE__*/_curry1(function not(a) {
   return !a;
 });
-var not_1 = not;
 
 /**
  * Takes a function `f` and returns a function `g` such that if called with the same arguments
@@ -2598,17 +2422,13 @@ var not_1 = not;
  *      isNil(7); //=> false
  *      isNotNil(7); //=> true
  */
-
-
-var complement = /*#__PURE__*/lift_1(not_1);
-var complement_1 = complement;
+var complement = /*#__PURE__*/lift(not);
 
 function _pipe(f, g) {
   return function () {
     return g.call(this, f.apply(this, arguments));
   };
 }
-var _pipe_1 = _pipe;
 
 /**
  * This checks whether a function has a [methodname] function. If it isn't an
@@ -2620,8 +2440,6 @@ var _pipe_1 = _pipe;
  * @param {String} methodname property to check for a custom implementation
  * @return {Object} Whatever the return value of the method is.
  */
-
-
 function _checkForMethod(methodname, fn) {
   return function () {
     var length = arguments.length;
@@ -2632,7 +2450,6 @@ function _checkForMethod(methodname, fn) {
     return _isArray(obj) || typeof obj[methodname] !== 'function' ? fn.apply(this, arguments) : obj[methodname].apply(obj, Array.prototype.slice.call(arguments, 0, length - 1));
   };
 }
-var _checkForMethod_1 = _checkForMethod;
 
 /**
  * Returns the elements of the given list or string (or object with a `slice`
@@ -2658,12 +2475,9 @@ var _checkForMethod_1 = _checkForMethod;
  *      R.slice(-3, -1, ['a', 'b', 'c', 'd']);      //=> ['b', 'c']
  *      R.slice(0, 3, 'ramda');                     //=> 'ram'
  */
-
-
-var slice = /*#__PURE__*/_curry3_1( /*#__PURE__*/_checkForMethod_1('slice', function slice(fromIndex, toIndex, list) {
+var slice = /*#__PURE__*/_curry3( /*#__PURE__*/_checkForMethod('slice', function slice(fromIndex, toIndex, list) {
   return Array.prototype.slice.call(list, fromIndex, toIndex);
 }));
-var slice_1 = slice;
 
 /**
  * Returns all but the first element of the given list or string (or object
@@ -2692,10 +2506,7 @@ var slice_1 = slice;
  *      R.tail('a');    //=> ''
  *      R.tail('');     //=> ''
  */
-
-
-var tail = /*#__PURE__*/_curry1_1( /*#__PURE__*/_checkForMethod_1('tail', /*#__PURE__*/slice_1(1, Infinity)));
-var tail_1 = tail;
+var tail = /*#__PURE__*/_curry1( /*#__PURE__*/_checkForMethod('tail', /*#__PURE__*/slice(1, Infinity)));
 
 /**
  * Performs left-to-right function composition. The leftmost function may have
@@ -2720,15 +2531,12 @@ var tail_1 = tail;
  *      f(3, 4); // -(3^4) + 1
  * @symb R.pipe(f, g, h)(a, b) = h(g(f(a, b)))
  */
-
-
 function pipe() {
   if (arguments.length === 0) {
     throw new Error('pipe requires at least one argument');
   }
-  return _arity_1(arguments[0].length, reduce_1(_pipe_1, arguments[0], tail_1(arguments)));
+  return _arity(arguments[0].length, reduce(_pipe, arguments[0], tail(arguments)));
 }
-var pipe_1 = pipe;
 
 /**
  * Returns a new list or string with the elements or characters in reverse
@@ -2754,12 +2562,9 @@ var pipe_1 = pipe;
  *      R.reverse('a');        //=> 'a'
  *      R.reverse('');         //=> ''
  */
-
-
-var reverse = /*#__PURE__*/_curry1_1(function reverse(list) {
-  return _isString_1(list) ? list.split('').reverse().join('') : Array.prototype.slice.call(list, 0).reverse();
+var reverse = /*#__PURE__*/_curry1(function reverse(list) {
+  return _isString(list) ? list.split('').reverse().join('') : Array.prototype.slice.call(list, 0).reverse();
 });
-var reverse_1 = reverse;
 
 /**
  * Performs right-to-left function composition. The rightmost function may have
@@ -2785,15 +2590,12 @@ var reverse_1 = reverse;
  *
  * @symb R.compose(f, g, h)(a, b) = f(g(h(a, b)))
  */
-
-
 function compose() {
   if (arguments.length === 0) {
     throw new Error('compose requires at least one argument');
   }
-  return pipe_1.apply(this, reverse_1(arguments));
+  return pipe.apply(this, reverse(arguments));
 }
-var compose_1 = compose;
 
 /**
  * Returns the right-to-left Kleisli composition of the provided functions,
@@ -2826,17 +2628,14 @@ var compose_1 = compose;
  *       getStateCode({}); //=> Maybe.Nothing()
  * @symb R.composeK(f, g, h)(a) = R.chain(f, R.chain(g, h(a)))
  */
-
-
 function composeK() {
   if (arguments.length === 0) {
     throw new Error('composeK requires at least one argument');
   }
   var init = Array.prototype.slice.call(arguments);
   var last = init.pop();
-  return compose_1(compose_1.apply(this, map_1(chain_1, init)), last);
+  return compose(compose.apply(this, map(chain, init)), last);
 }
-var composeK_1 = composeK;
 
 function _pipeP(f, g) {
   return function () {
@@ -2846,7 +2645,6 @@ function _pipeP(f, g) {
     });
   };
 }
-var _pipeP_1 = _pipeP;
 
 /**
  * Performs left-to-right composition of one or more Promise-returning
@@ -2867,15 +2665,12 @@ var _pipeP_1 = _pipeP;
  *      //  followersForUser :: String -> Promise [User]
  *      const followersForUser = R.pipeP(db.getUserById, db.getFollowers);
  */
-
-
 function pipeP() {
   if (arguments.length === 0) {
     throw new Error('pipeP requires at least one argument');
   }
-  return _arity_1(arguments[0].length, reduce_1(_pipeP_1, arguments[0], tail_1(arguments)));
+  return _arity(arguments[0].length, reduce(_pipeP, arguments[0], tail(arguments)));
 }
-var pipeP_1 = pipeP;
 
 /**
  * Performs right-to-left composition of one or more Promise-returning
@@ -2912,15 +2707,12 @@ var pipeP_1 = pipeP;
  *      followersForUser('JOE').then(followers => console.log('Followers:', followers))
  *      // Followers: ["STEVE","SUZY"]
  */
-
-
 function composeP() {
   if (arguments.length === 0) {
     throw new Error('composeP requires at least one argument');
   }
-  return pipeP_1.apply(this, reverse_1(arguments));
+  return pipeP.apply(this, reverse(arguments));
 }
-var composeP_1 = composeP;
 
 /**
  * Returns the nth element of the given list or string. If n is negative the
@@ -2948,13 +2740,10 @@ var composeP_1 = composeP;
  * @symb R.nth(0, [a, b, c]) = a
  * @symb R.nth(1, [a, b, c]) = b
  */
-
-
-var nth = /*#__PURE__*/_curry2_1(function nth(offset, list) {
+var nth = /*#__PURE__*/_curry2(function nth(offset, list) {
   var idx = offset < 0 ? list.length + offset : offset;
-  return _isString_1(list) ? list.charAt(idx) : list[idx];
+  return _isString(list) ? list.charAt(idx) : list[idx];
 });
-var nth_1 = nth;
 
 /**
  * Returns the first element of the given list or string. In some libraries
@@ -2977,15 +2766,11 @@ var nth_1 = nth;
  *      R.head('abc'); //=> 'a'
  *      R.head(''); //=> ''
  */
-
-
-var head = /*#__PURE__*/nth_1(0);
-var head_1 = head;
+var head = /*#__PURE__*/nth(0);
 
 function _identity(x) {
   return x;
 }
-var _identity_1 = _identity;
 
 /**
  * A function that does nothing but return the parameter supplied to it. Good
@@ -3006,10 +2791,7 @@ var _identity_1 = _identity;
  *      R.identity(obj) === obj; //=> true
  * @symb R.identity(a) = a
  */
-
-
-var identity = /*#__PURE__*/_curry1_1(_identity_1);
-var identity_1 = identity;
+var identity = /*#__PURE__*/_curry1(_identity);
 
 /**
  * Performs left-to-right function composition using transforming function. The leftmost function may have
@@ -3032,23 +2814,20 @@ var identity_1 = identity;
  *      f(3, 4); // -(3^4) + 1
  * @symb R.pipeWith(f)([g, h, i])(...args) = f(i, f(h, f(g, ...args)))
  */
-
-
-var pipeWith = /*#__PURE__*/_curry2_1(function pipeWith(xf, list) {
+var pipeWith = /*#__PURE__*/_curry2(function pipeWith(xf, list) {
   if (list.length <= 0) {
-    return identity_1;
+    return identity;
   }
 
-  var headList = head_1(list);
-  var tailList = tail_1(list);
+  var headList = head(list);
+  var tailList = tail(list);
 
-  return _arity_1(headList.length, function () {
-    return _reduce_1(function (result, f) {
+  return _arity(headList.length, function () {
+    return _reduce(function (result, f) {
       return xf.call(this, f, result);
     }, headList.apply(this, arguments), tailList);
   });
 });
-var pipeWith_1 = pipeWith;
 
 /**
  * Performs right-to-left function composition using transforming function. The rightmost function may have
@@ -3072,12 +2851,9 @@ var pipeWith_1 = pipeWith;
  *
  * @symb R.composeWith(f)([g, h, i])(...args) = f(g, f(h, f(i, ...args)))
  */
-
-
-var composeWith = /*#__PURE__*/_curry2_1(function composeWith(xf, list) {
-  return pipeWith_1.apply(this, [xf, reverse_1(list)]);
+var composeWith = /*#__PURE__*/_curry2(function composeWith(xf, list) {
+  return pipeWith.apply(this, [xf, reverse(list)]);
 });
-var composeWith_1 = composeWith;
 
 function _arrayFromIterator(iter) {
   var list = [];
@@ -3087,7 +2863,6 @@ function _arrayFromIterator(iter) {
   }
   return list;
 }
-var _arrayFromIterator_1 = _arrayFromIterator;
 
 function _includesWith(pred, x, list) {
   var idx = 0;
@@ -3101,14 +2876,12 @@ function _includesWith(pred, x, list) {
   }
   return false;
 }
-var _includesWith_1 = _includesWith;
 
 function _functionName(f) {
   // String(x => x) evaluates to "x => x", so the pattern may not match.
   var match = String(f).match(/^function (\w*)/);
   return match == null ? '' : match[1];
 }
-var _functionName_1 = _functionName;
 
 // Based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
 function _objectIs(a, b) {
@@ -3123,7 +2896,7 @@ function _objectIs(a, b) {
   }
 }
 
-var _objectIs_1 = typeof Object.is === 'function' ? Object.is : _objectIs;
+var _objectIs$1 = typeof Object.is === 'function' ? Object.is : _objectIs;
 
 /**
  * private _uniqContentEquals function.
@@ -3137,27 +2910,27 @@ var _objectIs_1 = typeof Object.is === 'function' ? Object.is : _objectIs;
  * */
 
 function _uniqContentEquals(aIterator, bIterator, stackA, stackB) {
-  var a = _arrayFromIterator_1(aIterator);
-  var b = _arrayFromIterator_1(bIterator);
+  var a = _arrayFromIterator(aIterator);
+  var b = _arrayFromIterator(bIterator);
 
   function eq(_a, _b) {
     return _equals(_a, _b, stackA.slice(), stackB.slice());
   }
 
   // if *a* array contains any element that is not included in *b*
-  return !_includesWith_1(function (b, aItem) {
-    return !_includesWith_1(eq, aItem, b);
+  return !_includesWith(function (b, aItem) {
+    return !_includesWith(eq, aItem, b);
   }, b, a);
 }
 
 function _equals(a, b, stackA, stackB) {
-  if (_objectIs_1(a, b)) {
+  if (_objectIs$1(a, b)) {
     return true;
   }
 
-  var typeA = type_1(a);
+  var typeA = type(a);
 
-  if (typeA !== type_1(b)) {
+  if (typeA !== type(b)) {
     return false;
   }
 
@@ -3177,19 +2950,19 @@ function _equals(a, b, stackA, stackB) {
     case 'Arguments':
     case 'Array':
     case 'Object':
-      if (typeof a.constructor === 'function' && _functionName_1(a.constructor) === 'Promise') {
+      if (typeof a.constructor === 'function' && _functionName(a.constructor) === 'Promise') {
         return a === b;
       }
       break;
     case 'Boolean':
     case 'Number':
     case 'String':
-      if (!(typeof a === typeof b && _objectIs_1(a.valueOf(), b.valueOf()))) {
+      if (!(typeof a === typeof b && _objectIs$1(a.valueOf(), b.valueOf()))) {
         return false;
       }
       break;
     case 'Date':
-      if (!_objectIs_1(a.valueOf(), b.valueOf())) {
+      if (!_objectIs$1(a.valueOf(), b.valueOf())) {
         return false;
       }
       break;
@@ -3248,8 +3021,8 @@ function _equals(a, b, stackA, stackB) {
       return false;
   }
 
-  var keysA = keys_1(a);
-  if (keysA.length !== keys_1(b).length) {
+  var keysA = keys(a);
+  if (keysA.length !== keys(b).length) {
     return false;
   }
 
@@ -3259,14 +3032,13 @@ function _equals(a, b, stackA, stackB) {
   idx = keysA.length - 1;
   while (idx >= 0) {
     var key = keysA[idx];
-    if (!(_has_1(key, b) && _equals(b[key], a[key], extendedStackA, extendedStackB))) {
+    if (!(_has(key, b) && _equals(b[key], a[key], extendedStackA, extendedStackB))) {
       return false;
     }
     idx -= 1;
   }
   return true;
 }
-var _equals_1 = _equals;
 
 /**
  * Returns `true` if its arguments are equivalent, `false` otherwise. Handles
@@ -3293,12 +3065,9 @@ var _equals_1 = _equals;
  *      const b = {}; b.v = b;
  *      R.equals(a, b); //=> true
  */
-
-
-var equals = /*#__PURE__*/_curry2_1(function equals(a, b) {
-  return _equals_1(a, b, [], []);
+var equals = /*#__PURE__*/_curry2(function equals(a, b) {
+  return _equals(a, b, [], []);
 });
-var equals_1 = equals;
 
 function _indexOf(list, a, idx) {
   var inf, item;
@@ -3347,19 +3116,17 @@ function _indexOf(list, a, idx) {
   }
   // anything else not covered above, defer to R.equals
   while (idx < list.length) {
-    if (equals_1(list[idx], a)) {
+    if (equals(list[idx], a)) {
       return idx;
     }
     idx += 1;
   }
   return -1;
 }
-var _indexOf_1 = _indexOf;
 
 function _includes(a, list) {
-  return _indexOf_1(list, a, 0) >= 0;
+  return _indexOf(list, a, 0) >= 0;
 }
-var _includes_1 = _includes;
 
 function _quote(s) {
   var escaped = s.replace(/\\/g, '\\\\').replace(/[\b]/g, '\\b') // \b matches word boundary; [\b] matches backspace
@@ -3367,7 +3134,6 @@ function _quote(s) {
 
   return '"' + escaped.replace(/"/g, '\\"') + '"';
 }
-var _quote_1 = _quote;
 
 /**
  * Polyfill from <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString>.
@@ -3382,14 +3148,11 @@ var _toISOString = typeof Date.prototype.toISOString === 'function' ? function _
   return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds()) + '.' + (d.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) + 'Z';
 };
 
-var _toISOString_1 = _toISOString;
-
 function _complement(f) {
   return function () {
     return !f.apply(this, arguments);
   };
 }
-var _complement_1 = _complement;
 
 function _filter(fn, list) {
   var idx = 0;
@@ -3404,15 +3167,12 @@ function _filter(fn, list) {
   }
   return result;
 }
-var _filter_1 = _filter;
 
 function _isObject(x) {
   return Object.prototype.toString.call(x) === '[object Object]';
 }
-var _isObject_1 = _isObject;
 
 var XFilter = /*#__PURE__*/function () {
-
   function XFilter(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -3426,10 +3186,9 @@ var XFilter = /*#__PURE__*/function () {
   return XFilter;
 }();
 
-var _xfilter = /*#__PURE__*/_curry2_1(function _xfilter(f, xf) {
+var _xfilter = /*#__PURE__*/_curry2(function _xfilter(f, xf) {
   return new XFilter(f, xf);
 });
-var _xfilter_1 = _xfilter;
 
 /**
  * Takes a predicate and a `Filterable`, and returns a new filterable of the
@@ -3458,19 +3217,16 @@ var _xfilter_1 = _xfilter;
  *
  *      R.filter(isEven, {a: 1, b: 2, c: 3, d: 4}); //=> {b: 2, d: 4}
  */
-
-
-var filter = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['filter'], _xfilter_1, function (pred, filterable) {
-  return _isObject_1(filterable) ? _reduce_1(function (acc, key) {
+var filter = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['filter'], _xfilter, function (pred, filterable) {
+  return _isObject(filterable) ? _reduce(function (acc, key) {
     if (pred(filterable[key])) {
       acc[key] = filterable[key];
     }
     return acc;
-  }, {}, keys_1(filterable)) :
+  }, {}, keys(filterable)) :
   // else
-  _filter_1(pred, filterable);
+  _filter(pred, filterable);
 }));
-var filter_1 = filter;
 
 /**
  * The complement of [`filter`](#filter).
@@ -3496,44 +3252,41 @@ var filter_1 = filter;
  *
  *      R.reject(isOdd, {a: 1, b: 2, c: 3, d: 4}); //=> {b: 2, d: 4}
  */
-
-
-var reject = /*#__PURE__*/_curry2_1(function reject(pred, filterable) {
-  return filter_1(_complement_1(pred), filterable);
+var reject = /*#__PURE__*/_curry2(function reject(pred, filterable) {
+  return filter(_complement(pred), filterable);
 });
-var reject_1 = reject;
 
 function _toString(x, seen) {
   var recur = function recur(y) {
     var xs = seen.concat([x]);
-    return _includes_1(y, xs) ? '<Circular>' : _toString(y, xs);
+    return _includes(y, xs) ? '<Circular>' : _toString(y, xs);
   };
 
   //  mapPairs :: (Object, [String]) -> [String]
   var mapPairs = function (obj, keys) {
-    return _map_1(function (k) {
-      return _quote_1(k) + ': ' + recur(obj[k]);
+    return _map(function (k) {
+      return _quote(k) + ': ' + recur(obj[k]);
     }, keys.slice().sort());
   };
 
   switch (Object.prototype.toString.call(x)) {
     case '[object Arguments]':
-      return '(function() { return arguments; }(' + _map_1(recur, x).join(', ') + '))';
+      return '(function() { return arguments; }(' + _map(recur, x).join(', ') + '))';
     case '[object Array]':
-      return '[' + _map_1(recur, x).concat(mapPairs(x, reject_1(function (k) {
+      return '[' + _map(recur, x).concat(mapPairs(x, reject(function (k) {
         return (/^\d+$/.test(k)
         );
-      }, keys_1(x)))).join(', ') + ']';
+      }, keys(x)))).join(', ') + ']';
     case '[object Boolean]':
       return typeof x === 'object' ? 'new Boolean(' + recur(x.valueOf()) + ')' : x.toString();
     case '[object Date]':
-      return 'new Date(' + (isNaN(x.valueOf()) ? recur(NaN) : _quote_1(_toISOString_1(x))) + ')';
+      return 'new Date(' + (isNaN(x.valueOf()) ? recur(NaN) : _quote(_toISOString(x))) + ')';
     case '[object Null]':
       return 'null';
     case '[object Number]':
       return typeof x === 'object' ? 'new Number(' + recur(x.valueOf()) + ')' : 1 / x === -Infinity ? '-0' : x.toString(10);
     case '[object String]':
-      return typeof x === 'object' ? 'new String(' + recur(x.valueOf()) + ')' : _quote_1(x);
+      return typeof x === 'object' ? 'new String(' + recur(x.valueOf()) + ')' : _quote(x);
     case '[object Undefined]':
       return 'undefined';
     default:
@@ -3543,10 +3296,9 @@ function _toString(x, seen) {
           return repr;
         }
       }
-      return '{' + mapPairs(x, keys_1(x)).join(', ') + '}';
+      return '{' + mapPairs(x, keys(x)).join(', ') + '}';
   }
 }
-var _toString_1 = _toString;
 
 /**
  * Returns the string representation of the given value. `eval`'ing the output
@@ -3584,12 +3336,9 @@ var _toString_1 = _toString;
  *      R.toString({foo: 1, bar: 2, baz: 3}); //=> '{"bar": 2, "baz": 3, "foo": 1}'
  *      R.toString(new Date('2001-02-03T04:05:06Z')); //=> 'new Date("2001-02-03T04:05:06.000Z")'
  */
-
-
-var toString$1 = /*#__PURE__*/_curry1_1(function toString(val) {
-  return _toString_1(val, []);
+var toString$1 = /*#__PURE__*/_curry1(function toString(val) {
+  return _toString(val, []);
 });
-var toString_1 = toString$1;
 
 /**
  * Returns the result of concatenating the given lists or strings.
@@ -3619,30 +3368,27 @@ var toString_1 = toString$1;
  *      R.concat([4, 5, 6], [1, 2, 3]); //=> [4, 5, 6, 1, 2, 3]
  *      R.concat([], []); //=> []
  */
-
-
-var concat = /*#__PURE__*/_curry2_1(function concat(a, b) {
+var concat = /*#__PURE__*/_curry2(function concat(a, b) {
   if (_isArray(a)) {
     if (_isArray(b)) {
       return a.concat(b);
     }
-    throw new TypeError(toString_1(b) + ' is not an array');
+    throw new TypeError(toString$1(b) + ' is not an array');
   }
-  if (_isString_1(a)) {
-    if (_isString_1(b)) {
+  if (_isString(a)) {
+    if (_isString(b)) {
       return a + b;
     }
-    throw new TypeError(toString_1(b) + ' is not a string');
+    throw new TypeError(toString$1(b) + ' is not a string');
   }
-  if (a != null && _isFunction_1(a['fantasy-land/concat'])) {
+  if (a != null && _isFunction(a['fantasy-land/concat'])) {
     return a['fantasy-land/concat'](b);
   }
-  if (a != null && _isFunction_1(a.concat)) {
+  if (a != null && _isFunction(a.concat)) {
     return a.concat(b);
   }
-  throw new TypeError(toString_1(a) + ' does not have a method named "concat" or "fantasy-land/concat"');
+  throw new TypeError(toString$1(a) + ' does not have a method named "concat" or "fantasy-land/concat"');
 });
-var concat_1 = concat;
 
 /**
  * Returns a function, `fn`, which encapsulates `if/else, if/else, ...` logic.
@@ -3671,13 +3417,11 @@ var concat_1 = concat;
  *      fn(50); //=> 'nothing special happens at 50°C'
  *      fn(100); //=> 'water boils at 100°C'
  */
-
-
-var cond = /*#__PURE__*/_curry1_1(function cond(pairs) {
-  var arity = reduce_1(max_1, 0, map_1(function (pair) {
+var cond = /*#__PURE__*/_curry1(function cond(pairs) {
+  var arity = reduce(max, 0, map(function (pair) {
     return pair[0].length;
   }, pairs));
-  return _arity_1(arity, function () {
+  return _arity(arity, function () {
     var idx = 0;
     while (idx < pairs.length) {
       if (pairs[idx][0].apply(this, arguments)) {
@@ -3687,7 +3431,6 @@ var cond = /*#__PURE__*/_curry1_1(function cond(pairs) {
     }
   });
 });
-var cond_1 = cond;
 
 /**
  * Wraps a constructor function inside a curried function that can be called
@@ -3724,9 +3467,7 @@ var cond_1 = cond;
  *      // Add a dollop of Potato Chips
  *      // Add a dollop of Ketchup
  */
-
-
-var constructN = /*#__PURE__*/_curry2_1(function constructN(n, Fn) {
+var constructN = /*#__PURE__*/_curry2(function constructN(n, Fn) {
   if (n > 10) {
     throw new Error('Constructor with greater than ten arguments');
   }
@@ -3735,7 +3476,7 @@ var constructN = /*#__PURE__*/_curry2_1(function constructN(n, Fn) {
       return new Fn();
     };
   }
-  return curry_1(nAry_1(n, function ($0, $1, $2, $3, $4, $5, $6, $7, $8, $9) {
+  return curry(nAry(n, function ($0, $1, $2, $3, $4, $5, $6, $7, $8, $9) {
     switch (arguments.length) {
       case 1:
         return new Fn($0);
@@ -3760,7 +3501,6 @@ var constructN = /*#__PURE__*/_curry2_1(function constructN(n, Fn) {
     }
   }));
 });
-var constructN_1 = constructN;
 
 /**
  * Wraps a constructor function inside a curried function that can be called
@@ -3794,12 +3534,9 @@ var constructN_1 = constructN;
  *      const sightNewAnimal = R.compose(animalSighting, AnimalConstructor);
  *      R.map(sightNewAnimal, animalTypes); //=> ["It's a Lion!", "It's a Tiger!", "It's a Bear!"]
  */
-
-
-var construct = /*#__PURE__*/_curry1_1(function construct(Fn) {
-  return constructN_1(Fn.length, Fn);
+var construct = /*#__PURE__*/_curry1(function construct(Fn) {
+  return constructN(Fn.length, Fn);
 });
-var construct_1 = construct;
 
 /**
  * Returns `true` if the specified value is equal, in [`R.equals`](#equals)
@@ -3824,10 +3561,7 @@ var construct_1 = construct;
  *      R.contains([42], [[42]]); //=> true
  *      R.contains('ba', 'banana'); //=>true
  */
-
-
-var contains$1 = /*#__PURE__*/_curry2_1(_includes_1);
-var contains_1 = contains$1;
+var contains$1 = /*#__PURE__*/_curry2(_includes);
 
 /**
  * Accepts a converging function and a list of branching functions and returns
@@ -3857,21 +3591,17 @@ var contains_1 = contains$1;
  *
  * @symb R.converge(f, [g, h])(a, b) = f(g(a, b), h(a, b))
  */
-
-
-var converge = /*#__PURE__*/_curry2_1(function converge(after, fns) {
-  return curryN_1(reduce_1(max_1, 0, pluck_1('length', fns)), function () {
+var converge = /*#__PURE__*/_curry2(function converge(after, fns) {
+  return curryN(reduce(max, 0, pluck('length', fns)), function () {
     var args = arguments;
     var context = this;
-    return after.apply(context, _map_1(function (fn) {
+    return after.apply(context, _map(function (fn) {
       return fn.apply(context, args);
     }, fns));
   });
 });
-var converge_1 = converge;
 
 var XReduceBy = /*#__PURE__*/function () {
-
   function XReduceBy(valueFn, valueAcc, keyFn, xf) {
     this.valueFn = valueFn;
     this.valueAcc = valueAcc;
@@ -3883,7 +3613,7 @@ var XReduceBy = /*#__PURE__*/function () {
   XReduceBy.prototype['@@transducer/result'] = function (result) {
     var key;
     for (key in this.inputs) {
-      if (_has_1(key, this.inputs)) {
+      if (_has(key, this.inputs)) {
         result = this.xf['@@transducer/step'](result, this.inputs[key]);
         if (result['@@transducer/reduced']) {
           result = result['@@transducer/value'];
@@ -3904,10 +3634,9 @@ var XReduceBy = /*#__PURE__*/function () {
   return XReduceBy;
 }();
 
-var _xreduceBy = /*#__PURE__*/_curryN_1(4, [], function _xreduceBy(valueFn, valueAcc, keyFn, xf) {
+var _xreduceBy = /*#__PURE__*/_curryN(4, [], function _xreduceBy(valueFn, valueAcc, keyFn, xf) {
   return new XReduceBy(valueFn, valueAcc, keyFn, xf);
 });
-var _xreduceBy_1 = _xreduceBy;
 
 /**
  * Groups the elements of the list according to the result of calling
@@ -3950,16 +3679,13 @@ var _xreduceBy_1 = _xreduceBy;
  *      reduceBy(groupNames, [], toGrade, students)
  *      //=> {"A": ["Dora"], "B": ["Abby", "Curt"], "F": ["Bart"]}
  */
-
-
-var reduceBy = /*#__PURE__*/_curryN_1(4, [], /*#__PURE__*/_dispatchable_1([], _xreduceBy_1, function reduceBy(valueFn, valueAcc, keyFn, list) {
-  return _reduce_1(function (acc, elt) {
+var reduceBy = /*#__PURE__*/_curryN(4, [], /*#__PURE__*/_dispatchable([], _xreduceBy, function reduceBy(valueFn, valueAcc, keyFn, list) {
+  return _reduce(function (acc, elt) {
     var key = keyFn(elt);
-    acc[key] = valueFn(_has_1(key, acc) ? acc[key] : valueAcc, elt);
+    acc[key] = valueFn(_has(key, acc) ? acc[key] : valueAcc, elt);
     return acc;
   }, {}, list);
 }));
-var reduceBy_1 = reduceBy;
 
 /**
  * Counts the elements of a list according to how many match each value of a
@@ -3985,12 +3711,9 @@ var reduceBy_1 = reduceBy;
  *      const letters = ['a', 'b', 'A', 'a', 'B', 'c'];
  *      R.countBy(R.toLower)(letters);   //=> {'a': 3, 'b': 2, 'c': 1}
  */
-
-
-var countBy = /*#__PURE__*/reduceBy_1(function (acc, elem) {
+var countBy = /*#__PURE__*/reduceBy(function (acc, elem) {
   return acc + 1;
 }, 0);
-var countBy_1 = countBy;
 
 /**
  * Decrements its argument.
@@ -4007,10 +3730,7 @@ var countBy_1 = countBy;
  *
  *      R.dec(42); //=> 41
  */
-
-
-var dec = /*#__PURE__*/add_1(-1);
-var dec_1 = dec;
+var dec = /*#__PURE__*/add(-1);
 
 /**
  * Returns the second argument if it is not `null`, `undefined` or `NaN`;
@@ -4035,12 +3755,9 @@ var dec_1 = dec;
  *      // parseInt('string') results in NaN
  *      defaultTo42(parseInt('string')); //=> 42
  */
-
-
-var defaultTo = /*#__PURE__*/_curry2_1(function defaultTo(d, v) {
+var defaultTo = /*#__PURE__*/_curry2(function defaultTo(d, v) {
   return v == null || v !== v ? d : v;
 });
-var defaultTo_1 = defaultTo;
 
 /**
  * Makes a descending comparator function out of a function that returns a value
@@ -4067,17 +3784,13 @@ var defaultTo_1 = defaultTo;
  *      const peopleByOldestFirst = R.sort(byAge, people);
  *        //=> [{ name: 'Peter', age: 78 }, { name: 'Emma', age: 70 }, { name: 'Mikhail', age: 62 }]
  */
-
-
-var descend = /*#__PURE__*/_curry3_1(function descend(fn, a, b) {
+var descend = /*#__PURE__*/_curry3(function descend(fn, a, b) {
   var aa = fn(a);
   var bb = fn(b);
   return aa > bb ? -1 : aa < bb ? 1 : 0;
 });
-var descend_1 = descend;
 
 var _Set = /*#__PURE__*/function () {
-
   function _Set() {
     /* globals Set */
     this._nativeSet = typeof Set === 'function' ? new Set() : null;
@@ -4195,7 +3908,7 @@ function hasOrAdd(item, shouldAdd, set) {
           }
           return false;
         }
-        if (!_includes_1(item, set._items[type])) {
+        if (!_includes(item, set._items[type])) {
           if (shouldAdd) {
             set._items[type].push(item);
           }
@@ -4236,7 +3949,7 @@ function hasOrAdd(item, shouldAdd, set) {
         return false;
       }
       // scan through all previously applied items
-      if (!_includes_1(item, set._items[type])) {
+      if (!_includes(item, set._items[type])) {
         if (shouldAdd) {
           set._items[type].push(item);
         }
@@ -4245,9 +3958,6 @@ function hasOrAdd(item, shouldAdd, set) {
       return true;
   }
 }
-
-// A simple Set type that honours R.equals semantics
-var _Set_1 = _Set;
 
 /**
  * Finds the set (i.e. no duplicates) of all elements in the first list not
@@ -4269,14 +3979,12 @@ var _Set_1 = _Set;
  *      R.difference([7,6,5,4,3], [1,2,3,4]); //=> [7,6,5]
  *      R.difference([{a: 1}, {b: 2}], [{a: 1}, {c: 3}]) //=> [{b: 2}]
  */
-
-
-var difference = /*#__PURE__*/_curry2_1(function difference(first, second) {
+var difference = /*#__PURE__*/_curry2(function difference(first, second) {
   var out = [];
   var idx = 0;
   var firstLen = first.length;
   var secondLen = second.length;
-  var toFilterOut = new _Set_1();
+  var toFilterOut = new _Set();
 
   for (var i = 0; i < secondLen; i += 1) {
     toFilterOut.add(second[i]);
@@ -4290,7 +3998,6 @@ var difference = /*#__PURE__*/_curry2_1(function difference(first, second) {
   }
   return out;
 });
-var difference_1 = difference;
 
 /**
  * Finds the set (i.e. no duplicates) of all elements in the first list not
@@ -4314,21 +4021,18 @@ var difference_1 = difference;
  *      const l2 = [{a: 3}, {a: 4}];
  *      R.differenceWith(cmp, l1, l2); //=> [{a: 1}, {a: 2}]
  */
-
-
-var differenceWith = /*#__PURE__*/_curry3_1(function differenceWith(pred, first, second) {
+var differenceWith = /*#__PURE__*/_curry3(function differenceWith(pred, first, second) {
   var out = [];
   var idx = 0;
   var firstLen = first.length;
   while (idx < firstLen) {
-    if (!_includesWith_1(pred, first[idx], second) && !_includesWith_1(pred, first[idx], out)) {
+    if (!_includesWith(pred, first[idx], second) && !_includesWith(pred, first[idx], out)) {
       out.push(first[idx]);
     }
     idx += 1;
   }
   return out;
 });
-var differenceWith_1 = differenceWith;
 
 /**
  * Returns a new object that does not contain a `prop` property.
@@ -4346,9 +4050,7 @@ var differenceWith_1 = differenceWith;
  *
  *      R.dissoc('b', {a: 1, b: 2, c: 3}); //=> {a: 1, c: 3}
  */
-
-
-var dissoc = /*#__PURE__*/_curry2_1(function dissoc(prop, obj) {
+var dissoc = /*#__PURE__*/_curry2(function dissoc(prop, obj) {
   var result = {};
   for (var p in obj) {
     result[p] = obj[p];
@@ -4356,7 +4058,6 @@ var dissoc = /*#__PURE__*/_curry2_1(function dissoc(prop, obj) {
   delete result[prop];
   return result;
 });
-var dissoc_1 = dissoc;
 
 /**
  * Removes the sub-list of `list` starting at index `start` and containing
@@ -4378,14 +4079,11 @@ var dissoc_1 = dissoc;
  *
  *      R.remove(2, 3, [1,2,3,4,5,6,7,8]); //=> [1,2,6,7,8]
  */
-
-
-var remove = /*#__PURE__*/_curry3_1(function remove(start, count, list) {
+var remove = /*#__PURE__*/_curry3(function remove(start, count, list) {
   var result = Array.prototype.slice.call(list, 0);
   result.splice(start, count);
   return result;
 });
-var remove_1 = remove;
 
 /**
  * Returns a new copy of the array with the element at the provided index
@@ -4409,12 +4107,9 @@ var remove_1 = remove;
  * @symb R.update(0, a, [b, c]) = [a, c]
  * @symb R.update(1, a, [b, c]) = [b, a]
  */
-
-
-var update = /*#__PURE__*/_curry3_1(function update(idx, x, list) {
-  return adjust_1(idx, always_1(x), list);
+var update = /*#__PURE__*/_curry3(function update(idx, x, list) {
+  return adjust(idx, always(x), list);
 });
-var update_1 = update;
 
 /**
  * Makes a shallow clone of an object, omitting the property at the given path.
@@ -4435,27 +4130,24 @@ var update_1 = update;
  *
  *      R.dissocPath(['a', 'b', 'c'], {a: {b: {c: 42}}}); //=> {a: {b: {}}}
  */
-
-
-var dissocPath = /*#__PURE__*/_curry2_1(function dissocPath(path, obj) {
+var dissocPath = /*#__PURE__*/_curry2(function dissocPath(path, obj) {
   switch (path.length) {
     case 0:
       return obj;
     case 1:
-      return _isInteger(path[0]) && _isArray(obj) ? remove_1(path[0], 1, obj) : dissoc_1(path[0], obj);
+      return _isInteger(path[0]) && _isArray(obj) ? remove(path[0], 1, obj) : dissoc(path[0], obj);
     default:
       var head = path[0];
       var tail = Array.prototype.slice.call(path, 1);
       if (obj[head] == null) {
         return obj;
       } else if (_isInteger(head) && _isArray(obj)) {
-        return update_1(head, dissocPath(tail, obj[head]), obj);
+        return update(head, dissocPath(tail, obj[head]), obj);
       } else {
-        return assoc_1(head, dissocPath(tail, obj[head]), obj);
+        return assoc(head, dissocPath(tail, obj[head]), obj);
       }
   }
 });
-var dissocPath_1 = dissocPath;
 
 /**
  * Divides two numbers. Equivalent to `a / b`.
@@ -4479,15 +4171,11 @@ var dissocPath_1 = dissocPath;
  *      const reciprocal = R.divide(1);
  *      reciprocal(4);   //=> 0.25
  */
-
-
-var divide = /*#__PURE__*/_curry2_1(function divide(a, b) {
+var divide = /*#__PURE__*/_curry2(function divide(a, b) {
   return a / b;
 });
-var divide_1 = divide;
 
 var XDrop = /*#__PURE__*/function () {
-
   function XDrop(n, xf) {
     this.xf = xf;
     this.n = n;
@@ -4505,10 +4193,9 @@ var XDrop = /*#__PURE__*/function () {
   return XDrop;
 }();
 
-var _xdrop = /*#__PURE__*/_curry2_1(function _xdrop(n, xf) {
+var _xdrop = /*#__PURE__*/_curry2(function _xdrop(n, xf) {
   return new XDrop(n, xf);
 });
-var _xdrop_1 = _xdrop;
 
 /**
  * Returns all but the first `n` elements of the given list, string, or
@@ -4534,15 +4221,11 @@ var _xdrop_1 = _xdrop;
  *      R.drop(4, ['foo', 'bar', 'baz']); //=> []
  *      R.drop(3, 'ramda');               //=> 'da'
  */
-
-
-var drop = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['drop'], _xdrop_1, function drop(n, xs) {
-  return slice_1(Math.max(0, n), Infinity, xs);
+var drop = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['drop'], _xdrop, function drop(n, xs) {
+  return slice(Math.max(0, n), Infinity, xs);
 }));
-var drop_1 = drop;
 
 var XTake = /*#__PURE__*/function () {
-
   function XTake(n, xf) {
     this.xf = xf;
     this.n = n;
@@ -4553,16 +4236,15 @@ var XTake = /*#__PURE__*/function () {
   XTake.prototype['@@transducer/step'] = function (result, input) {
     this.i += 1;
     var ret = this.n === 0 ? result : this.xf['@@transducer/step'](result, input);
-    return this.n >= 0 && this.i >= this.n ? _reduced_1(ret) : ret;
+    return this.n >= 0 && this.i >= this.n ? _reduced(ret) : ret;
   };
 
   return XTake;
 }();
 
-var _xtake = /*#__PURE__*/_curry2_1(function _xtake(n, xf) {
+var _xtake = /*#__PURE__*/_curry2(function _xtake(n, xf) {
   return new XTake(n, xf);
 });
-var _xtake_1 = _xtake;
 
 /**
  * Returns the first `n` elements of the given list, string, or
@@ -4607,20 +4289,15 @@ var _xtake_1 = _xtake;
  * @symb R.take(1, [a, b]) = [a]
  * @symb R.take(2, [a, b]) = [a, b]
  */
-
-
-var take = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['take'], _xtake_1, function take(n, xs) {
-  return slice_1(0, n < 0 ? Infinity : n, xs);
+var take = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['take'], _xtake, function take(n, xs) {
+  return slice(0, n < 0 ? Infinity : n, xs);
 }));
-var take_1 = take;
 
 function dropLast(n, xs) {
-  return take_1(n < xs.length ? xs.length - n : 0, xs);
+  return take(n < xs.length ? xs.length - n : 0, xs);
 }
-var _dropLast = dropLast;
 
 var XDropLast = /*#__PURE__*/function () {
-
   function XDropLast(n, xf) {
     this.xf = xf;
     this.pos = 0;
@@ -4651,10 +4328,9 @@ var XDropLast = /*#__PURE__*/function () {
   return XDropLast;
 }();
 
-var _xdropLast = /*#__PURE__*/_curry2_1(function _xdropLast(n, xf) {
+var _xdropLast = /*#__PURE__*/_curry2(function _xdropLast(n, xf) {
   return new XDropLast(n, xf);
 });
-var _xdropLast_1 = _xdropLast;
 
 /**
  * Returns a list containing all but the last `n` elements of the given `list`.
@@ -4679,22 +4355,17 @@ var _xdropLast_1 = _xdropLast;
  *      R.dropLast(4, ['foo', 'bar', 'baz']); //=> []
  *      R.dropLast(3, 'ramda');               //=> 'ra'
  */
-
-
-var dropLast$1 = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xdropLast_1, _dropLast));
-var dropLast_1 = dropLast$1;
+var dropLast$1 = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable([], _xdropLast, dropLast));
 
 function dropLastWhile(pred, xs) {
   var idx = xs.length - 1;
   while (idx >= 0 && pred(xs[idx])) {
     idx -= 1;
   }
-  return slice_1(0, idx + 1, xs);
+  return slice(0, idx + 1, xs);
 }
-var _dropLastWhile = dropLastWhile;
 
 var XDropLastWhile = /*#__PURE__*/function () {
-
   function XDropLastWhile(fn, xf) {
     this.f = fn;
     this.retained = [];
@@ -4709,7 +4380,7 @@ var XDropLastWhile = /*#__PURE__*/function () {
     return this.f(input) ? this.retain(result, input) : this.flush(result, input);
   };
   XDropLastWhile.prototype.flush = function (result, input) {
-    result = _reduce_1(this.xf['@@transducer/step'], result, this.retained);
+    result = _reduce(this.xf['@@transducer/step'], result, this.retained);
     this.retained = [];
     return this.xf['@@transducer/step'](result, input);
   };
@@ -4721,10 +4392,9 @@ var XDropLastWhile = /*#__PURE__*/function () {
   return XDropLastWhile;
 }();
 
-var _xdropLastWhile = /*#__PURE__*/_curry2_1(function _xdropLastWhile(fn, xf) {
+var _xdropLastWhile = /*#__PURE__*/_curry2(function _xdropLastWhile(fn, xf) {
   return new XDropLastWhile(fn, xf);
 });
-var _xdropLastWhile_1 = _xdropLastWhile;
 
 /**
  * Returns a new list excluding all the tailing elements of a given list which
@@ -4753,13 +4423,9 @@ var _xdropLastWhile_1 = _xdropLastWhile;
  *
  *      R.dropLastWhile(x => x !== 'd' , 'Ramda'); //=> 'Ramd'
  */
-
-
-var dropLastWhile$1 = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xdropLastWhile_1, _dropLastWhile));
-var dropLastWhile_1 = dropLastWhile$1;
+var dropLastWhile$1 = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable([], _xdropLastWhile, dropLastWhile));
 
 var XDropRepeatsWith = /*#__PURE__*/function () {
-
   function XDropRepeatsWith(pred, xf) {
     this.xf = xf;
     this.pred = pred;
@@ -4783,10 +4449,9 @@ var XDropRepeatsWith = /*#__PURE__*/function () {
   return XDropRepeatsWith;
 }();
 
-var _xdropRepeatsWith = /*#__PURE__*/_curry2_1(function _xdropRepeatsWith(pred, xf) {
+var _xdropRepeatsWith = /*#__PURE__*/_curry2(function _xdropRepeatsWith(pred, xf) {
   return new XDropRepeatsWith(pred, xf);
 });
-var _xdropRepeatsWith_1 = _xdropRepeatsWith;
 
 /**
  * Returns the last element of the given list or string.
@@ -4808,10 +4473,7 @@ var _xdropRepeatsWith_1 = _xdropRepeatsWith;
  *      R.last('abc'); //=> 'c'
  *      R.last(''); //=> ''
  */
-
-
-var last = /*#__PURE__*/nth_1(-1);
-var last_1 = last;
+var last = /*#__PURE__*/nth(-1);
 
 /**
  * Returns a new list without any consecutively repeating elements. Equality is
@@ -4834,16 +4496,14 @@ var last_1 = last;
  *      const l = [1, -1, 1, 3, 4, -4, -4, -5, 5, 3, 3];
  *      R.dropRepeatsWith(R.eqBy(Math.abs), l); //=> [1, 3, 4, -5, 3]
  */
-
-
-var dropRepeatsWith = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xdropRepeatsWith_1, function dropRepeatsWith(pred, list) {
+var dropRepeatsWith = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable([], _xdropRepeatsWith, function dropRepeatsWith(pred, list) {
   var result = [];
   var idx = 1;
   var len = list.length;
   if (len !== 0) {
     result[0] = list[0];
     while (idx < len) {
-      if (!pred(last_1(result), list[idx])) {
+      if (!pred(last(result), list[idx])) {
         result[result.length] = list[idx];
       }
       idx += 1;
@@ -4851,7 +4511,6 @@ var dropRepeatsWith = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _
   }
   return result;
 }));
-var dropRepeatsWith_1 = dropRepeatsWith;
 
 /**
  * Returns a new list without any consecutively repeating elements.
@@ -4871,13 +4530,9 @@ var dropRepeatsWith_1 = dropRepeatsWith;
  *
  *     R.dropRepeats([1, 1, 1, 2, 3, 4, 4, 2, 2]); //=> [1, 2, 3, 4, 2]
  */
-
-
-var dropRepeats = /*#__PURE__*/_curry1_1( /*#__PURE__*/_dispatchable_1([], /*#__PURE__*/_xdropRepeatsWith_1(equals_1), /*#__PURE__*/dropRepeatsWith_1(equals_1)));
-var dropRepeats_1 = dropRepeats;
+var dropRepeats = /*#__PURE__*/_curry1( /*#__PURE__*/_dispatchable([], /*#__PURE__*/_xdropRepeatsWith(equals), /*#__PURE__*/dropRepeatsWith(equals)));
 
 var XDropWhile = /*#__PURE__*/function () {
-
   function XDropWhile(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -4897,10 +4552,9 @@ var XDropWhile = /*#__PURE__*/function () {
   return XDropWhile;
 }();
 
-var _xdropWhile = /*#__PURE__*/_curry2_1(function _xdropWhile(f, xf) {
+var _xdropWhile = /*#__PURE__*/_curry2(function _xdropWhile(f, xf) {
   return new XDropWhile(f, xf);
 });
-var _xdropWhile_1 = _xdropWhile;
 
 /**
  * Returns a new list excluding the leading elements of a given list which
@@ -4930,17 +4584,14 @@ var _xdropWhile_1 = _xdropWhile;
  *
  *      R.dropWhile(x => x !== 'd' , 'Ramda'); //=> 'da'
  */
-
-
-var dropWhile = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['dropWhile'], _xdropWhile_1, function dropWhile(pred, xs) {
+var dropWhile = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['dropWhile'], _xdropWhile, function dropWhile(pred, xs) {
   var idx = 0;
   var len = xs.length;
   while (idx < len && pred(xs[idx])) {
     idx += 1;
   }
-  return slice_1(idx, Infinity, xs);
+  return slice(idx, Infinity, xs);
 }));
-var dropWhile_1 = dropWhile;
 
 /**
  * Returns `true` if one or both of its arguments are `true`. Returns `false`
@@ -4962,12 +4613,9 @@ var dropWhile_1 = dropWhile;
  *      R.or(false, true); //=> true
  *      R.or(false, false); //=> false
  */
-
-
-var or = /*#__PURE__*/_curry2_1(function or(a, b) {
+var or = /*#__PURE__*/_curry2(function or(a, b) {
   return a || b;
 });
-var or_1 = or;
 
 /**
  * A function wrapping calls to the two functions in an `||` operation,
@@ -4999,14 +4647,11 @@ var or_1 = or;
  *      R.either(Maybe.Just(false), Maybe.Just(55)); // => Maybe.Just(55)
  *      R.either([false, false, 'a'], [11]) // => [11, 11, "a"]
  */
-
-
-var either = /*#__PURE__*/_curry2_1(function either(f, g) {
-  return _isFunction_1(f) ? function _either() {
+var either = /*#__PURE__*/_curry2(function either(f, g) {
+  return _isFunction(f) ? function _either() {
     return f.apply(this, arguments) || g.apply(this, arguments);
-  } : lift_1(or_1)(f, g);
+  } : lift(or)(f, g);
 });
-var either_1 = either;
 
 /**
  * Returns the empty value of its argument's type. Ramda defines the empty
@@ -5031,15 +4676,12 @@ var either_1 = either;
  *      R.empty('unicorns');    //=> ''
  *      R.empty({x: 1, y: 2});  //=> {}
  */
-
-
-var empty = /*#__PURE__*/_curry1_1(function empty(x) {
-  return x != null && typeof x['fantasy-land/empty'] === 'function' ? x['fantasy-land/empty']() : x != null && x.constructor != null && typeof x.constructor['fantasy-land/empty'] === 'function' ? x.constructor['fantasy-land/empty']() : x != null && typeof x.empty === 'function' ? x.empty() : x != null && x.constructor != null && typeof x.constructor.empty === 'function' ? x.constructor.empty() : _isArray(x) ? [] : _isString_1(x) ? '' : _isObject_1(x) ? {} : _isArguments_1(x) ? function () {
+var empty = /*#__PURE__*/_curry1(function empty(x) {
+  return x != null && typeof x['fantasy-land/empty'] === 'function' ? x['fantasy-land/empty']() : x != null && x.constructor != null && typeof x.constructor['fantasy-land/empty'] === 'function' ? x.constructor['fantasy-land/empty']() : x != null && typeof x.empty === 'function' ? x.empty() : x != null && x.constructor != null && typeof x.constructor.empty === 'function' ? x.constructor.empty() : _isArray(x) ? [] : _isString(x) ? '' : _isObject(x) ? {} : _isArguments(x) ? function () {
     return arguments;
   }() : void 0 // else
   ;
 });
-var empty_1 = empty;
 
 /**
  * Returns a new list containing the last `n` elements of the given list.
@@ -5063,12 +4705,9 @@ var empty_1 = empty;
  *      R.takeLast(4, ['foo', 'bar', 'baz']); //=> ['foo', 'bar', 'baz']
  *      R.takeLast(3, 'ramda');               //=> 'mda'
  */
-
-
-var takeLast = /*#__PURE__*/_curry2_1(function takeLast(n, xs) {
-  return drop_1(n >= 0 ? xs.length - n : 0, xs);
+var takeLast = /*#__PURE__*/_curry2(function takeLast(n, xs) {
+  return drop(n >= 0 ? xs.length - n : 0, xs);
 });
-var takeLast_1 = takeLast;
 
 /**
  * Checks if a list ends with the provided sublist.
@@ -5092,12 +4731,9 @@ var takeLast_1 = takeLast;
  *      R.endsWith(['c'], ['a', 'b', 'c'])    //=> true
  *      R.endsWith(['b'], ['a', 'b', 'c'])    //=> false
  */
-
-
-var endsWith = /*#__PURE__*/_curry2_1(function (suffix, list) {
-  return equals_1(takeLast_1(suffix.length, list), suffix);
+var endsWith = /*#__PURE__*/_curry2(function (suffix, list) {
+  return equals(takeLast(suffix.length, list), suffix);
 });
-var endsWith_1 = endsWith;
 
 /**
  * Takes a function and two values in its domain and returns `true` if the
@@ -5116,12 +4752,9 @@ var endsWith_1 = endsWith;
  *
  *      R.eqBy(Math.abs, 5, -5); //=> true
  */
-
-
-var eqBy = /*#__PURE__*/_curry3_1(function eqBy(f, x, y) {
-  return equals_1(f(x), f(y));
+var eqBy = /*#__PURE__*/_curry3(function eqBy(f, x, y) {
+  return equals(f(x), f(y));
 });
-var eqBy_1 = eqBy;
 
 /**
  * Reports whether two objects have the same value, in [`R.equals`](#equals)
@@ -5144,12 +4777,9 @@ var eqBy_1 = eqBy;
  *      R.eqProps('a', o1, o2); //=> false
  *      R.eqProps('c', o1, o2); //=> true
  */
-
-
-var eqProps = /*#__PURE__*/_curry3_1(function eqProps(prop, obj1, obj2) {
-  return equals_1(obj1[prop], obj2[prop]);
+var eqProps = /*#__PURE__*/_curry3(function eqProps(prop, obj1, obj2) {
+  return equals(obj1[prop], obj2[prop]);
 });
-var eqProps_1 = eqProps;
 
 /**
  * Creates a new object by recursively evolving a shallow copy of `object`,
@@ -5178,9 +4808,7 @@ var eqProps_1 = eqProps;
  *      };
  *      R.evolve(transformations, tomato); //=> {firstName: 'Tomato', data: {elapsed: 101, remaining: 1399}, id:123}
  */
-
-
-var evolve = /*#__PURE__*/_curry2_1(function evolve(transformations, object) {
+var evolve = /*#__PURE__*/_curry2(function evolve(transformations, object) {
   var result = object instanceof Array ? [] : {};
   var transformation, key, type;
   for (key in object) {
@@ -5190,10 +4818,8 @@ var evolve = /*#__PURE__*/_curry2_1(function evolve(transformations, object) {
   }
   return result;
 });
-var evolve_1 = evolve;
 
 var XFind = /*#__PURE__*/function () {
-
   function XFind(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -5209,7 +4835,7 @@ var XFind = /*#__PURE__*/function () {
   XFind.prototype['@@transducer/step'] = function (result, input) {
     if (this.f(input)) {
       this.found = true;
-      result = _reduced_1(this.xf['@@transducer/step'](result, input));
+      result = _reduced(this.xf['@@transducer/step'](result, input));
     }
     return result;
   };
@@ -5217,10 +4843,9 @@ var XFind = /*#__PURE__*/function () {
   return XFind;
 }();
 
-var _xfind = /*#__PURE__*/_curry2_1(function _xfind(f, xf) {
+var _xfind = /*#__PURE__*/_curry2(function _xfind(f, xf) {
   return new XFind(f, xf);
 });
-var _xfind_1 = _xfind;
 
 /**
  * Returns the first element of the list which matches the predicate, or
@@ -5246,9 +4871,7 @@ var _xfind_1 = _xfind;
  *      R.find(R.propEq('a', 2))(xs); //=> {a: 2}
  *      R.find(R.propEq('a', 4))(xs); //=> undefined
  */
-
-
-var find = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['find'], _xfind_1, function find(fn, list) {
+var find = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['find'], _xfind, function find(fn, list) {
   var idx = 0;
   var len = list.length;
   while (idx < len) {
@@ -5258,10 +4881,8 @@ var find = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['find'], _xfind
     idx += 1;
   }
 }));
-var find_1 = find;
 
 var XFindIndex = /*#__PURE__*/function () {
-
   function XFindIndex(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -5279,7 +4900,7 @@ var XFindIndex = /*#__PURE__*/function () {
     this.idx += 1;
     if (this.f(input)) {
       this.found = true;
-      result = _reduced_1(this.xf['@@transducer/step'](result, this.idx));
+      result = _reduced(this.xf['@@transducer/step'](result, this.idx));
     }
     return result;
   };
@@ -5287,10 +4908,9 @@ var XFindIndex = /*#__PURE__*/function () {
   return XFindIndex;
 }();
 
-var _xfindIndex = /*#__PURE__*/_curry2_1(function _xfindIndex(f, xf) {
+var _xfindIndex = /*#__PURE__*/_curry2(function _xfindIndex(f, xf) {
   return new XFindIndex(f, xf);
 });
-var _xfindIndex_1 = _xfindIndex;
 
 /**
  * Returns the index of the first element of the list which matches the
@@ -5314,9 +4934,7 @@ var _xfindIndex_1 = _xfindIndex;
  *      R.findIndex(R.propEq('a', 2))(xs); //=> 1
  *      R.findIndex(R.propEq('a', 4))(xs); //=> -1
  */
-
-
-var findIndex = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xfindIndex_1, function findIndex(fn, list) {
+var findIndex = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable([], _xfindIndex, function findIndex(fn, list) {
   var idx = 0;
   var len = list.length;
   while (idx < len) {
@@ -5327,10 +4945,8 @@ var findIndex = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xfindI
   }
   return -1;
 }));
-var findIndex_1 = findIndex;
 
 var XFindLast = /*#__PURE__*/function () {
-
   function XFindLast(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -5349,10 +4965,9 @@ var XFindLast = /*#__PURE__*/function () {
   return XFindLast;
 }();
 
-var _xfindLast = /*#__PURE__*/_curry2_1(function _xfindLast(f, xf) {
+var _xfindLast = /*#__PURE__*/_curry2(function _xfindLast(f, xf) {
   return new XFindLast(f, xf);
 });
-var _xfindLast_1 = _xfindLast;
 
 /**
  * Returns the last element of the list which matches the predicate, or
@@ -5376,9 +4991,7 @@ var _xfindLast_1 = _xfindLast;
  *      R.findLast(R.propEq('a', 1))(xs); //=> {a: 1, b: 1}
  *      R.findLast(R.propEq('a', 4))(xs); //=> undefined
  */
-
-
-var findLast = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xfindLast_1, function findLast(fn, list) {
+var findLast = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable([], _xfindLast, function findLast(fn, list) {
   var idx = list.length - 1;
   while (idx >= 0) {
     if (fn(list[idx])) {
@@ -5387,10 +5000,8 @@ var findLast = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xfindLa
     idx -= 1;
   }
 }));
-var findLast_1 = findLast;
 
 var XFindLastIndex = /*#__PURE__*/function () {
-
   function XFindLastIndex(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -5412,10 +5023,9 @@ var XFindLastIndex = /*#__PURE__*/function () {
   return XFindLastIndex;
 }();
 
-var _xfindLastIndex = /*#__PURE__*/_curry2_1(function _xfindLastIndex(f, xf) {
+var _xfindLastIndex = /*#__PURE__*/_curry2(function _xfindLastIndex(f, xf) {
   return new XFindLastIndex(f, xf);
 });
-var _xfindLastIndex_1 = _xfindLastIndex;
 
 /**
  * Returns the index of the last element of the list which matches the
@@ -5439,9 +5049,7 @@ var _xfindLastIndex_1 = _xfindLastIndex;
  *      R.findLastIndex(R.propEq('a', 1))(xs); //=> 1
  *      R.findLastIndex(R.propEq('a', 4))(xs); //=> -1
  */
-
-
-var findLastIndex = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xfindLastIndex_1, function findLastIndex(fn, list) {
+var findLastIndex = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable([], _xfindLastIndex, function findLastIndex(fn, list) {
   var idx = list.length - 1;
   while (idx >= 0) {
     if (fn(list[idx])) {
@@ -5451,7 +5059,6 @@ var findLastIndex = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xf
   }
   return -1;
 }));
-var findLastIndex_1 = findLastIndex;
 
 /**
  * Returns a new list by pulling every item out of it (and all its sub-arrays)
@@ -5470,10 +5077,7 @@ var findLastIndex_1 = findLastIndex;
  *      R.flatten([1, 2, [3, 4], 5, [6, [7, 8, [9, [10, 11], 12]]]]);
  *      //=> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
  */
-
-
-var flatten = /*#__PURE__*/_curry1_1( /*#__PURE__*/_makeFlat_1(true));
-var flatten_1 = flatten;
+var flatten = /*#__PURE__*/_curry1( /*#__PURE__*/_makeFlat(true));
 
 /**
  * Returns a new function much like the supplied one, except that the first two
@@ -5495,17 +5099,14 @@ var flatten_1 = flatten;
  *      R.flip(mergeThree)(1, 2, 3); //=> [2, 1, 3]
  * @symb R.flip(f)(a, b, c) = f(b, a, c)
  */
-
-
-var flip = /*#__PURE__*/_curry1_1(function flip(fn) {
-  return curryN_1(fn.length, function (a, b) {
+var flip = /*#__PURE__*/_curry1(function flip(fn) {
+  return curryN(fn.length, function (a, b) {
     var args = Array.prototype.slice.call(arguments, 0);
     args[0] = b;
     args[1] = a;
     return fn.apply(this, args);
   });
 });
-var flip_1 = flip;
 
 /**
  * Iterate over an input `list`, calling a provided function `fn` for each
@@ -5541,9 +5142,7 @@ var flip_1 = flip;
  *      // logs 8
  * @symb R.forEach(f, [a, b, c]) = [a, b, c]
  */
-
-
-var forEach = /*#__PURE__*/_curry2_1( /*#__PURE__*/_checkForMethod_1('forEach', function forEach(fn, list) {
+var forEach = /*#__PURE__*/_curry2( /*#__PURE__*/_checkForMethod('forEach', function forEach(fn, list) {
   var len = list.length;
   var idx = 0;
   while (idx < len) {
@@ -5552,7 +5151,6 @@ var forEach = /*#__PURE__*/_curry2_1( /*#__PURE__*/_checkForMethod_1('forEach', 
   }
   return list;
 }));
-var forEach_1 = forEach;
 
 /**
  * Iterate over an input `object`, calling a provided function `fn` for each
@@ -5576,10 +5174,8 @@ var forEach_1 = forEach;
  *      // logs y:2
  * @symb R.forEachObjIndexed(f, {x: a, y: b}) = {x: a, y: b}
  */
-
-
-var forEachObjIndexed = /*#__PURE__*/_curry2_1(function forEachObjIndexed(fn, obj) {
-  var keyList = keys_1(obj);
+var forEachObjIndexed = /*#__PURE__*/_curry2(function forEachObjIndexed(fn, obj) {
+  var keyList = keys(obj);
   var idx = 0;
   while (idx < keyList.length) {
     var key = keyList[idx];
@@ -5588,7 +5184,6 @@ var forEachObjIndexed = /*#__PURE__*/_curry2_1(function forEachObjIndexed(fn, ob
   }
   return obj;
 });
-var forEachObjIndexed_1 = forEachObjIndexed;
 
 /**
  * Creates a new object from a list key-value pairs. If a key appears in
@@ -5606,9 +5201,7 @@ var forEachObjIndexed_1 = forEachObjIndexed;
  *
  *      R.fromPairs([['a', 1], ['b', 2], ['c', 3]]); //=> {a: 1, b: 2, c: 3}
  */
-
-
-var fromPairs = /*#__PURE__*/_curry1_1(function fromPairs(pairs) {
+var fromPairs = /*#__PURE__*/_curry1(function fromPairs(pairs) {
   var result = {};
   var idx = 0;
   while (idx < pairs.length) {
@@ -5617,7 +5210,6 @@ var fromPairs = /*#__PURE__*/_curry1_1(function fromPairs(pairs) {
   }
   return result;
 });
-var fromPairs_1 = fromPairs;
 
 /**
  * Splits a list into sub-lists stored in an object, based on the result of
@@ -5659,16 +5251,13 @@ var fromPairs_1 = fromPairs;
  *      //   'F': [{name: 'Eddy', score: 58}]
  *      // }
  */
-
-
-var groupBy = /*#__PURE__*/_curry2_1( /*#__PURE__*/_checkForMethod_1('groupBy', /*#__PURE__*/reduceBy_1(function (acc, item) {
+var groupBy = /*#__PURE__*/_curry2( /*#__PURE__*/_checkForMethod('groupBy', /*#__PURE__*/reduceBy(function (acc, item) {
   if (acc == null) {
     acc = [];
   }
   acc.push(item);
   return acc;
 }, null)));
-var groupBy_1 = groupBy;
 
 /**
  * Takes a list and returns a list of lists where each sublist's elements are
@@ -5700,9 +5289,7 @@ var groupBy_1 = groupBy;
  * R.groupWith(R.eqBy(isVowel), 'aestiou')
  * //=> ['ae', 'st', 'iou']
  */
-
-
-var groupWith = /*#__PURE__*/_curry2_1(function (fn, list) {
+var groupWith = /*#__PURE__*/_curry2(function (fn, list) {
   var res = [];
   var idx = 0;
   var len = list.length;
@@ -5716,7 +5303,6 @@ var groupWith = /*#__PURE__*/_curry2_1(function (fn, list) {
   }
   return res;
 });
-var groupWith_1 = groupWith;
 
 /**
  * Returns `true` if the first argument is greater than the second; `false`
@@ -5739,12 +5325,9 @@ var groupWith_1 = groupWith;
  *      R.gt('a', 'z'); //=> false
  *      R.gt('z', 'a'); //=> true
  */
-
-
-var gt = /*#__PURE__*/_curry2_1(function gt(a, b) {
+var gt = /*#__PURE__*/_curry2(function gt(a, b) {
   return a > b;
 });
-var gt_1 = gt;
 
 /**
  * Returns `true` if the first argument is greater than or equal to the second;
@@ -5767,12 +5350,9 @@ var gt_1 = gt;
  *      R.gte('a', 'z'); //=> false
  *      R.gte('z', 'a'); //=> true
  */
-
-
-var gte = /*#__PURE__*/_curry2_1(function gte(a, b) {
+var gte = /*#__PURE__*/_curry2(function gte(a, b) {
   return a >= b;
 });
-var gte_1 = gte;
 
 /**
  * Returns whether or not a path exists in an object. Only the object's
@@ -5795,16 +5375,14 @@ var gte_1 = gte;
  *      R.hasPath(['a', 'b'], {a: {c: 2}});         // => false
  *      R.hasPath(['a', 'b'], {});                  // => false
  */
-
-
-var hasPath = /*#__PURE__*/_curry2_1(function hasPath(_path, obj) {
+var hasPath = /*#__PURE__*/_curry2(function hasPath(_path, obj) {
   if (_path.length === 0) {
     return false;
   }
   var val = obj;
   var idx = 0;
   while (idx < _path.length) {
-    if (_has_1(_path[idx], val)) {
+    if (_has(_path[idx], val)) {
       val = val[_path[idx]];
       idx += 1;
     } else {
@@ -5813,7 +5391,6 @@ var hasPath = /*#__PURE__*/_curry2_1(function hasPath(_path, obj) {
   }
   return true;
 });
-var hasPath_1 = hasPath;
 
 /**
  * Returns whether or not an object has an own property with the specified name
@@ -5839,12 +5416,9 @@ var hasPath_1 = hasPath;
  *      pointHas('y');  //=> true
  *      pointHas('z');  //=> false
  */
-
-
-var has = /*#__PURE__*/_curry2_1(function has(prop, obj) {
-  return hasPath_1([prop], obj);
+var has = /*#__PURE__*/_curry2(function has(prop, obj) {
+  return hasPath([prop], obj);
 });
-var has_1 = has;
 
 /**
  * Returns whether or not an object or its prototype chain has a property with
@@ -5872,12 +5446,9 @@ var has_1 = has;
  *      R.hasIn('width', square);  //=> true
  *      R.hasIn('area', square);  //=> true
  */
-
-
-var hasIn = /*#__PURE__*/_curry2_1(function hasIn(prop, obj) {
+var hasIn = /*#__PURE__*/_curry2(function hasIn(prop, obj) {
   return prop in obj;
 });
-var hasIn_1 = hasIn;
 
 /**
  * Returns true if its arguments are identical, false otherwise. Values are
@@ -5904,10 +5475,7 @@ var hasIn_1 = hasIn;
  *      R.identical(0, -0); //=> false
  *      R.identical(NaN, NaN); //=> true
  */
-
-
-var identical = /*#__PURE__*/_curry2_1(_objectIs_1);
-var identical_1 = identical;
+var identical = /*#__PURE__*/_curry2(_objectIs$1);
 
 /**
  * Creates a function that will process either the `onTrue` or the `onFalse`
@@ -5934,14 +5502,11 @@ var identical_1 = identical;
  *      incCount({});           //=> { count: 1 }
  *      incCount({ count: 1 }); //=> { count: 2 }
  */
-
-
-var ifElse = /*#__PURE__*/_curry3_1(function ifElse(condition, onTrue, onFalse) {
-  return curryN_1(Math.max(condition.length, onTrue.length, onFalse.length), function _ifElse() {
+var ifElse = /*#__PURE__*/_curry3(function ifElse(condition, onTrue, onFalse) {
+  return curryN(Math.max(condition.length, onTrue.length, onFalse.length), function _ifElse() {
     return condition.apply(this, arguments) ? onTrue.apply(this, arguments) : onFalse.apply(this, arguments);
   });
 });
-var ifElse_1 = ifElse;
 
 /**
  * Increments its argument.
@@ -5958,10 +5523,7 @@ var ifElse_1 = ifElse;
  *
  *      R.inc(42); //=> 43
  */
-
-
-var inc = /*#__PURE__*/add_1(1);
-var inc_1 = inc;
+var inc = /*#__PURE__*/add(1);
 
 /**
  * Returns `true` if the specified value is equal, in [`R.equals`](#equals)
@@ -5985,10 +5547,7 @@ var inc_1 = inc;
  *      R.includes([42], [[42]]); //=> true
  *      R.includes('ba', 'banana'); //=>true
  */
-
-
-var includes = /*#__PURE__*/_curry2_1(_includes_1);
-var includes_1 = includes;
+var includes = /*#__PURE__*/_curry2(_includes);
 
 /**
  * Given a function that generates a key, turns a list of objects into an
@@ -6012,12 +5571,9 @@ var includes_1 = includes;
  *      R.indexBy(R.prop('id'), list);
  *      //=> {abc: {id: 'abc', title: 'B'}, xyz: {id: 'xyz', title: 'A'}}
  */
-
-
-var indexBy = /*#__PURE__*/reduceBy_1(function (acc, elem) {
+var indexBy = /*#__PURE__*/reduceBy(function (acc, elem) {
   return elem;
 }, null);
-var indexBy_1 = indexBy;
 
 /**
  * Returns the position of the first occurrence of an item in an array, or -1
@@ -6038,12 +5594,9 @@ var indexBy_1 = indexBy;
  *      R.indexOf(3, [1,2,3,4]); //=> 2
  *      R.indexOf(10, [1,2,3,4]); //=> -1
  */
-
-
-var indexOf = /*#__PURE__*/_curry2_1(function indexOf(target, xs) {
-  return typeof xs.indexOf === 'function' && !_isArray(xs) ? xs.indexOf(target) : _indexOf_1(xs, target, 0);
+var indexOf = /*#__PURE__*/_curry2(function indexOf(target, xs) {
+  return typeof xs.indexOf === 'function' && !_isArray(xs) ? xs.indexOf(target) : _indexOf(xs, target, 0);
 });
-var indexOf_1 = indexOf;
 
 /**
  * Returns all but the last element of the given list or string.
@@ -6069,10 +5622,7 @@ var indexOf_1 = indexOf;
  *      R.init('a');    //=> ''
  *      R.init('');     //=> ''
  */
-
-
-var init = /*#__PURE__*/slice_1(0, -1);
-var init_1 = init;
+var init = /*#__PURE__*/slice(0, -1);
 
 /**
  * Takes a predicate `pred`, a list `xs`, and a list `ys`, and returns a list
@@ -6109,14 +5659,11 @@ var init_1 = init;
  *      );
  *      //=> [{id: 456, name: 'Stephen Stills'}, {id: 177, name: 'Neil Young'}]
  */
-
-
-var innerJoin = /*#__PURE__*/_curry3_1(function innerJoin(pred, xs, ys) {
-  return _filter_1(function (x) {
-    return _includesWith_1(pred, x, ys);
+var innerJoin = /*#__PURE__*/_curry3(function innerJoin(pred, xs, ys) {
+  return _filter(function (x) {
+    return _includesWith(pred, x, ys);
   }, xs);
 });
-var innerJoin_1 = innerJoin;
 
 /**
  * Inserts the supplied element into the list, at the specified `index`. _Note that
@@ -6137,15 +5684,12 @@ var innerJoin_1 = innerJoin;
  *
  *      R.insert(2, 'x', [1,2,3,4]); //=> [1,2,'x',3,4]
  */
-
-
-var insert = /*#__PURE__*/_curry3_1(function insert(idx, elt, list) {
+var insert = /*#__PURE__*/_curry3(function insert(idx, elt, list) {
   idx = idx < list.length && idx >= 0 ? idx : list.length;
   var result = Array.prototype.slice.call(list, 0);
   result.splice(idx, 0, elt);
   return result;
 });
-var insert_1 = insert;
 
 /**
  * Inserts the sub-list into the list, at the specified `index`. _Note that this is not
@@ -6165,13 +5709,10 @@ var insert_1 = insert;
  *
  *      R.insertAll(2, ['x','y','z'], [1,2,3,4]); //=> [1,2,'x','y','z',3,4]
  */
-
-
-var insertAll = /*#__PURE__*/_curry3_1(function insertAll(idx, elts, list) {
+var insertAll = /*#__PURE__*/_curry3(function insertAll(idx, elts, list) {
   idx = idx < list.length && idx >= 0 ? idx : list.length;
   return [].concat(Array.prototype.slice.call(list, 0, idx), elts, Array.prototype.slice.call(list, idx));
 });
-var insertAll_1 = insertAll;
 
 /**
  * Returns a new list containing only one copy of each element in the original
@@ -6191,10 +5732,8 @@ var insertAll_1 = insertAll;
  *
  *      R.uniqBy(Math.abs, [-1, -5, 2, 10, 1, 2]); //=> [-1, -5, 2, 10]
  */
-
-
-var uniqBy = /*#__PURE__*/_curry2_1(function uniqBy(fn, list) {
-  var set = new _Set_1();
+var uniqBy = /*#__PURE__*/_curry2(function uniqBy(fn, list) {
+  var set = new _Set();
   var result = [];
   var idx = 0;
   var appliedItem, item;
@@ -6209,7 +5748,6 @@ var uniqBy = /*#__PURE__*/_curry2_1(function uniqBy(fn, list) {
   }
   return result;
 });
-var uniqBy_1 = uniqBy;
 
 /**
  * Returns a new list containing only one copy of each element in the original
@@ -6228,10 +5766,7 @@ var uniqBy_1 = uniqBy;
  *      R.uniq([1, '1']);     //=> [1, '1']
  *      R.uniq([[42], [42]]); //=> [[42]]
  */
-
-
-var uniq = /*#__PURE__*/uniqBy_1(identity_1);
-var uniq_1 = uniq;
+var uniq = /*#__PURE__*/uniqBy(identity);
 
 /**
  * Combines two lists into a set (i.e. no duplicates) composed of those
@@ -6250,9 +5785,7 @@ var uniq_1 = uniq;
  *
  *      R.intersection([1,2,3,4], [7,6,5,4,3]); //=> [4, 3]
  */
-
-
-var intersection = /*#__PURE__*/_curry2_1(function intersection(list1, list2) {
+var intersection = /*#__PURE__*/_curry2(function intersection(list1, list2) {
   var lookupList, filteredList;
   if (list1.length > list2.length) {
     lookupList = list1;
@@ -6261,9 +5794,8 @@ var intersection = /*#__PURE__*/_curry2_1(function intersection(list1, list2) {
     lookupList = list2;
     filteredList = list1;
   }
-  return uniq_1(_filter_1(flip_1(_includes_1)(lookupList), filteredList));
+  return uniq(_filter(flip(_includes)(lookupList), filteredList));
 });
-var intersection_1 = intersection;
 
 /**
  * Creates a new list with the separator interposed between elements.
@@ -6282,9 +5814,7 @@ var intersection_1 = intersection;
  *
  *      R.intersperse('a', ['b', 'n', 'n', 's']); //=> ['b', 'a', 'n', 'a', 'n', 'a', 's']
  */
-
-
-var intersperse = /*#__PURE__*/_curry2_1( /*#__PURE__*/_checkForMethod_1('intersperse', function intersperse(separator, list) {
+var intersperse = /*#__PURE__*/_curry2( /*#__PURE__*/_checkForMethod('intersperse', function intersperse(separator, list) {
   var out = [];
   var idx = 0;
   var length = list.length;
@@ -6298,11 +5828,8 @@ var intersperse = /*#__PURE__*/_curry2_1( /*#__PURE__*/_checkForMethod_1('inters
   }
   return out;
 }));
-var intersperse_1 = intersperse;
 
 // Based on https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-
-
 function _objectAssign(target) {
   if (target == null) {
     throw new TypeError('Cannot convert undefined or null to object');
@@ -6315,7 +5842,7 @@ function _objectAssign(target) {
     var source = arguments[idx];
     if (source != null) {
       for (var nextKey in source) {
-        if (_has_1(nextKey, source)) {
+        if (_has(nextKey, source)) {
           output[nextKey] = source[nextKey];
         }
       }
@@ -6325,7 +5852,7 @@ function _objectAssign(target) {
   return output;
 }
 
-var _objectAssign_1 = typeof Object.assign === 'function' ? Object.assign : _objectAssign;
+var _objectAssign$1 = typeof Object.assign === 'function' ? Object.assign : _objectAssign;
 
 /**
  * Creates an object containing a single key:value pair.
@@ -6347,14 +5874,11 @@ var _objectAssign_1 = typeof Object.assign === 'function' ? Object.assign : _obj
  *      );
  *      matchPhrases(['foo', 'bar', 'baz']); //=> {must: [{match_phrase: 'foo'}, {match_phrase: 'bar'}, {match_phrase: 'baz'}]}
  */
-
-
-var objOf = /*#__PURE__*/_curry2_1(function objOf(key, val) {
+var objOf = /*#__PURE__*/_curry2(function objOf(key, val) {
   var obj = {};
   obj[key] = val;
   return obj;
 });
-var objOf_1 = objOf;
 
 var _stepCatArray = {
   '@@transducer/init': Array,
@@ -6362,28 +5886,28 @@ var _stepCatArray = {
     xs.push(x);
     return xs;
   },
-  '@@transducer/result': _identity_1
+  '@@transducer/result': _identity
 };
 var _stepCatString = {
   '@@transducer/init': String,
   '@@transducer/step': function (a, b) {
     return a + b;
   },
-  '@@transducer/result': _identity_1
+  '@@transducer/result': _identity
 };
 var _stepCatObject = {
   '@@transducer/init': Object,
   '@@transducer/step': function (result, input) {
-    return _objectAssign_1(result, _isArrayLike_1(input) ? objOf_1(input[0], input[1]) : input);
+    return _objectAssign$1(result, _isArrayLike(input) ? objOf(input[0], input[1]) : input);
   },
-  '@@transducer/result': _identity_1
+  '@@transducer/result': _identity
 };
 
 function _stepCat(obj) {
-  if (_isTransformer_1(obj)) {
+  if (_isTransformer(obj)) {
     return obj;
   }
-  if (_isArrayLike_1(obj)) {
+  if (_isArrayLike(obj)) {
     return _stepCatArray;
   }
   if (typeof obj === 'string') {
@@ -6394,7 +5918,6 @@ function _stepCat(obj) {
   }
   throw new Error('Cannot create transformer for ' + obj);
 }
-var _stepCat_1 = _stepCat;
 
 /**
  * Transforms the items of the list with the transducer and appends the
@@ -6435,12 +5958,9 @@ var _stepCat_1 = _stepCat;
  *      const intoArray = R.into([]);
  *      intoArray(transducer, numbers); //=> [2, 3]
  */
-
-
-var into = /*#__PURE__*/_curry3_1(function into(acc, xf, list) {
-  return _isTransformer_1(acc) ? _reduce_1(xf(acc), acc['@@transducer/init'](), list) : _reduce_1(xf(_stepCat_1(acc)), _clone_1(acc, [], [], false), list);
+var into = /*#__PURE__*/_curry3(function into(acc, xf, list) {
+  return _isTransformer(acc) ? _reduce(xf(acc), acc['@@transducer/init'](), list) : _reduce(xf(_stepCat(acc)), _clone(acc, [], [], false), list);
 });
-var into_1 = into;
 
 /**
  * Same as [`R.invertObj`](#invertObj), however this accounts for objects with
@@ -6464,10 +5984,8 @@ var into_1 = into;
  *      R.invert(raceResultsByFirstName);
  *      //=> { 'alice': ['first', 'third'], 'jake':['second'] }
  */
-
-
-var invert = /*#__PURE__*/_curry1_1(function invert(obj) {
-  var props = keys_1(obj);
+var invert = /*#__PURE__*/_curry1(function invert(obj) {
+  var props = keys(obj);
   var len = props.length;
   var idx = 0;
   var out = {};
@@ -6475,13 +5993,12 @@ var invert = /*#__PURE__*/_curry1_1(function invert(obj) {
   while (idx < len) {
     var key = props[idx];
     var val = obj[key];
-    var list = _has_1(val, out) ? out[val] : out[val] = [];
+    var list = _has(val, out) ? out[val] : out[val] = [];
     list[list.length] = key;
     idx += 1;
   }
   return out;
 });
-var invert_1 = invert;
 
 /**
  * Returns a new object with the keys of the given object as values, and the
@@ -6510,10 +6027,8 @@ var invert_1 = invert;
  *      R.invertObj(raceResults);
  *      //=> { 'alice': '0', 'jake':'1' }
  */
-
-
-var invertObj = /*#__PURE__*/_curry1_1(function invertObj(obj) {
-  var props = keys_1(obj);
+var invertObj = /*#__PURE__*/_curry1(function invertObj(obj) {
+  var props = keys(obj);
   var len = props.length;
   var idx = 0;
   var out = {};
@@ -6525,7 +6040,6 @@ var invertObj = /*#__PURE__*/_curry1_1(function invertObj(obj) {
   }
   return out;
 });
-var invertObj_1 = invertObj;
 
 /**
  * Turns a named method with a specified arity into a function that can be
@@ -6554,18 +6068,15 @@ var invertObj_1 = invertObj;
  * @symb R.invoker(1, 'method')(a, o) = o['method'](a)
  * @symb R.invoker(2, 'method')(a, b, o) = o['method'](a, b)
  */
-
-
-var invoker = /*#__PURE__*/_curry2_1(function invoker(arity, method) {
-  return curryN_1(arity + 1, function () {
+var invoker = /*#__PURE__*/_curry2(function invoker(arity, method) {
+  return curryN(arity + 1, function () {
     var target = arguments[arity];
-    if (target != null && _isFunction_1(target[method])) {
+    if (target != null && _isFunction(target[method])) {
       return target[method].apply(target, Array.prototype.slice.call(arguments, 0, arity));
     }
-    throw new TypeError(toString_1(target) + ' does not have a method named "' + method + '"');
+    throw new TypeError(toString$1(target) + ' does not have a method named "' + method + '"');
   });
 });
-var invoker_1 = invoker;
 
 /**
  * See if an object (`val`) is an instance of the supplied constructor. This
@@ -6590,12 +6101,9 @@ var invoker_1 = invoker;
  *      R.is(Object, 's'); //=> false
  *      R.is(Number, {}); //=> false
  */
-
-
-var is = /*#__PURE__*/_curry2_1(function is(Ctor, val) {
+var is = /*#__PURE__*/_curry2(function is(Ctor, val) {
   return val != null && val.constructor === Ctor || val instanceof Ctor;
 });
-var is_1 = is;
 
 /**
  * Returns `true` if the given value is its type's empty value; `false`
@@ -6618,12 +6126,9 @@ var is_1 = is;
  *      R.isEmpty({});          //=> true
  *      R.isEmpty({length: 0}); //=> false
  */
-
-
-var isEmpty = /*#__PURE__*/_curry1_1(function isEmpty(x) {
-  return x != null && equals_1(x, empty_1(x));
+var isEmpty = /*#__PURE__*/_curry1(function isEmpty(x) {
+  return x != null && equals(x, empty(x));
 });
-var isEmpty_1 = isEmpty;
 
 /**
  * Returns a string made by inserting the `separator` between each element and
@@ -6644,10 +6149,7 @@ var isEmpty_1 = isEmpty;
  *      spacer(['a', 2, 3.4]);   //=> 'a 2 3.4'
  *      R.join('|', [1, 2, 3]);    //=> '1|2|3'
  */
-
-
-var join = /*#__PURE__*/invoker_1(1, 'join');
-var join_1 = join;
+var join = /*#__PURE__*/invoker(1, 'join');
 
 /**
  * juxt applies a list of functions to a list of values.
@@ -6666,14 +6168,11 @@ var join_1 = join;
  *      getRange(3, 4, 9, -3); //=> [-3, 9]
  * @symb R.juxt([f, g, h])(a, b) = [f(a, b), g(a, b), h(a, b)]
  */
-
-
-var juxt = /*#__PURE__*/_curry1_1(function juxt(fns) {
-  return converge_1(function () {
+var juxt = /*#__PURE__*/_curry1(function juxt(fns) {
+  return converge(function () {
     return Array.prototype.slice.call(arguments, 0);
   }, fns);
 });
-var juxt_1 = juxt;
 
 /**
  * Returns a list containing the names of all the properties of the supplied
@@ -6696,9 +6195,7 @@ var juxt_1 = juxt;
  *      const f = new F();
  *      R.keysIn(f); //=> ['x', 'y']
  */
-
-
-var keysIn = /*#__PURE__*/_curry1_1(function keysIn(obj) {
+var keysIn = /*#__PURE__*/_curry1(function keysIn(obj) {
   var prop;
   var ks = [];
   for (prop in obj) {
@@ -6706,7 +6203,6 @@ var keysIn = /*#__PURE__*/_curry1_1(function keysIn(obj) {
   }
   return ks;
 });
-var keysIn_1 = keysIn;
 
 /**
  * Returns the position of the last occurrence of an item in an array, or -1 if
@@ -6727,15 +6223,13 @@ var keysIn_1 = keysIn;
  *      R.lastIndexOf(3, [-1,3,3,0,1,2,3,4]); //=> 6
  *      R.lastIndexOf(10, [1,2,3,4]); //=> -1
  */
-
-
-var lastIndexOf = /*#__PURE__*/_curry2_1(function lastIndexOf(target, xs) {
+var lastIndexOf = /*#__PURE__*/_curry2(function lastIndexOf(target, xs) {
   if (typeof xs.lastIndexOf === 'function' && !_isArray(xs)) {
     return xs.lastIndexOf(target);
   } else {
     var idx = xs.length - 1;
     while (idx >= 0) {
-      if (equals_1(xs[idx], target)) {
+      if (equals(xs[idx], target)) {
         return idx;
       }
       idx -= 1;
@@ -6743,12 +6237,10 @@ var lastIndexOf = /*#__PURE__*/_curry2_1(function lastIndexOf(target, xs) {
     return -1;
   }
 });
-var lastIndexOf_1 = lastIndexOf;
 
 function _isNumber(x) {
   return Object.prototype.toString.call(x) === '[object Number]';
 }
-var _isNumber_1 = _isNumber;
 
 /**
  * Returns the number of elements in the array by returning `list.length`.
@@ -6765,12 +6257,9 @@ var _isNumber_1 = _isNumber;
  *      R.length([]); //=> 0
  *      R.length([1, 2, 3]); //=> 3
  */
-
-
-var length = /*#__PURE__*/_curry1_1(function length(list) {
-  return list != null && _isNumber_1(list.length) ? list.length : NaN;
+var length = /*#__PURE__*/_curry1(function length(list) {
+  return list != null && _isNumber(list.length) ? list.length : NaN;
 });
-var length_1 = length;
 
 /**
  * Returns a lens for the given getter and setter functions. The getter "gets"
@@ -6795,18 +6284,15 @@ var length_1 = length;
  *      R.set(xLens, 4, {x: 1, y: 2});          //=> {x: 4, y: 2}
  *      R.over(xLens, R.negate, {x: 1, y: 2});  //=> {x: -1, y: 2}
  */
-
-
-var lens = /*#__PURE__*/_curry2_1(function lens(getter, setter) {
+var lens = /*#__PURE__*/_curry2(function lens(getter, setter) {
   return function (toFunctorFn) {
     return function (target) {
-      return map_1(function (focus) {
+      return map(function (focus) {
         return setter(focus, target);
       }, toFunctorFn(getter(target)));
     };
   };
 });
-var lens_1 = lens;
 
 /**
  * Returns a lens whose focus is the specified index.
@@ -6828,12 +6314,9 @@ var lens_1 = lens;
  *      R.set(headLens, 'x', ['a', 'b', 'c']);        //=> ['x', 'b', 'c']
  *      R.over(headLens, R.toUpper, ['a', 'b', 'c']); //=> ['A', 'b', 'c']
  */
-
-
-var lensIndex = /*#__PURE__*/_curry1_1(function lensIndex(n) {
-  return lens_1(nth_1(n), update_1(n));
+var lensIndex = /*#__PURE__*/_curry1(function lensIndex(n) {
+  return lens(nth(n), update(n));
 });
-var lensIndex_1 = lensIndex;
 
 /**
  * Returns a lens whose focus is the specified path.
@@ -6859,12 +6342,9 @@ var lensIndex_1 = lensIndex;
  *      R.over(xHeadYLens, R.negate, {x: [{y: 2, z: 3}, {y: 4, z: 5}]});
  *      //=> {x: [{y: -2, z: 3}, {y: 4, z: 5}]}
  */
-
-
-var lensPath = /*#__PURE__*/_curry1_1(function lensPath(p) {
-  return lens_1(path_1(p), assocPath_1(p));
+var lensPath = /*#__PURE__*/_curry1(function lensPath(p) {
+  return lens(path(p), assocPath(p));
 });
-var lensPath_1 = lensPath;
 
 /**
  * Returns a lens whose focus is the specified property.
@@ -6886,12 +6366,9 @@ var lensPath_1 = lensPath;
  *      R.set(xLens, 4, {x: 1, y: 2});          //=> {x: 4, y: 2}
  *      R.over(xLens, R.negate, {x: 1, y: 2});  //=> {x: -1, y: 2}
  */
-
-
-var lensProp = /*#__PURE__*/_curry1_1(function lensProp(k) {
-  return lens_1(prop_1(k), assoc_1(k));
+var lensProp = /*#__PURE__*/_curry1(function lensProp(k) {
+  return lens(prop(k), assoc(k));
 });
-var lensProp_1 = lensProp;
 
 /**
  * Returns `true` if the first argument is less than the second; `false`
@@ -6914,12 +6391,9 @@ var lensProp_1 = lensProp;
  *      R.lt('a', 'z'); //=> true
  *      R.lt('z', 'a'); //=> false
  */
-
-
-var lt = /*#__PURE__*/_curry2_1(function lt(a, b) {
+var lt = /*#__PURE__*/_curry2(function lt(a, b) {
   return a < b;
 });
-var lt_1 = lt;
 
 /**
  * Returns `true` if the first argument is less than or equal to the second;
@@ -6942,12 +6416,9 @@ var lt_1 = lt;
  *      R.lte('a', 'z'); //=> true
  *      R.lte('z', 'a'); //=> false
  */
-
-
-var lte = /*#__PURE__*/_curry2_1(function lte(a, b) {
+var lte = /*#__PURE__*/_curry2(function lte(a, b) {
   return a <= b;
 });
-var lte_1 = lte;
 
 /**
  * The `mapAccum` function behaves like a combination of map and reduce; it
@@ -6983,9 +6454,7 @@ var lte_1 = lte;
  *   ]
  * ]
  */
-
-
-var mapAccum = /*#__PURE__*/_curry3_1(function mapAccum(fn, acc, list) {
+var mapAccum = /*#__PURE__*/_curry3(function mapAccum(fn, acc, list) {
   var idx = 0;
   var len = list.length;
   var result = [];
@@ -6997,7 +6466,6 @@ var mapAccum = /*#__PURE__*/_curry3_1(function mapAccum(fn, acc, list) {
   }
   return [tuple[0], result];
 });
-var mapAccum_1 = mapAccum;
 
 /**
  * The `mapAccumRight` function behaves like a combination of map and reduce; it
@@ -7036,9 +6504,7 @@ var mapAccum_1 = mapAccum;
  *   ]
  * ]
  */
-
-
-var mapAccumRight = /*#__PURE__*/_curry3_1(function mapAccumRight(fn, acc, list) {
+var mapAccumRight = /*#__PURE__*/_curry3(function mapAccumRight(fn, acc, list) {
   var idx = list.length - 1;
   var result = [];
   var tuple = [acc];
@@ -7049,7 +6515,6 @@ var mapAccumRight = /*#__PURE__*/_curry3_1(function mapAccumRight(fn, acc, list)
   }
   return [tuple[0], result];
 });
-var mapAccumRight_1 = mapAccumRight;
 
 /**
  * An Object-specific version of [`map`](#map). The function is applied to three
@@ -7072,15 +6537,12 @@ var mapAccumRight_1 = mapAccumRight;
  *
  *      R.mapObjIndexed(prependKeyAndDouble, xyz); //=> { x: 'x2', y: 'y4', z: 'z6' }
  */
-
-
-var mapObjIndexed = /*#__PURE__*/_curry2_1(function mapObjIndexed(fn, obj) {
-  return _reduce_1(function (acc, key) {
+var mapObjIndexed = /*#__PURE__*/_curry2(function mapObjIndexed(fn, obj) {
+  return _reduce(function (acc, key) {
     acc[key] = fn(obj[key], key, obj);
     return acc;
-  }, {}, keys_1(obj));
+  }, {}, keys(obj));
 });
-var mapObjIndexed_1 = mapObjIndexed;
 
 /**
  * Tests a regular expression against a String. Note that this function will
@@ -7103,12 +6565,9 @@ var mapObjIndexed_1 = mapObjIndexed;
  *      R.match(/a/, 'b'); //=> []
  *      R.match(/a/, null); //=> TypeError: null does not have a method named "match"
  */
-
-
-var match = /*#__PURE__*/_curry2_1(function match(rx, str) {
+var match = /*#__PURE__*/_curry2(function match(rx, str) {
   return str.match(rx) || [];
 });
-var match_1 = match;
 
 /**
  * `mathMod` behaves like the modulo operator should mathematically, unlike the
@@ -7143,9 +6602,7 @@ var match_1 = match;
  *      seventeenMod(4);  //=> 1
  *      seventeenMod(10); //=> 7
  */
-
-
-var mathMod = /*#__PURE__*/_curry2_1(function mathMod(m, p) {
+var mathMod = /*#__PURE__*/_curry2(function mathMod(m, p) {
   if (!_isInteger(m)) {
     return NaN;
   }
@@ -7154,7 +6611,6 @@ var mathMod = /*#__PURE__*/_curry2_1(function mathMod(m, p) {
   }
   return (m % p + p) % p;
 });
-var mathMod_1 = mathMod;
 
 /**
  * Takes a function and two values, and returns whichever value produces the
@@ -7180,12 +6636,9 @@ var mathMod_1 = mathMod;
  *      R.reduce(R.maxBy(square), 0, [3, -5, 4, 1, -2]); //=> -5
  *      R.reduce(R.maxBy(square), 0, []); //=> 0
  */
-
-
-var maxBy = /*#__PURE__*/_curry3_1(function maxBy(f, a, b) {
+var maxBy = /*#__PURE__*/_curry3(function maxBy(f, a, b) {
   return f(b) > f(a) ? b : a;
 });
-var maxBy_1 = maxBy;
 
 /**
  * Adds together all the elements of a list.
@@ -7202,10 +6655,7 @@ var maxBy_1 = maxBy;
  *
  *      R.sum([2,4,6,8,100,1]); //=> 121
  */
-
-
-var sum = /*#__PURE__*/reduce_1(add_1, 0);
-var sum_1 = sum;
+var sum = /*#__PURE__*/reduce(add, 0);
 
 /**
  * Returns the mean of the given list of numbers.
@@ -7223,12 +6673,9 @@ var sum_1 = sum;
  *      R.mean([2, 7, 9]); //=> 6
  *      R.mean([]); //=> NaN
  */
-
-
-var mean = /*#__PURE__*/_curry1_1(function mean(list) {
-  return sum_1(list) / list.length;
+var mean = /*#__PURE__*/_curry1(function mean(list) {
+  return sum(list) / list.length;
 });
-var mean_1 = mean;
 
 /**
  * Returns the median of the given list of numbers.
@@ -7247,20 +6694,17 @@ var mean_1 = mean;
  *      R.median([7, 2, 10, 9]); //=> 8
  *      R.median([]); //=> NaN
  */
-
-
-var median = /*#__PURE__*/_curry1_1(function median(list) {
+var median = /*#__PURE__*/_curry1(function median(list) {
   var len = list.length;
   if (len === 0) {
     return NaN;
   }
   var width = 2 - len % 2;
   var idx = (len - width) / 2;
-  return mean_1(Array.prototype.slice.call(list, 0).sort(function (a, b) {
+  return mean(Array.prototype.slice.call(list, 0).sort(function (a, b) {
     return a < b ? -1 : a > b ? 1 : 0;
   }).slice(idx, idx + width));
 });
-var median_1 = median;
 
 /**
  * Creates a new function that, when invoked, caches the result of calling `fn`
@@ -7290,19 +6734,16 @@ var median_1 = median;
  *      factorial(5); //=> 120
  *      count; //=> 1
  */
-
-
-var memoizeWith = /*#__PURE__*/_curry2_1(function memoizeWith(mFn, fn) {
+var memoizeWith = /*#__PURE__*/_curry2(function memoizeWith(mFn, fn) {
   var cache = {};
-  return _arity_1(fn.length, function () {
+  return _arity(fn.length, function () {
     var key = mFn.apply(this, arguments);
-    if (!_has_1(key, cache)) {
+    if (!_has(key, cache)) {
       cache[key] = fn.apply(this, arguments);
     }
     return cache[key];
   });
 });
-var memoizeWith_1 = memoizeWith;
 
 /**
  * Create a new object with the own properties of the first object merged with
@@ -7328,12 +6769,9 @@ var memoizeWith_1 = memoizeWith;
  *      withDefaults({y: 2}); //=> {x: 0, y: 2}
  * @symb R.merge(a, b) = {...a, ...b}
  */
-
-
-var merge = /*#__PURE__*/_curry2_1(function merge(l, r) {
-  return _objectAssign_1({}, l, r);
+var merge = /*#__PURE__*/_curry2(function merge(l, r) {
+  return _objectAssign$1({}, l, r);
 });
-var merge_1 = merge;
 
 /**
  * Merges a list of objects together into one object.
@@ -7352,12 +6790,9 @@ var merge_1 = merge;
  *      R.mergeAll([{foo:1},{foo:2},{bar:2}]); //=> {foo:2,bar:2}
  * @symb R.mergeAll([{ x: 1 }, { y: 2 }, { z: 3 }]) = { x: 1, y: 2, z: 3 }
  */
-
-
-var mergeAll = /*#__PURE__*/_curry1_1(function mergeAll(list) {
-  return _objectAssign_1.apply(null, [{}].concat(list));
+var mergeAll = /*#__PURE__*/_curry1(function mergeAll(list) {
+  return _objectAssign$1.apply(null, [{}].concat(list));
 });
-var mergeAll_1 = mergeAll;
 
 /**
  * Creates a new object with the own properties of the two provided objects. If
@@ -7384,27 +6819,24 @@ var mergeAll_1 = mergeAll;
  *      //=> { a: true, b: true, thing: 'bar', values: [10, 20, 15, 35] }
  * @symb R.mergeWithKey(f, { x: 1, y: 2 }, { y: 5, z: 3 }) = { x: 1, y: f('y', 2, 5), z: 3 }
  */
-
-
-var mergeWithKey = /*#__PURE__*/_curry3_1(function mergeWithKey(fn, l, r) {
+var mergeWithKey = /*#__PURE__*/_curry3(function mergeWithKey(fn, l, r) {
   var result = {};
   var k;
 
   for (k in l) {
-    if (_has_1(k, l)) {
-      result[k] = _has_1(k, r) ? fn(k, l[k], r[k]) : l[k];
+    if (_has(k, l)) {
+      result[k] = _has(k, r) ? fn(k, l[k], r[k]) : l[k];
     }
   }
 
   for (k in r) {
-    if (_has_1(k, r) && !_has_1(k, result)) {
+    if (_has(k, r) && !_has(k, result)) {
       result[k] = r[k];
     }
   }
 
   return result;
 });
-var mergeWithKey_1 = mergeWithKey;
 
 /**
  * Creates a new object with the own properties of the two provided objects.
@@ -7434,18 +6866,15 @@ var mergeWithKey_1 = mergeWithKey;
  *                         { b: true, c: { thing: 'bar', values: [15, 35] }});
  *      //=> { a: true, b: true, c: { thing: 'bar', values: [10, 20, 15, 35] }}
  */
-
-
-var mergeDeepWithKey = /*#__PURE__*/_curry3_1(function mergeDeepWithKey(fn, lObj, rObj) {
-  return mergeWithKey_1(function (k, lVal, rVal) {
-    if (_isObject_1(lVal) && _isObject_1(rVal)) {
+var mergeDeepWithKey = /*#__PURE__*/_curry3(function mergeDeepWithKey(fn, lObj, rObj) {
+  return mergeWithKey(function (k, lVal, rVal) {
+    if (_isObject(lVal) && _isObject(rVal)) {
       return mergeDeepWithKey(fn, lVal, rVal);
     } else {
       return fn(k, lVal, rVal);
     }
   }, lObj, rObj);
 });
-var mergeDeepWithKey_1 = mergeDeepWithKey;
 
 /**
  * Creates a new object with the own properties of the first object merged with
@@ -7468,14 +6897,11 @@ var mergeDeepWithKey_1 = mergeDeepWithKey;
  *                      { age: 40, contact: { email: 'baa@example.com' }});
  *      //=> { name: 'fred', age: 10, contact: { email: 'moo@example.com' }}
  */
-
-
-var mergeDeepLeft = /*#__PURE__*/_curry2_1(function mergeDeepLeft(lObj, rObj) {
-  return mergeDeepWithKey_1(function (k, lVal, rVal) {
+var mergeDeepLeft = /*#__PURE__*/_curry2(function mergeDeepLeft(lObj, rObj) {
+  return mergeDeepWithKey(function (k, lVal, rVal) {
     return lVal;
   }, lObj, rObj);
 });
-var mergeDeepLeft_1 = mergeDeepLeft;
 
 /**
  * Creates a new object with the own properties of the first object merged with
@@ -7498,14 +6924,11 @@ var mergeDeepLeft_1 = mergeDeepLeft;
  *                       { age: 40, contact: { email: 'baa@example.com' }});
  *      //=> { name: 'fred', age: 40, contact: { email: 'baa@example.com' }}
  */
-
-
-var mergeDeepRight = /*#__PURE__*/_curry2_1(function mergeDeepRight(lObj, rObj) {
-  return mergeDeepWithKey_1(function (k, lVal, rVal) {
+var mergeDeepRight = /*#__PURE__*/_curry2(function mergeDeepRight(lObj, rObj) {
+  return mergeDeepWithKey(function (k, lVal, rVal) {
     return rVal;
   }, lObj, rObj);
 });
-var mergeDeepRight_1 = mergeDeepRight;
 
 /**
  * Creates a new object with the own properties of the two provided objects.
@@ -7534,14 +6957,11 @@ var mergeDeepRight_1 = mergeDeepRight;
  *                      { b: true, c: { values: [15, 35] }});
  *      //=> { a: true, b: true, c: { values: [10, 20, 15, 35] }}
  */
-
-
-var mergeDeepWith = /*#__PURE__*/_curry3_1(function mergeDeepWith(fn, lObj, rObj) {
-  return mergeDeepWithKey_1(function (k, lVal, rVal) {
+var mergeDeepWith = /*#__PURE__*/_curry3(function mergeDeepWith(fn, lObj, rObj) {
+  return mergeDeepWithKey(function (k, lVal, rVal) {
     return fn(lVal, rVal);
   }, lObj, rObj);
 });
-var mergeDeepWith_1 = mergeDeepWith;
 
 /**
  * Create a new object with the own properties of the first object merged with
@@ -7565,12 +6985,9 @@ var mergeDeepWith_1 = mergeDeepWith;
  *      resetToDefault({x: 5, y: 2}); //=> {x: 0, y: 2}
  * @symb R.mergeLeft(a, b) = {...b, ...a}
  */
-
-
-var mergeLeft = /*#__PURE__*/_curry2_1(function mergeLeft(l, r) {
-  return _objectAssign_1({}, r, l);
+var mergeLeft = /*#__PURE__*/_curry2(function mergeLeft(l, r) {
+  return _objectAssign$1({}, r, l);
 });
-var mergeLeft_1 = mergeLeft;
 
 /**
  * Create a new object with the own properties of the first object merged with
@@ -7594,12 +7011,9 @@ var mergeLeft_1 = mergeLeft;
  *      withDefaults({y: 2}); //=> {x: 0, y: 2}
  * @symb R.mergeRight(a, b) = {...a, ...b}
  */
-
-
-var mergeRight = /*#__PURE__*/_curry2_1(function mergeRight(l, r) {
-  return _objectAssign_1({}, l, r);
+var mergeRight = /*#__PURE__*/_curry2(function mergeRight(l, r) {
+  return _objectAssign$1({}, l, r);
 });
-var mergeRight_1 = mergeRight;
 
 /**
  * Creates a new object with the own properties of the two provided objects. If
@@ -7624,14 +7038,11 @@ var mergeRight_1 = mergeRight;
  *                  { b: true, values: [15, 35] });
  *      //=> { a: true, b: true, values: [10, 20, 15, 35] }
  */
-
-
-var mergeWith = /*#__PURE__*/_curry3_1(function mergeWith(fn, l, r) {
-  return mergeWithKey_1(function (_, _l, _r) {
+var mergeWith = /*#__PURE__*/_curry3(function mergeWith(fn, l, r) {
+  return mergeWithKey(function (_, _l, _r) {
     return fn(_l, _r);
   }, l, r);
 });
-var mergeWith_1 = mergeWith;
 
 /**
  * Returns the smaller of its two arguments.
@@ -7650,12 +7061,9 @@ var mergeWith_1 = mergeWith;
  *      R.min(789, 123); //=> 123
  *      R.min('a', 'b'); //=> 'a'
  */
-
-
-var min = /*#__PURE__*/_curry2_1(function min(a, b) {
+var min = /*#__PURE__*/_curry2(function min(a, b) {
   return b < a ? b : a;
 });
-var min_1 = min;
 
 /**
  * Takes a function and two values, and returns whichever value produces the
@@ -7681,12 +7089,9 @@ var min_1 = min;
  *      R.reduce(R.minBy(square), Infinity, [3, -5, 4, 1, -2]); //=> 1
  *      R.reduce(R.minBy(square), Infinity, []); //=> Infinity
  */
-
-
-var minBy = /*#__PURE__*/_curry3_1(function minBy(f, a, b) {
+var minBy = /*#__PURE__*/_curry3(function minBy(f, a, b) {
   return f(b) < f(a) ? b : a;
 });
-var minBy_1 = minBy;
 
 /**
  * Divides the first parameter by the second and returns the remainder. Note
@@ -7713,12 +7118,9 @@ var minBy_1 = minBy;
  *      isOdd(42); //=> 0
  *      isOdd(21); //=> 1
  */
-
-
-var modulo = /*#__PURE__*/_curry2_1(function modulo(a, b) {
+var modulo = /*#__PURE__*/_curry2(function modulo(a, b) {
   return a % b;
 });
-var modulo_1 = modulo;
 
 /**
  * Move an item, at index `from`, to index `to`, in a list of elements.
@@ -7737,9 +7139,7 @@ var modulo_1 = modulo;
  *      R.move(0, 2, ['a', 'b', 'c', 'd', 'e', 'f']); //=> ['b', 'c', 'a', 'd', 'e', 'f']
  *      R.move(-1, 0, ['a', 'b', 'c', 'd', 'e', 'f']); //=> ['f', 'a', 'b', 'c', 'd', 'e'] list rotation
  */
-
-
-var move = /*#__PURE__*/_curry3_1(function (from, to, list) {
+var move = /*#__PURE__*/_curry3(function (from, to, list) {
   var length = list.length;
   var result = list.slice();
   var positiveFrom = from < 0 ? length + from : from;
@@ -7748,8 +7148,6 @@ var move = /*#__PURE__*/_curry3_1(function (from, to, list) {
 
   return positiveFrom < 0 || positiveFrom >= list.length || positiveTo < 0 || positiveTo >= list.length ? list : [].concat(result.slice(0, positiveTo)).concat(item).concat(result.slice(positiveTo, list.length));
 });
-
-var move_1 = move;
 
 /**
  * Multiplies two numbers. Equivalent to `a * b` but curried.
@@ -7771,12 +7169,9 @@ var move_1 = move;
  *      triple(4);       //=> 12
  *      R.multiply(2, 5);  //=> 10
  */
-
-
-var multiply = /*#__PURE__*/_curry2_1(function multiply(a, b) {
+var multiply = /*#__PURE__*/_curry2(function multiply(a, b) {
   return a * b;
 });
-var multiply_1 = multiply;
 
 /**
  * Negates its argument.
@@ -7792,12 +7187,9 @@ var multiply_1 = multiply;
  *
  *      R.negate(42); //=> -42
  */
-
-
-var negate = /*#__PURE__*/_curry1_1(function negate(n) {
+var negate = /*#__PURE__*/_curry1(function negate(n) {
   return -n;
 });
-var negate_1 = negate;
 
 /**
  * Returns `true` if no elements of the list match the predicate, `false`
@@ -7824,12 +7216,9 @@ var negate_1 = negate;
  *      R.none(isEven, [1, 3, 5, 7, 9, 11]); //=> true
  *      R.none(isOdd, [1, 3, 5, 7, 8, 11]); //=> false
  */
-
-
-var none = /*#__PURE__*/_curry2_1(function none(fn, input) {
-  return all_1(_complement_1(fn), input);
+var none = /*#__PURE__*/_curry2(function none(fn, input) {
+  return all(_complement(fn), input);
 });
-var none_1 = none;
 
 /**
  * Returns a function which returns its nth argument.
@@ -7849,15 +7238,12 @@ var none_1 = none;
  * @symb R.nthArg(0)(a, b, c) = a
  * @symb R.nthArg(1)(a, b, c) = b
  */
-
-
-var nthArg = /*#__PURE__*/_curry1_1(function nthArg(n) {
+var nthArg = /*#__PURE__*/_curry1(function nthArg(n) {
   var arity = n < 0 ? 1 : n + 1;
-  return curryN_1(arity, function () {
-    return nth_1(n, arguments);
+  return curryN(arity, function () {
+    return nth(n, arguments);
   });
 });
-var nthArg_1 = nthArg;
 
 /**
  * `o` is a curried composition function that returns a unary function.
@@ -7886,17 +7272,13 @@ var nthArg_1 = nthArg;
  *
  * @symb R.o(f, g, x) = f(g(x))
  */
-
-
-var o = /*#__PURE__*/_curry3_1(function o(f, g, x) {
+var o = /*#__PURE__*/_curry3(function o(f, g, x) {
   return f(g(x));
 });
-var o_1 = o;
 
 function _of(x) {
   return [x];
 }
-var _of_1 = _of;
 
 /**
  * Returns a singleton array containing the value provided.
@@ -7916,10 +7298,7 @@ var _of_1 = _of;
  *      R.of(null); //=> [null]
  *      R.of([42]); //=> [[42]]
  */
-
-
-var of = /*#__PURE__*/_curry1_1(_of_1);
-var of_1 = of;
+var of = /*#__PURE__*/_curry1(_of);
 
 /**
  * Returns a partial copy of an object omitting the keys specified.
@@ -7937,9 +7316,7 @@ var of_1 = of;
  *
  *      R.omit(['a', 'd'], {a: 1, b: 2, c: 3, d: 4}); //=> {b: 2, c: 3}
  */
-
-
-var omit = /*#__PURE__*/_curry2_1(function omit(names, obj) {
+var omit = /*#__PURE__*/_curry2(function omit(names, obj) {
   var result = {};
   var index = {};
   var idx = 0;
@@ -7957,7 +7334,6 @@ var omit = /*#__PURE__*/_curry2_1(function omit(names, obj) {
   }
   return result;
 });
-var omit_1 = omit;
 
 /**
  * Accepts a function `fn` and returns a function that guards invocation of
@@ -7978,12 +7354,10 @@ var omit_1 = omit;
  *      addOneOnce(10); //=> 11
  *      addOneOnce(addOneOnce(50)); //=> 11
  */
-
-
-var once = /*#__PURE__*/_curry1_1(function once(fn) {
+var once = /*#__PURE__*/_curry1(function once(fn) {
   var called = false;
   var result;
-  return _arity_1(fn.length, function () {
+  return _arity(fn.length, function () {
     if (called) {
       return result;
     }
@@ -7992,14 +7366,12 @@ var once = /*#__PURE__*/_curry1_1(function once(fn) {
     return result;
   });
 });
-var once_1 = once;
 
 function _assertPromise(name, p) {
-  if (p == null || !_isFunction_1(p.then)) {
-    throw new TypeError('`' + name + '` expected a Promise, received ' + _toString_1(p, []));
+  if (p == null || !_isFunction(p.then)) {
+    throw new TypeError('`' + name + '` expected a Promise, received ' + _toString(p, []));
   }
 }
-var _assertPromise_1 = _assertPromise;
 
 /**
  * Returns the result of applying the onFailure function to the value inside
@@ -8028,19 +7400,14 @@ var _assertPromise_1 = _assertPromise;
  *      );
  *      recoverFromFailure(12345).then(console.log)
  */
-
-
-var otherwise = /*#__PURE__*/_curry2_1(function otherwise(f, p) {
-  _assertPromise_1('otherwise', p);
+var otherwise = /*#__PURE__*/_curry2(function otherwise(f, p) {
+  _assertPromise('otherwise', p);
 
   return p.then(null, f);
 });
-var otherwise_1 = otherwise;
 
 // `Identity` is a functor that holds a single value, where `map` simply
 // transforms the held value with the provided function.
-
-
 var Identity = function (x) {
   return { value: x, map: function (f) {
       return Identity(f(x));
@@ -8069,7 +7436,7 @@ var Identity = function (x) {
  *
  *      R.over(headLens, R.toUpper, ['foo', 'bar', 'baz']); //=> ['FOO', 'bar', 'baz']
  */
-var over = /*#__PURE__*/_curry3_1(function over(lens, f, x) {
+var over = /*#__PURE__*/_curry3(function over(lens, f, x) {
   // The value returned by the getter function is first transformed with `f`,
   // then set as the value of an `Identity`. This is then mapped over with the
   // setter function of the lens.
@@ -8077,7 +7444,6 @@ var over = /*#__PURE__*/_curry3_1(function over(lens, f, x) {
     return Identity(f(y));
   })(x).value;
 });
-var over_1 = over;
 
 /**
  * Takes two arguments, `fst` and `snd`, and returns `[fst, snd]`.
@@ -8095,21 +7461,17 @@ var over_1 = over;
  *
  *      R.pair('foo', 'bar'); //=> ['foo', 'bar']
  */
-
-
-var pair = /*#__PURE__*/_curry2_1(function pair(fst, snd) {
+var pair = /*#__PURE__*/_curry2(function pair(fst, snd) {
   return [fst, snd];
 });
-var pair_1 = pair;
 
 function _createPartialApplicator(concat) {
-  return _curry2_1(function (fn, args) {
-    return _arity_1(Math.max(0, fn.length - args.length), function () {
+  return _curry2(function (fn, args) {
+    return _arity(Math.max(0, fn.length - args.length), function () {
       return fn.apply(this, concat(args, arguments));
     });
   });
 }
-var _createPartialApplicator_1 = _createPartialApplicator;
 
 /**
  * Takes a function `f` and a list of arguments, and returns a function `g`.
@@ -8139,10 +7501,7 @@ var _createPartialApplicator_1 = _createPartialApplicator;
  *      sayHelloToMs('Jane', 'Jones'); //=> 'Hello, Ms. Jane Jones!'
  * @symb R.partial(f, [a, b])(c, d) = f(a, b, c, d)
  */
-
-
-var partial = /*#__PURE__*/_createPartialApplicator_1(_concat_1);
-var partial_1 = partial;
+var partial = /*#__PURE__*/_createPartialApplicator(_concat);
 
 /**
  * Takes a function `f` and a list of arguments, and returns a function `g`.
@@ -8168,10 +7527,7 @@ var partial_1 = partial;
  *      greetMsJaneJones('Hello'); //=> 'Hello, Ms. Jane Jones!'
  * @symb R.partialRight(f, [a, b])(c, d) = f(c, d, a, b)
  */
-
-
-var partialRight = /*#__PURE__*/_createPartialApplicator_1( /*#__PURE__*/flip_1(_concat_1));
-var partialRight_1 = partialRight;
+var partialRight = /*#__PURE__*/_createPartialApplicator( /*#__PURE__*/flip(_concat));
 
 /**
  * Takes a predicate and a list or other `Filterable` object and returns the
@@ -8197,10 +7553,7 @@ var partialRight_1 = partialRight;
  *      R.partition(R.includes('s'), { a: 'sss', b: 'ttt', foo: 'bars' });
  *      // => [ { a: 'sss', foo: 'bars' }, { b: 'ttt' }  ]
  */
-
-
-var partition = /*#__PURE__*/juxt_1([filter_1, reject_1]);
-var partition_1 = partition;
+var partition = /*#__PURE__*/juxt([filter, reject]);
 
 /**
  * Determines whether a nested path on an object has a specific value, in
@@ -8226,12 +7579,9 @@ var partition_1 = partition;
  *      const isFamous = R.pathEq(['address', 'zipCode'], 90210);
  *      R.filter(isFamous, users); //=> [ user1 ]
  */
-
-
-var pathEq = /*#__PURE__*/_curry3_1(function pathEq(_path, val, obj) {
-  return equals_1(path_1(_path, obj), val);
+var pathEq = /*#__PURE__*/_curry3(function pathEq(_path, val, obj) {
+  return equals(path(_path, obj), val);
 });
-var pathEq_1 = pathEq;
 
 /**
  * If the given, non-null object has a value at the given path, returns the
@@ -8252,12 +7602,9 @@ var pathEq_1 = pathEq;
  *      R.pathOr('N/A', ['a', 'b'], {a: {b: 2}}); //=> 2
  *      R.pathOr('N/A', ['a', 'b'], {c: {b: 2}}); //=> "N/A"
  */
-
-
-var pathOr = /*#__PURE__*/_curry3_1(function pathOr(d, p, obj) {
-  return defaultTo_1(d, path_1(p, obj));
+var pathOr = /*#__PURE__*/_curry3(function pathOr(d, p, obj) {
+  return defaultTo(d, path(p, obj));
 });
-var pathOr_1 = pathOr;
 
 /**
  * Returns `true` if the specified object property at given path satisfies the
@@ -8278,12 +7625,9 @@ var pathOr_1 = pathOr;
  *
  *      R.pathSatisfies(y => y > 0, ['x', 'y'], {x: {y: 2}}); //=> true
  */
-
-
-var pathSatisfies = /*#__PURE__*/_curry3_1(function pathSatisfies(pred, propPath, obj) {
-  return propPath.length > 0 && pred(path_1(propPath, obj));
+var pathSatisfies = /*#__PURE__*/_curry3(function pathSatisfies(pred, propPath, obj) {
+  return propPath.length > 0 && pred(path(propPath, obj));
 });
-var pathSatisfies_1 = pathSatisfies;
 
 /**
  * Returns a partial copy of an object containing only the keys specified. If
@@ -8303,9 +7647,7 @@ var pathSatisfies_1 = pathSatisfies;
  *      R.pick(['a', 'd'], {a: 1, b: 2, c: 3, d: 4}); //=> {a: 1, d: 4}
  *      R.pick(['a', 'e', 'f'], {a: 1, b: 2, c: 3, d: 4}); //=> {a: 1}
  */
-
-
-var pick = /*#__PURE__*/_curry2_1(function pick(names, obj) {
+var pick = /*#__PURE__*/_curry2(function pick(names, obj) {
   var result = {};
   var idx = 0;
   while (idx < names.length) {
@@ -8316,7 +7658,6 @@ var pick = /*#__PURE__*/_curry2_1(function pick(names, obj) {
   }
   return result;
 });
-var pick_1 = pick;
 
 /**
  * Similar to `pick` except that this one includes a `key: undefined` pair for
@@ -8336,9 +7677,7 @@ var pick_1 = pick;
  *      R.pickAll(['a', 'd'], {a: 1, b: 2, c: 3, d: 4}); //=> {a: 1, d: 4}
  *      R.pickAll(['a', 'e', 'f'], {a: 1, b: 2, c: 3, d: 4}); //=> {a: 1, e: undefined, f: undefined}
  */
-
-
-var pickAll = /*#__PURE__*/_curry2_1(function pickAll(names, obj) {
+var pickAll = /*#__PURE__*/_curry2(function pickAll(names, obj) {
   var result = {};
   var idx = 0;
   var len = names.length;
@@ -8349,7 +7688,6 @@ var pickAll = /*#__PURE__*/_curry2_1(function pickAll(names, obj) {
   }
   return result;
 });
-var pickAll_1 = pickAll;
 
 /**
  * Returns a partial copy of an object containing only the keys that satisfy
@@ -8371,9 +7709,7 @@ var pickAll_1 = pickAll;
  *      const isUpperCase = (val, key) => key.toUpperCase() === key;
  *      R.pickBy(isUpperCase, {a: 1, b: 2, A: 3, B: 4}); //=> {A: 3, B: 4}
  */
-
-
-var pickBy = /*#__PURE__*/_curry2_1(function pickBy(test, obj) {
+var pickBy = /*#__PURE__*/_curry2(function pickBy(test, obj) {
   var result = {};
   for (var prop in obj) {
     if (test(obj[prop], prop, obj)) {
@@ -8382,7 +7718,6 @@ var pickBy = /*#__PURE__*/_curry2_1(function pickBy(test, obj) {
   }
   return result;
 });
-var pickBy_1 = pickBy;
 
 /**
  * Returns the left-to-right Kleisli composition of the provided functions,
@@ -8419,15 +7754,12 @@ var pickBy_1 = pickBy;
  *      //=> Nothing()
  * @symb R.pipeK(f, g, h)(a) = R.chain(h, R.chain(g, f(a)))
  */
-
-
 function pipeK() {
   if (arguments.length === 0) {
     throw new Error('pipeK requires at least one argument');
   }
-  return composeK_1.apply(this, reverse_1(arguments));
+  return composeK.apply(this, reverse(arguments));
 }
-var pipeK_1 = pipeK;
 
 /**
  * Returns a new list with the given element at the front, followed by the
@@ -8446,12 +7778,9 @@ var pipeK_1 = pipeK;
  *
  *      R.prepend('fee', ['fi', 'fo', 'fum']); //=> ['fee', 'fi', 'fo', 'fum']
  */
-
-
-var prepend = /*#__PURE__*/_curry2_1(function prepend(el, list) {
-  return _concat_1([el], list);
+var prepend = /*#__PURE__*/_curry2(function prepend(el, list) {
+  return _concat([el], list);
 });
-var prepend_1 = prepend;
 
 /**
  * Multiplies together all the elements of a list.
@@ -8468,10 +7797,7 @@ var prepend_1 = prepend;
  *
  *      R.product([2,4,6,8,100,1]); //=> 38400
  */
-
-
-var product = /*#__PURE__*/reduce_1(multiply_1, 1);
-var product_1 = product;
+var product = /*#__PURE__*/reduce(multiply, 1);
 
 /**
  * Accepts a function `fn` and a list of transformer functions and returns a
@@ -8502,10 +7828,8 @@ var product_1 = product;
  *      R.useWith(Math.pow, [R.dec, R.inc])(3)(4); //=> 32
  * @symb R.useWith(f, [g, h])(a, b) = f(g(a), h(b))
  */
-
-
-var useWith = /*#__PURE__*/_curry2_1(function useWith(fn, transformers) {
-  return curryN_1(transformers.length, function () {
+var useWith = /*#__PURE__*/_curry2(function useWith(fn, transformers) {
+  return curryN(transformers.length, function () {
     var args = [];
     var idx = 0;
     while (idx < transformers.length) {
@@ -8515,7 +7839,6 @@ var useWith = /*#__PURE__*/_curry2_1(function useWith(fn, transformers) {
     return fn.apply(this, args.concat(Array.prototype.slice.call(arguments, transformers.length)));
   });
 });
-var useWith_1 = useWith;
 
 /**
  * Reasonable analog to SQL `select` statement.
@@ -8536,10 +7859,7 @@ var useWith_1 = useWith;
  *      const kids = [abby, fred];
  *      R.project(['name', 'grade'], kids); //=> [{name: 'Abby', grade: 2}, {name: 'Fred', grade: 7}]
  */
-
-
-var project = /*#__PURE__*/useWith_1(_map_1, [pickAll_1, identity_1]); // passing `identity` gives correct arity
-var project_1 = project;
+var project = /*#__PURE__*/useWith(_map, [pickAll, identity]); // passing `identity` gives correct arity
 
 /**
  * Returns `true` if the specified object property is equal, in
@@ -8566,12 +7886,9 @@ var project_1 = project;
  *      const hasBrownHair = R.propEq('hair', 'brown');
  *      R.filter(hasBrownHair, kids); //=> [fred, rusty]
  */
-
-
-var propEq = /*#__PURE__*/_curry3_1(function propEq(name, val, obj) {
-  return equals_1(val, obj[name]);
+var propEq = /*#__PURE__*/_curry3(function propEq(name, val, obj) {
+  return equals(val, obj[name]);
 });
-var propEq_1 = propEq;
 
 /**
  * Returns `true` if the specified object property is of the given type;
@@ -8593,12 +7910,9 @@ var propEq_1 = propEq;
  *      R.propIs(Number, 'x', {x: 'foo'});    //=> false
  *      R.propIs(Number, 'x', {});            //=> false
  */
-
-
-var propIs = /*#__PURE__*/_curry3_1(function propIs(type, name, obj) {
-  return is_1(type, obj[name]);
+var propIs = /*#__PURE__*/_curry3(function propIs(type, name, obj) {
+  return is(type, obj[name]);
 });
-var propIs_1 = propIs;
 
 /**
  * If the given, non-null object has an own property with the specified name,
@@ -8626,12 +7940,9 @@ var propIs_1 = propIs;
  *      favorite(alice);  //=> undefined
  *      favoriteWithDefault(alice);  //=> 'Ramda'
  */
-
-
-var propOr = /*#__PURE__*/_curry3_1(function propOr(val, p, obj) {
-  return pathOr_1(val, [p], obj);
+var propOr = /*#__PURE__*/_curry3(function propOr(val, p, obj) {
+  return pathOr(val, [p], obj);
 });
-var propOr_1 = propOr;
 
 /**
  * Returns `true` if the specified object property satisfies the given
@@ -8652,12 +7963,9 @@ var propOr_1 = propOr;
  *
  *      R.propSatisfies(x => x > 0, 'x', {x: 1, y: 2}); //=> true
  */
-
-
-var propSatisfies = /*#__PURE__*/_curry3_1(function propSatisfies(pred, name, obj) {
+var propSatisfies = /*#__PURE__*/_curry3(function propSatisfies(pred, name, obj) {
   return pred(obj[name]);
 });
-var propSatisfies_1 = propSatisfies;
 
 /**
  * Acts as multiple `prop`: array of keys in, array of values out. Preserves
@@ -8679,9 +7987,7 @@ var propSatisfies_1 = propSatisfies;
  *      const fullName = R.compose(R.join(' '), R.props(['first', 'last']));
  *      fullName({last: 'Bullet-Tooth', age: 33, first: 'Tony'}); //=> 'Tony Bullet-Tooth'
  */
-
-
-var props = /*#__PURE__*/_curry2_1(function props(ps, obj) {
+var props = /*#__PURE__*/_curry2(function props(ps, obj) {
   var len = ps.length;
   var out = [];
   var idx = 0;
@@ -8693,7 +7999,6 @@ var props = /*#__PURE__*/_curry2_1(function props(ps, obj) {
 
   return out;
 });
-var props_1 = props;
 
 /**
  * Returns a list of numbers from `from` (inclusive) to `to` (exclusive).
@@ -8711,10 +8016,8 @@ var props_1 = props;
  *      R.range(1, 5);    //=> [1, 2, 3, 4]
  *      R.range(50, 53);  //=> [50, 51, 52]
  */
-
-
-var range = /*#__PURE__*/_curry2_1(function range(from, to) {
-  if (!(_isNumber_1(from) && _isNumber_1(to))) {
+var range = /*#__PURE__*/_curry2(function range(from, to) {
+  if (!(_isNumber(from) && _isNumber(to))) {
     throw new TypeError('Both arguments to range must be numbers');
   }
   var result = [];
@@ -8725,7 +8028,6 @@ var range = /*#__PURE__*/_curry2_1(function range(from, to) {
   }
   return result;
 });
-var range_1 = range;
 
 /**
  * Returns a single item by iterating through the list, successively calling
@@ -8769,9 +8071,7 @@ var range_1 = range;
  *
  * @symb R.reduceRight(f, a, [b, c, d]) = f(b, f(c, f(d, a)))
  */
-
-
-var reduceRight = /*#__PURE__*/_curry3_1(function reduceRight(fn, acc, list) {
+var reduceRight = /*#__PURE__*/_curry3(function reduceRight(fn, acc, list) {
   var idx = list.length - 1;
   while (idx >= 0) {
     acc = fn(list[idx], acc);
@@ -8779,7 +8079,6 @@ var reduceRight = /*#__PURE__*/_curry3_1(function reduceRight(fn, acc, list) {
   }
   return acc;
 });
-var reduceRight_1 = reduceRight;
 
 /**
  * Like [`reduce`](#reduce), `reduceWhile` returns a single item by iterating
@@ -8810,14 +8109,11 @@ var reduceRight_1 = reduceRight;
  *      const ys = [2, 4, 6]
  *      R.reduceWhile(isOdd, R.add, 111, ys); //=> 111
  */
-
-
-var reduceWhile = /*#__PURE__*/_curryN_1(4, [], function _reduceWhile(pred, fn, a, list) {
-  return _reduce_1(function (acc, x) {
-    return pred(acc, x) ? fn(acc, x) : _reduced_1(acc);
+var reduceWhile = /*#__PURE__*/_curryN(4, [], function _reduceWhile(pred, fn, a, list) {
+  return _reduce(function (acc, x) {
+    return pred(acc, x) ? fn(acc, x) : _reduced(acc);
   }, a, list);
 });
-var reduceWhile_1 = reduceWhile;
 
 /**
  * Returns a value wrapped to indicate that it is the final value of the reduce
@@ -8844,10 +8140,7 @@ var reduceWhile_1 = reduceWhile;
  *       [],
  *       [1, 2, 3, 4, 5]) // [1, 2, 3]
  */
-
-
-var reduced = /*#__PURE__*/_curry1_1(_reduced_1);
-var reduced_1 = reduced;
+var reduced = /*#__PURE__*/_curry1(_reduced);
 
 /**
  * Calls an input function `n` times, returning an array containing the results
@@ -8872,9 +8165,7 @@ var reduced_1 = reduced;
  * @symb R.times(f, 1) = [f(0)]
  * @symb R.times(f, 2) = [f(0), f(1)]
  */
-
-
-var times = /*#__PURE__*/_curry2_1(function times(fn, n) {
+var times = /*#__PURE__*/_curry2(function times(fn, n) {
   var len = Number(n);
   var idx = 0;
   var list;
@@ -8889,7 +8180,6 @@ var times = /*#__PURE__*/_curry2_1(function times(fn, n) {
   }
   return list;
 });
-var times_1 = times;
 
 /**
  * Returns a fixed list of size `n` containing a specified identical value.
@@ -8914,12 +8204,9 @@ var times_1 = times;
  * @symb R.repeat(a, 1) = [a]
  * @symb R.repeat(a, 2) = [a, a]
  */
-
-
-var repeat = /*#__PURE__*/_curry2_1(function repeat(value, n) {
-  return times_1(always_1(value), n);
+var repeat = /*#__PURE__*/_curry2(function repeat(value, n) {
+  return times(always(value), n);
 });
-var repeat_1 = repeat;
 
 /**
  * Replace a substring or regex match in a string with a replacement.
@@ -8945,12 +8232,9 @@ var repeat_1 = repeat;
  *      // Use the "g" (global) flag to replace all occurrences:
  *      R.replace(/foo/g, 'bar', 'foo foo foo'); //=> 'bar bar bar'
  */
-
-
-var replace = /*#__PURE__*/_curry3_1(function replace(regex, replacement, str) {
+var replace = /*#__PURE__*/_curry3(function replace(regex, replacement, str) {
   return str.replace(regex, replacement);
 });
-var replace_1 = replace;
 
 /**
  * Scan is similar to [`reduce`](#reduce), but returns a list of successively
@@ -8973,9 +8257,7 @@ var replace_1 = replace;
  *      const factorials = R.scan(R.multiply, 1, numbers); //=> [1, 1, 2, 6, 24]
  * @symb R.scan(f, a, [b, c]) = [a, f(a, b), f(f(a, b), c)]
  */
-
-
-var scan = /*#__PURE__*/_curry3_1(function scan(fn, acc, list) {
+var scan = /*#__PURE__*/_curry3(function scan(fn, acc, list) {
   var idx = 0;
   var len = list.length;
   var result = [acc];
@@ -8986,7 +8268,6 @@ var scan = /*#__PURE__*/_curry3_1(function scan(fn, acc, list) {
   }
   return result;
 });
-var scan_1 = scan;
 
 /**
  * Transforms a [Traversable](https://github.com/fantasyland/fantasy-land#traversable)
@@ -9012,14 +8293,11 @@ var scan_1 = scan;
  *      R.sequence(R.of, Just([1, 2, 3])); //=> [Just(1), Just(2), Just(3)]
  *      R.sequence(R.of, Nothing());       //=> [Nothing()]
  */
-
-
-var sequence = /*#__PURE__*/_curry2_1(function sequence(of, traversable) {
-  return typeof traversable.sequence === 'function' ? traversable.sequence(of) : reduceRight_1(function (x, acc) {
-    return ap_1(map_1(prepend_1, x), acc);
+var sequence = /*#__PURE__*/_curry2(function sequence(of, traversable) {
+  return typeof traversable.sequence === 'function' ? traversable.sequence(of) : reduceRight(function (x, acc) {
+    return ap(map(prepend, x), acc);
   }, of([]), traversable);
 });
-var sequence_1 = sequence;
 
 /**
  * Returns the result of "setting" the portion of the given data structure
@@ -9043,12 +8321,9 @@ var sequence_1 = sequence;
  *      R.set(xLens, 4, {x: 1, y: 2});  //=> {x: 4, y: 2}
  *      R.set(xLens, 8, {x: 1, y: 2});  //=> {x: 8, y: 2}
  */
-
-
-var set = /*#__PURE__*/_curry3_1(function set(lens, v, x) {
-  return over_1(lens, always_1(v), x);
+var set = /*#__PURE__*/_curry3(function set(lens, v, x) {
+  return over(lens, always(v), x);
 });
-var set_1 = set;
 
 /**
  * Returns a copy of the list, sorted according to the comparator function,
@@ -9070,12 +8345,9 @@ var set_1 = set;
  *      const diff = function(a, b) { return a - b; };
  *      R.sort(diff, [4,2,7,5]); //=> [2, 4, 5, 7]
  */
-
-
-var sort = /*#__PURE__*/_curry2_1(function sort(comparator, list) {
+var sort = /*#__PURE__*/_curry2(function sort(comparator, list) {
   return Array.prototype.slice.call(list, 0).sort(comparator);
 });
-var sort_1 = sort;
 
 /**
  * Sorts the list according to the supplied function.
@@ -9110,16 +8382,13 @@ var sort_1 = sort;
  *      const people = [clara, bob, alice];
  *      sortByNameCaseInsensitive(people); //=> [alice, bob, clara]
  */
-
-
-var sortBy = /*#__PURE__*/_curry2_1(function sortBy(fn, list) {
+var sortBy = /*#__PURE__*/_curry2(function sortBy(fn, list) {
   return Array.prototype.slice.call(list, 0).sort(function (a, b) {
     var aa = fn(a);
     var bb = fn(b);
     return aa < bb ? -1 : aa > bb ? 1 : 0;
   });
 });
-var sortBy_1 = sortBy;
 
 /**
  * Sorts a list according to a list of comparators.
@@ -9153,9 +8422,7 @@ var sortBy_1 = sortBy;
  *      ]);
  *      ageNameSort(people); //=> [alice, clara, bob]
  */
-
-
-var sortWith = /*#__PURE__*/_curry2_1(function sortWith(fns, list) {
+var sortWith = /*#__PURE__*/_curry2(function sortWith(fns, list) {
   return Array.prototype.slice.call(list, 0).sort(function (a, b) {
     var result = 0;
     var i = 0;
@@ -9166,7 +8433,6 @@ var sortWith = /*#__PURE__*/_curry2_1(function sortWith(fns, list) {
     return result;
   });
 });
-var sortWith_1 = sortWith;
 
 /**
  * Splits a string into an array of strings based on the given
@@ -9188,10 +8454,7 @@ var sortWith_1 = sortWith;
  *
  *      R.split('.', 'a.b.c.xyz.d'); //=> ['a', 'b', 'c', 'xyz', 'd']
  */
-
-
-var split = /*#__PURE__*/invoker_1(1, 'split');
-var split_1 = split;
+var split = /*#__PURE__*/invoker(1, 'split');
 
 /**
  * Splits a given list or string at a given index.
@@ -9211,12 +8474,9 @@ var split_1 = split;
  *      R.splitAt(5, 'hello world');      //=> ['hello', ' world']
  *      R.splitAt(-1, 'foobar');          //=> ['fooba', 'r']
  */
-
-
-var splitAt = /*#__PURE__*/_curry2_1(function splitAt(index, array) {
-  return [slice_1(0, index, array), slice_1(index, length_1(array), array)];
+var splitAt = /*#__PURE__*/_curry2(function splitAt(index, array) {
+  return [slice(0, index, array), slice(index, length(array), array)];
 });
-var splitAt_1 = splitAt;
 
 /**
  * Splits a collection into slices of the specified length.
@@ -9235,20 +8495,17 @@ var splitAt_1 = splitAt;
  *      R.splitEvery(3, [1, 2, 3, 4, 5, 6, 7]); //=> [[1, 2, 3], [4, 5, 6], [7]]
  *      R.splitEvery(3, 'foobarbaz'); //=> ['foo', 'bar', 'baz']
  */
-
-
-var splitEvery = /*#__PURE__*/_curry2_1(function splitEvery(n, list) {
+var splitEvery = /*#__PURE__*/_curry2(function splitEvery(n, list) {
   if (n <= 0) {
     throw new Error('First argument to splitEvery must be a positive integer');
   }
   var result = [];
   var idx = 0;
   while (idx < list.length) {
-    result.push(slice_1(idx, idx += n, list));
+    result.push(slice(idx, idx += n, list));
   }
   return result;
 });
-var splitEvery_1 = splitEvery;
 
 /**
  * Takes a list and a predicate and returns a pair of lists with the following properties:
@@ -9269,9 +8526,7 @@ var splitEvery_1 = splitEvery;
  *
  *      R.splitWhen(R.equals(2), [1, 2, 3, 1, 2, 3]);   //=> [[1], [2, 3, 1, 2, 3]]
  */
-
-
-var splitWhen = /*#__PURE__*/_curry2_1(function splitWhen(pred, list) {
+var splitWhen = /*#__PURE__*/_curry2(function splitWhen(pred, list) {
   var idx = 0;
   var len = list.length;
   var prefix = [];
@@ -9283,7 +8538,6 @@ var splitWhen = /*#__PURE__*/_curry2_1(function splitWhen(pred, list) {
 
   return [prefix, Array.prototype.slice.call(list, idx)];
 });
-var splitWhen_1 = splitWhen;
 
 /**
  * Checks if a list starts with the provided sublist.
@@ -9307,12 +8561,9 @@ var splitWhen_1 = splitWhen;
  *      R.startsWith(['a'], ['a', 'b', 'c'])    //=> true
  *      R.startsWith(['b'], ['a', 'b', 'c'])    //=> false
  */
-
-
-var startsWith = /*#__PURE__*/_curry2_1(function (prefix, list) {
-  return equals_1(take_1(prefix.length, list), prefix);
+var startsWith = /*#__PURE__*/_curry2(function (prefix, list) {
+  return equals(take(prefix.length, list), prefix);
 });
-var startsWith_1 = startsWith;
 
 /**
  * Subtracts its second argument from its first argument.
@@ -9337,12 +8588,9 @@ var startsWith_1 = startsWith;
  *      complementaryAngle(30); //=> 60
  *      complementaryAngle(72); //=> 18
  */
-
-
-var subtract = /*#__PURE__*/_curry2_1(function subtract(a, b) {
+var subtract = /*#__PURE__*/_curry2(function subtract(a, b) {
   return Number(a) - Number(b);
 });
-var subtract_1 = subtract;
 
 /**
  * Finds the set (i.e. no duplicates) of all elements contained in the first or
@@ -9362,12 +8610,9 @@ var subtract_1 = subtract;
  *      R.symmetricDifference([1,2,3,4], [7,6,5,4,3]); //=> [1,2,7,6,5]
  *      R.symmetricDifference([7,6,5,4,3], [1,2,3,4]); //=> [7,6,5,1,2]
  */
-
-
-var symmetricDifference = /*#__PURE__*/_curry2_1(function symmetricDifference(list1, list2) {
-  return concat_1(difference_1(list1, list2), difference_1(list2, list1));
+var symmetricDifference = /*#__PURE__*/_curry2(function symmetricDifference(list1, list2) {
+  return concat(difference(list1, list2), difference(list2, list1));
 });
-var symmetricDifference_1 = symmetricDifference;
 
 /**
  * Finds the set (i.e. no duplicates) of all elements contained in the first or
@@ -9391,12 +8636,9 @@ var symmetricDifference_1 = symmetricDifference;
  *      const l2 = [{a: 3}, {a: 4}, {a: 5}, {a: 6}];
  *      R.symmetricDifferenceWith(eqA, l1, l2); //=> [{a: 1}, {a: 2}, {a: 5}, {a: 6}]
  */
-
-
-var symmetricDifferenceWith = /*#__PURE__*/_curry3_1(function symmetricDifferenceWith(pred, list1, list2) {
-  return concat_1(differenceWith_1(pred, list1, list2), differenceWith_1(pred, list2, list1));
+var symmetricDifferenceWith = /*#__PURE__*/_curry3(function symmetricDifferenceWith(pred, list1, list2) {
+  return concat(differenceWith(pred, list1, list2), differenceWith(pred, list2, list1));
 });
-var symmetricDifferenceWith_1 = symmetricDifferenceWith;
 
 /**
  * Returns a new list containing the last `n` elements of a given list, passing
@@ -9423,19 +8665,15 @@ var symmetricDifferenceWith_1 = symmetricDifferenceWith;
  *
  *      R.takeLastWhile(x => x !== 'R' , 'Ramda'); //=> 'amda'
  */
-
-
-var takeLastWhile = /*#__PURE__*/_curry2_1(function takeLastWhile(fn, xs) {
+var takeLastWhile = /*#__PURE__*/_curry2(function takeLastWhile(fn, xs) {
   var idx = xs.length - 1;
   while (idx >= 0 && fn(xs[idx])) {
     idx -= 1;
   }
-  return slice_1(idx + 1, Infinity, xs);
+  return slice(idx + 1, Infinity, xs);
 });
-var takeLastWhile_1 = takeLastWhile;
 
 var XTakeWhile = /*#__PURE__*/function () {
-
   function XTakeWhile(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -9443,16 +8681,15 @@ var XTakeWhile = /*#__PURE__*/function () {
   XTakeWhile.prototype['@@transducer/init'] = _xfBase.init;
   XTakeWhile.prototype['@@transducer/result'] = _xfBase.result;
   XTakeWhile.prototype['@@transducer/step'] = function (result, input) {
-    return this.f(input) ? this.xf['@@transducer/step'](result, input) : _reduced_1(result);
+    return this.f(input) ? this.xf['@@transducer/step'](result, input) : _reduced(result);
   };
 
   return XTakeWhile;
 }();
 
-var _xtakeWhile = /*#__PURE__*/_curry2_1(function _xtakeWhile(f, xf) {
+var _xtakeWhile = /*#__PURE__*/_curry2(function _xtakeWhile(f, xf) {
   return new XTakeWhile(f, xf);
 });
-var _xtakeWhile_1 = _xtakeWhile;
 
 /**
  * Returns a new list containing the first `n` elements of a given list,
@@ -9483,20 +8720,16 @@ var _xtakeWhile_1 = _xtakeWhile;
  *
  *      R.takeWhile(x => x !== 'd' , 'Ramda'); //=> 'Ram'
  */
-
-
-var takeWhile = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1(['takeWhile'], _xtakeWhile_1, function takeWhile(fn, xs) {
+var takeWhile = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable(['takeWhile'], _xtakeWhile, function takeWhile(fn, xs) {
   var idx = 0;
   var len = xs.length;
   while (idx < len && fn(xs[idx])) {
     idx += 1;
   }
-  return slice_1(0, idx, xs);
+  return slice(0, idx, xs);
 }));
-var takeWhile_1 = takeWhile;
 
 var XTap = /*#__PURE__*/function () {
-
   function XTap(f, xf) {
     this.xf = xf;
     this.f = f;
@@ -9511,10 +8744,9 @@ var XTap = /*#__PURE__*/function () {
   return XTap;
 }();
 
-var _xtap = /*#__PURE__*/_curry2_1(function _xtap(f, xf) {
+var _xtap = /*#__PURE__*/_curry2(function _xtap(f, xf) {
   return new XTap(f, xf);
 });
-var _xtap_1 = _xtap;
 
 /**
  * Runs the given function with the supplied object, then returns the object.
@@ -9536,18 +8768,14 @@ var _xtap_1 = _xtap;
  *      // logs 'x is 100'
  * @symb R.tap(f, a) = a
  */
-
-
-var tap = /*#__PURE__*/_curry2_1( /*#__PURE__*/_dispatchable_1([], _xtap_1, function tap(fn, x) {
+var tap = /*#__PURE__*/_curry2( /*#__PURE__*/_dispatchable([], _xtap, function tap(fn, x) {
   fn(x);
   return x;
 }));
-var tap_1 = tap;
 
 function _isRegExp(x) {
   return Object.prototype.toString.call(x) === '[object RegExp]';
 }
-var _isRegExp_1 = _isRegExp;
 
 /**
  * Determines whether a given string matches a given regular expression.
@@ -9566,15 +8794,12 @@ var _isRegExp_1 = _isRegExp;
  *      R.test(/^x/, 'xyz'); //=> true
  *      R.test(/^y/, 'xyz'); //=> false
  */
-
-
-var test = /*#__PURE__*/_curry2_1(function test(pattern, str) {
-  if (!_isRegExp_1(pattern)) {
-    throw new TypeError('‘test’ requires a value of type RegExp as its first argument; received ' + toString_1(pattern));
+var test = /*#__PURE__*/_curry2(function test(pattern, str) {
+  if (!_isRegExp(pattern)) {
+    throw new TypeError('‘test’ requires a value of type RegExp as its first argument; received ' + toString$1(pattern));
   }
-  return _cloneRegExp_1(pattern).test(str);
+  return _cloneRegExp(pattern).test(str);
 });
-var test_1 = test;
 
 /**
  * Returns the result of applying the onSuccess function to the value inside
@@ -9601,14 +8826,11 @@ var test_1 = test;
  *        R.then(R.pick(['firstName', 'lastName']))
  *      );
  */
-
-
-var then = /*#__PURE__*/_curry2_1(function then(f, p) {
-  _assertPromise_1('then', p);
+var then = /*#__PURE__*/_curry2(function then(f, p) {
+  _assertPromise('then', p);
 
   return p.then(f);
 });
-var then_1 = then;
 
 /**
  * The lower case version of a string.
@@ -9625,10 +8847,7 @@ var then_1 = then;
  *
  *      R.toLower('XYZ'); //=> 'xyz'
  */
-
-
-var toLower = /*#__PURE__*/invoker_1(0, 'toLowerCase');
-var toLower_1 = toLower;
+var toLower = /*#__PURE__*/invoker(0, 'toLowerCase');
 
 /**
  * Converts an object into an array of key, value arrays. Only the object's
@@ -9648,18 +8867,15 @@ var toLower_1 = toLower;
  *
  *      R.toPairs({a: 1, b: 2, c: 3}); //=> [['a', 1], ['b', 2], ['c', 3]]
  */
-
-
-var toPairs = /*#__PURE__*/_curry1_1(function toPairs(obj) {
+var toPairs = /*#__PURE__*/_curry1(function toPairs(obj) {
   var pairs = [];
   for (var prop in obj) {
-    if (_has_1(prop, obj)) {
+    if (_has(prop, obj)) {
       pairs[pairs.length] = [prop, obj[prop]];
     }
   }
   return pairs;
 });
-var toPairs_1 = toPairs;
 
 /**
  * Converts an object into an array of key, value arrays. The object's own
@@ -9682,16 +8898,13 @@ var toPairs_1 = toPairs;
  *      const f = new F();
  *      R.toPairsIn(f); //=> [['x','X'], ['y','Y']]
  */
-
-
-var toPairsIn = /*#__PURE__*/_curry1_1(function toPairsIn(obj) {
+var toPairsIn = /*#__PURE__*/_curry1(function toPairsIn(obj) {
   var pairs = [];
   for (var prop in obj) {
     pairs[pairs.length] = [prop, obj[prop]];
   }
   return pairs;
 });
-var toPairsIn_1 = toPairsIn;
 
 /**
  * The upper case version of a string.
@@ -9708,10 +8921,7 @@ var toPairsIn_1 = toPairsIn;
  *
  *      R.toUpper('abc'); //=> 'ABC'
  */
-
-
-var toUpper = /*#__PURE__*/invoker_1(0, 'toUpperCase');
-var toUpper_1 = toUpper;
+var toUpper = /*#__PURE__*/invoker(0, 'toUpperCase');
 
 /**
  * Initializes a transducer using supplied iterator function. Returns a single
@@ -9760,12 +8970,9 @@ var toUpper_1 = toUpper;
  *      const firstOddTransducer = R.compose(R.filter(isOdd), R.take(1));
  *      R.transduce(firstOddTransducer, R.flip(R.append), [], R.range(0, 100)); //=> [1]
  */
-
-
-var transduce = /*#__PURE__*/curryN_1(4, function transduce(xf, fn, acc, list) {
-  return _reduce_1(xf(typeof fn === 'function' ? _xwrap_1(fn) : fn), acc, list);
+var transduce = /*#__PURE__*/curryN(4, function transduce(xf, fn, acc, list) {
+  return _reduce(xf(typeof fn === 'function' ? _xwrap(fn) : fn), acc, list);
 });
-var transduce_1 = transduce;
 
 /**
  * Transposes the rows and columns of a 2D list.
@@ -9791,9 +8998,7 @@ var transduce_1 = transduce;
  * @symb R.transpose([[a, b], [c, d]]) = [[a, c], [b, d]]
  * @symb R.transpose([[a, b], [c]]) = [[a, c], [b]]
  */
-
-
-var transpose = /*#__PURE__*/_curry1_1(function transpose(outerlist) {
+var transpose = /*#__PURE__*/_curry1(function transpose(outerlist) {
   var i = 0;
   var result = [];
   while (i < outerlist.length) {
@@ -9810,7 +9015,6 @@ var transpose = /*#__PURE__*/_curry1_1(function transpose(outerlist) {
   }
   return result;
 });
-var transpose_1 = transpose;
 
 /**
  * Maps an [Applicative](https://github.com/fantasyland/fantasy-land#applicative)-returning
@@ -9838,12 +9042,9 @@ var transpose_1 = transpose;
  *      R.traverse(Maybe.of, safeDiv(10), [2, 4, 5]); //=> Maybe.Just([5, 2.5, 2])
  *      R.traverse(Maybe.of, safeDiv(10), [2, 0, 5]); //=> Maybe.Nothing
  */
-
-
-var traverse = /*#__PURE__*/_curry3_1(function traverse(of, f, traversable) {
-  return typeof traversable['fantasy-land/traverse'] === 'function' ? traversable['fantasy-land/traverse'](f, of) : sequence_1(of, map_1(f, traversable));
+var traverse = /*#__PURE__*/_curry3(function traverse(of, f, traversable) {
+  return typeof traversable['fantasy-land/traverse'] === 'function' ? traversable['fantasy-land/traverse'](f, of) : sequence(of, map(f, traversable));
 });
-var traverse_1 = traverse;
 
 var ws = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' + '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028' + '\u2029\uFEFF';
 var zeroWidth = '\u200b';
@@ -9863,14 +9064,13 @@ var hasProtoTrim = typeof String.prototype.trim === 'function';
  *      R.trim('   xyz  '); //=> 'xyz'
  *      R.map(R.trim, R.split(',', 'x, y, z')); //=> ['x', 'y', 'z']
  */
-var trim = !hasProtoTrim || /*#__PURE__*/ws.trim() || ! /*#__PURE__*/zeroWidth.trim() ? /*#__PURE__*/_curry1_1(function trim(str) {
+var trim = !hasProtoTrim || /*#__PURE__*/ws.trim() || ! /*#__PURE__*/zeroWidth.trim() ? /*#__PURE__*/_curry1(function trim(str) {
   var beginRx = new RegExp('^[' + ws + '][' + ws + ']*');
   var endRx = new RegExp('[' + ws + '][' + ws + ']*$');
   return str.replace(beginRx, '').replace(endRx, '');
-}) : /*#__PURE__*/_curry1_1(function trim(str) {
+}) : /*#__PURE__*/_curry1(function trim(str) {
   return str.trim();
 });
-var trim_1 = trim;
 
 /**
  * `tryCatch` takes two functions, a `tryer` and a `catcher`. The returned
@@ -9894,18 +9094,15 @@ var trim_1 = trim;
  *      R.tryCatch(() => { throw 'foo'}, R.always('catched'))('bar') // => 'catched'
  *      R.tryCatch(R.times(R.identity), R.always([]))('s') // => []
  `` */
-
-
-var tryCatch = /*#__PURE__*/_curry2_1(function _tryCatch(tryer, catcher) {
-  return _arity_1(tryer.length, function () {
+var tryCatch = /*#__PURE__*/_curry2(function _tryCatch(tryer, catcher) {
+  return _arity(tryer.length, function () {
     try {
       return tryer.apply(this, arguments);
     } catch (e) {
-      return catcher.apply(this, _concat_1([e], arguments));
+      return catcher.apply(this, _concat([e], arguments));
     }
   });
 });
-var tryCatch_1 = tryCatch;
 
 /**
  * Takes a function `fn`, which takes a single array argument, and returns a
@@ -9931,14 +9128,11 @@ var tryCatch_1 = tryCatch;
  *      R.unapply(JSON.stringify)(1, 2, 3); //=> '[1,2,3]'
  * @symb R.unapply(f)(a, b) = f([a, b])
  */
-
-
-var unapply = /*#__PURE__*/_curry1_1(function unapply(fn) {
+var unapply = /*#__PURE__*/_curry1(function unapply(fn) {
   return function () {
     return fn(Array.prototype.slice.call(arguments, 0));
   };
 });
-var unapply_1 = unapply;
 
 /**
  * Wraps a function of any arity (including nullary) in a function that accepts
@@ -9968,12 +9162,9 @@ var unapply_1 = unapply;
  *      takesOneArg(1, 2); //=> [1, undefined]
  * @symb R.unary(f)(a, b, c) = f(a)
  */
-
-
-var unary = /*#__PURE__*/_curry1_1(function unary(fn) {
-  return nAry_1(1, fn);
+var unary = /*#__PURE__*/_curry1(function unary(fn) {
+  return nAry(1, fn);
 });
-var unary_1 = unary;
 
 /**
  * Returns a function of arity `n` from a (manually) curried function.
@@ -9994,10 +9185,8 @@ var unary_1 = unary;
  *      const uncurriedAddFour = R.uncurryN(4, addFour);
  *      uncurriedAddFour(1, 2, 3, 4); //=> 10
  */
-
-
-var uncurryN = /*#__PURE__*/_curry2_1(function uncurryN(depth, fn) {
-  return curryN_1(depth, function () {
+var uncurryN = /*#__PURE__*/_curry2(function uncurryN(depth, fn) {
+  return curryN(depth, function () {
     var currentDepth = 1;
     var value = fn;
     var idx = 0;
@@ -10011,7 +9200,6 @@ var uncurryN = /*#__PURE__*/_curry2_1(function uncurryN(depth, fn) {
     return value;
   });
 });
-var uncurryN_1 = uncurryN;
 
 /**
  * Builds a list from a seed value. Accepts an iterator function, which returns
@@ -10038,9 +9226,7 @@ var uncurryN_1 = uncurryN;
  *      R.unfold(f, 10); //=> [-10, -20, -30, -40, -50]
  * @symb R.unfold(f, x) = [f(x)[0], f(f(x)[1])[0], f(f(f(x)[1])[1])[0], ...]
  */
-
-
-var unfold = /*#__PURE__*/_curry2_1(function unfold(fn, seed) {
+var unfold = /*#__PURE__*/_curry2(function unfold(fn, seed) {
   var pair = fn(seed);
   var result = [];
   while (pair && pair.length) {
@@ -10049,7 +9235,6 @@ var unfold = /*#__PURE__*/_curry2_1(function unfold(fn, seed) {
   }
   return result;
 });
-var unfold_1 = unfold;
 
 /**
  * Combines two lists into a set (i.e. no duplicates) composed of the elements
@@ -10068,10 +9253,7 @@ var unfold_1 = unfold;
  *
  *      R.union([1, 2, 3], [2, 3, 4]); //=> [1, 2, 3, 4]
  */
-
-
-var union = /*#__PURE__*/_curry2_1( /*#__PURE__*/compose_1(uniq_1, _concat_1));
-var union_1 = union;
+var union = /*#__PURE__*/_curry2( /*#__PURE__*/compose(uniq, _concat));
 
 /**
  * Returns a new list containing only one copy of each element in the original
@@ -10095,23 +9277,20 @@ var union_1 = union;
  *      R.uniqWith(strEq)([1, '1', 1]);    //=> [1]
  *      R.uniqWith(strEq)(['1', 1, 1]);    //=> ['1']
  */
-
-
-var uniqWith = /*#__PURE__*/_curry2_1(function uniqWith(pred, list) {
+var uniqWith = /*#__PURE__*/_curry2(function uniqWith(pred, list) {
   var idx = 0;
   var len = list.length;
   var result = [];
   var item;
   while (idx < len) {
     item = list[idx];
-    if (!_includesWith_1(pred, item, result)) {
+    if (!_includesWith(pred, item, result)) {
       result[result.length] = item;
     }
     idx += 1;
   }
   return result;
 });
-var uniqWith_1 = uniqWith;
 
 /**
  * Combines two lists into a set (i.e. no duplicates) composed of the elements
@@ -10135,12 +9314,9 @@ var uniqWith_1 = uniqWith;
  *      const l2 = [{a: 1}, {a: 4}];
  *      R.unionWith(R.eqBy(R.prop('a')), l1, l2); //=> [{a: 1}, {a: 2}, {a: 4}]
  */
-
-
-var unionWith = /*#__PURE__*/_curry3_1(function unionWith(pred, list1, list2) {
-  return uniqWith_1(pred, _concat_1(list1, list2));
+var unionWith = /*#__PURE__*/_curry3(function unionWith(pred, list1, list2) {
+  return uniqWith(pred, _concat(list1, list2));
 });
-var unionWith_1 = unionWith;
 
 /**
  * Tests the final argument by passing it to the given predicate function. If
@@ -10166,12 +9342,9 @@ var unionWith_1 = unionWith;
  *      safeInc(null); //=> null
  *      safeInc(1); //=> 2
  */
-
-
-var unless = /*#__PURE__*/_curry3_1(function unless(pred, whenFalseFn, x) {
+var unless = /*#__PURE__*/_curry3(function unless(pred, whenFalseFn, x) {
   return pred(x) ? x : whenFalseFn(x);
 });
-var unless_1 = unless;
 
 /**
  * Shorthand for `R.chain(R.identity)`, which removes one level of nesting from
@@ -10190,10 +9363,7 @@ var unless_1 = unless;
  *      R.unnest([1, [2], [[3]]]); //=> [1, 2, [3]]
  *      R.unnest([[1, 2], [3, 4], [5, 6]]); //=> [1, 2, 3, 4, 5, 6]
  */
-
-
-var unnest = /*#__PURE__*/chain_1(_identity_1);
-var unnest_1 = unnest;
+var unnest = /*#__PURE__*/chain(_identity);
 
 /**
  * Takes a predicate, a transformation function, and an initial value,
@@ -10214,16 +9384,13 @@ var unnest_1 = unnest;
  *
  *      R.until(R.gt(R.__, 100), R.multiply(2))(1) // => 128
  */
-
-
-var until = /*#__PURE__*/_curry3_1(function until(pred, fn, init) {
+var until = /*#__PURE__*/_curry3(function until(pred, fn, init) {
   var val = init;
   while (!pred(val)) {
     val = fn(val);
   }
   return val;
 });
-var until_1 = until;
 
 /**
  * Returns a list of all the properties, including prototype properties, of the
@@ -10246,9 +9413,7 @@ var until_1 = until;
  *      const f = new F();
  *      R.valuesIn(f); //=> ['X', 'Y']
  */
-
-
-var valuesIn = /*#__PURE__*/_curry1_1(function valuesIn(obj) {
+var valuesIn = /*#__PURE__*/_curry1(function valuesIn(obj) {
   var prop;
   var vs = [];
   for (prop in obj) {
@@ -10256,11 +9421,8 @@ var valuesIn = /*#__PURE__*/_curry1_1(function valuesIn(obj) {
   }
   return vs;
 });
-var valuesIn_1 = valuesIn;
 
 // `Const` is a functor that effectively ignores the function given to `map`.
-
-
 var Const = function (x) {
   return { value: x, 'fantasy-land/map': function () {
       return this;
@@ -10288,12 +9450,11 @@ var Const = function (x) {
  *      R.view(xLens, {x: 1, y: 2});  //=> 1
  *      R.view(xLens, {x: 4, y: 2});  //=> 4
  */
-var view = /*#__PURE__*/_curry2_1(function view(lens, x) {
+var view = /*#__PURE__*/_curry2(function view(lens, x) {
   // Using `Const` effectively ignores the setter function of the `lens`,
   // leaving the value returned by the getter function unmodified.
   return lens(Const)(x).value;
 });
-var view_1 = view;
 
 /**
  * Tests the final argument by passing it to the given predicate function. If
@@ -10323,12 +9484,9 @@ var view_1 = view;
  *      truncate('12345');         //=> '12345'
  *      truncate('0123456789ABC'); //=> '0123456789…'
  */
-
-
-var when = /*#__PURE__*/_curry3_1(function when(pred, whenTrueFn, x) {
+var when = /*#__PURE__*/_curry3(function when(pred, whenTrueFn, x) {
   return pred(x) ? whenTrueFn(x) : x;
 });
-var when_1 = when;
 
 /**
  * Takes a spec object and a test object; returns true if the test satisfies
@@ -10365,17 +9523,14 @@ var when_1 = when;
  *      pred({a: 'foo', b: 'xxx', x: 10, y: 19}); //=> false
  *      pred({a: 'foo', b: 'xxx', x: 11, y: 20}); //=> false
  */
-
-
-var where = /*#__PURE__*/_curry2_1(function where(spec, testObj) {
+var where = /*#__PURE__*/_curry2(function where(spec, testObj) {
   for (var prop in spec) {
-    if (_has_1(prop, spec) && !spec[prop](testObj[prop])) {
+    if (_has(prop, spec) && !spec[prop](testObj[prop])) {
       return false;
     }
   }
   return true;
 });
-var where_1 = where;
 
 /**
  * Takes a spec object and a test object; returns true if the test satisfies
@@ -10405,12 +9560,9 @@ var where_1 = where;
  *      pred({a: 1, b: 2, c: 3});  //=> true
  *      pred({a: 1, b: 1});        //=> false
  */
-
-
-var whereEq = /*#__PURE__*/_curry2_1(function whereEq(spec, testObj) {
-  return where_1(map_1(equals_1, spec), testObj);
+var whereEq = /*#__PURE__*/_curry2(function whereEq(spec, testObj) {
+  return where(map(equals, spec), testObj);
 });
-var whereEq_1 = whereEq;
 
 /**
  * Returns a new list without values in the first argument.
@@ -10431,12 +9583,9 @@ var whereEq_1 = whereEq;
  *
  *      R.without([1, 2], [1, 2, 1, 3, 4]); //=> [3, 4]
  */
-
-
-var without = /*#__PURE__*/_curry2_1(function (xs, list) {
-  return reject_1(flip_1(_includes_1)(xs), list);
+var without = /*#__PURE__*/_curry2(function (xs, list) {
+  return reject(flip(_includes)(xs), list);
 });
-var without_1 = without;
 
 /**
  * Creates a new list out of the two supplied by creating each possible pair
@@ -10456,9 +9605,7 @@ var without_1 = without;
  *      R.xprod([1, 2], ['a', 'b']); //=> [[1, 'a'], [1, 'b'], [2, 'a'], [2, 'b']]
  * @symb R.xprod([a, b], [c, d]) = [[a, c], [a, d], [b, c], [b, d]]
  */
-
-
-var xprod = /*#__PURE__*/_curry2_1(function xprod(a, b) {
+var xprod = /*#__PURE__*/_curry2(function xprod(a, b) {
   // = xprodWith(prepend); (takes about 3 times as long...)
   var idx = 0;
   var ilen = a.length;
@@ -10475,7 +9622,6 @@ var xprod = /*#__PURE__*/_curry2_1(function xprod(a, b) {
   }
   return result;
 });
-var xprod_1 = xprod;
 
 /**
  * Creates a new list out of the two supplied by pairing up equally-positioned
@@ -10496,9 +9642,7 @@ var xprod_1 = xprod;
  *      R.zip([1, 2, 3], ['a', 'b', 'c']); //=> [[1, 'a'], [2, 'b'], [3, 'c']]
  * @symb R.zip([a, b, c], [d, e, f]) = [[a, d], [b, e], [c, f]]
  */
-
-
-var zip = /*#__PURE__*/_curry2_1(function zip(a, b) {
+var zip = /*#__PURE__*/_curry2(function zip(a, b) {
   var rv = [];
   var idx = 0;
   var len = Math.min(a.length, b.length);
@@ -10508,7 +9652,6 @@ var zip = /*#__PURE__*/_curry2_1(function zip(a, b) {
   }
   return rv;
 });
-var zip_1 = zip;
 
 /**
  * Creates a new object out of a list of keys and a list of values.
@@ -10527,9 +9670,7 @@ var zip_1 = zip;
  *
  *      R.zipObj(['a', 'b', 'c'], [1, 2, 3]); //=> {a: 1, b: 2, c: 3}
  */
-
-
-var zipObj = /*#__PURE__*/_curry2_1(function zipObj(keys, values) {
+var zipObj = /*#__PURE__*/_curry2(function zipObj(keys, values) {
   var idx = 0;
   var len = Math.min(keys.length, values.length);
   var out = {};
@@ -10539,7 +9680,6 @@ var zipObj = /*#__PURE__*/_curry2_1(function zipObj(keys, values) {
   }
   return out;
 });
-var zipObj_1 = zipObj;
 
 /**
  * Creates a new list out of the two supplied by applying the function to each
@@ -10565,9 +9705,7 @@ var zipObj_1 = zipObj;
  *      //=> [f(1, 'a'), f(2, 'b'), f(3, 'c')]
  * @symb R.zipWith(fn, [a, b, c], [d, e, f]) = [fn(a, d), fn(b, e), fn(c, f)]
  */
-
-
-var zipWith = /*#__PURE__*/_curry3_1(function zipWith(fn, a, b) {
+var zipWith = /*#__PURE__*/_curry3(function zipWith(fn, a, b) {
   var rv = [];
   var idx = 0;
   var len = Math.min(a.length, b.length);
@@ -10577,7 +9715,6 @@ var zipWith = /*#__PURE__*/_curry3_1(function zipWith(fn, a, b) {
   }
   return rv;
 });
-var zipWith_1 = zipWith;
 
 /**
  * Creates a thunk out of a function. A thunk delays a calculation until
@@ -10596,10 +9733,8 @@ var zipWith_1 = zipWith;
  *      R.thunkify(R.identity)(42)(); //=> 42
  *      R.thunkify((a, b) => a + b)(25, 17)(); //=> 42
  */
-
-
-var thunkify = /*#__PURE__*/_curry1_1(function thunkify(fn) {
-  return curryN_1(fn.length, function createThunk() {
+var thunkify = /*#__PURE__*/_curry1(function thunkify(fn) {
+  return curryN(fn.length, function createThunk() {
     var fnArgs = arguments;
     return function invokeThunk() {
       return fn.apply(this, fnArgs);
@@ -10607,914 +9742,403 @@ var thunkify = /*#__PURE__*/_curry1_1(function thunkify(fn) {
   });
 });
 
-var thunkify_1 = thunkify;
 
-var src = {};
-var F$1 = /*#__PURE__*/F_1;
-var T$1 = /*#__PURE__*/T_1;
-var __$1 = /*#__PURE__*/__;
-var add$1 = /*#__PURE__*/add_1;
-var addIndex$1 = /*#__PURE__*/addIndex_1;
-var adjust$1 = /*#__PURE__*/adjust_1;
-var all$1 = /*#__PURE__*/all_1;
-var allPass$1 = /*#__PURE__*/allPass_1;
-var always$1 = /*#__PURE__*/always_1;
-var and$1 = /*#__PURE__*/and_1;
-var any$1 = /*#__PURE__*/any_1;
-var anyPass$1 = /*#__PURE__*/anyPass_1;
-var ap$1 = /*#__PURE__*/ap_1;
-var aperture$1 = /*#__PURE__*/aperture_1;
-var append$1 = /*#__PURE__*/append_1;
-var apply$1 = /*#__PURE__*/apply_1;
-var applySpec$1 = /*#__PURE__*/applySpec_1;
-var applyTo$1 = /*#__PURE__*/applyTo_1;
-var ascend$1 = /*#__PURE__*/ascend_1;
-var assoc$1 = /*#__PURE__*/assoc_1;
-var assocPath$1 = /*#__PURE__*/assocPath_1;
-var binary$1 = /*#__PURE__*/binary_1;
-var bind$1 = /*#__PURE__*/bind_1;
-var both$1 = /*#__PURE__*/both_1;
-var call$1 = /*#__PURE__*/call_1;
-var chain$1 = /*#__PURE__*/chain_1;
-var clamp$1 = /*#__PURE__*/clamp_1;
-var clone$1 = /*#__PURE__*/clone_1;
-var comparator$1 = /*#__PURE__*/comparator_1;
-var complement$1 = /*#__PURE__*/complement_1;
-var compose$1 = /*#__PURE__*/compose_1;
-var composeK$1 = /*#__PURE__*/composeK_1;
-var composeP$1 = /*#__PURE__*/composeP_1;
-var composeWith$1 = /*#__PURE__*/composeWith_1;
-var concat$1 = /*#__PURE__*/concat_1;
-var cond$1 = /*#__PURE__*/cond_1;
-var construct$1 = /*#__PURE__*/construct_1;
-var constructN$1 = /*#__PURE__*/constructN_1;
-var contains$2 = /*#__PURE__*/contains_1;
-var converge$1 = /*#__PURE__*/converge_1;
-var countBy$1 = /*#__PURE__*/countBy_1;
-var curry$1 = /*#__PURE__*/curry_1;
-var curryN$1 = /*#__PURE__*/curryN_1;
-var dec$1 = /*#__PURE__*/dec_1;
-var defaultTo$1 = /*#__PURE__*/defaultTo_1;
-var descend$1 = /*#__PURE__*/descend_1;
-var difference$1 = /*#__PURE__*/difference_1;
-var differenceWith$1 = /*#__PURE__*/differenceWith_1;
-var dissoc$1 = /*#__PURE__*/dissoc_1;
-var dissocPath$1 = /*#__PURE__*/dissocPath_1;
-var divide$1 = /*#__PURE__*/divide_1;
-var drop$1 = /*#__PURE__*/drop_1;
-var dropLast$2 = /*#__PURE__*/dropLast_1;
-var dropLastWhile$2 = /*#__PURE__*/dropLastWhile_1;
-var dropRepeats$1 = /*#__PURE__*/dropRepeats_1;
-var dropRepeatsWith$1 = /*#__PURE__*/dropRepeatsWith_1;
-var dropWhile$1 = /*#__PURE__*/dropWhile_1;
-var either$1 = /*#__PURE__*/either_1;
-var empty$1 = /*#__PURE__*/empty_1;
-var endsWith$1 = /*#__PURE__*/endsWith_1;
-var eqBy$1 = /*#__PURE__*/eqBy_1;
-var eqProps$1 = /*#__PURE__*/eqProps_1;
-var equals$1 = /*#__PURE__*/equals_1;
-var evolve$1 = /*#__PURE__*/evolve_1;
-var filter$1 = /*#__PURE__*/filter_1;
-var find$1 = /*#__PURE__*/find_1;
-var findIndex$1 = /*#__PURE__*/findIndex_1;
-var findLast$1 = /*#__PURE__*/findLast_1;
-var findLastIndex$1 = /*#__PURE__*/findLastIndex_1;
-var flatten$1 = /*#__PURE__*/flatten_1;
-var flip$1 = /*#__PURE__*/flip_1;
-var forEach$1 = /*#__PURE__*/forEach_1;
-var forEachObjIndexed$1 = /*#__PURE__*/forEachObjIndexed_1;
-var fromPairs$1 = /*#__PURE__*/fromPairs_1;
-var groupBy$1 = /*#__PURE__*/groupBy_1;
-var groupWith$1 = /*#__PURE__*/groupWith_1;
-var gt$1 = /*#__PURE__*/gt_1;
-var gte$1 = /*#__PURE__*/gte_1;
-var has$1 = /*#__PURE__*/has_1;
-var hasIn$1 = /*#__PURE__*/hasIn_1;
-var hasPath$1 = /*#__PURE__*/hasPath_1;
-var head$1 = /*#__PURE__*/head_1;
-var identical$1 = /*#__PURE__*/identical_1;
-var identity$1 = /*#__PURE__*/identity_1;
-var ifElse$1 = /*#__PURE__*/ifElse_1;
-var inc$1 = /*#__PURE__*/inc_1;
-var includes$1 = /*#__PURE__*/includes_1;
-var indexBy$1 = /*#__PURE__*/indexBy_1;
-var indexOf$1 = /*#__PURE__*/indexOf_1;
-var init$1 = /*#__PURE__*/init_1;
-var innerJoin$1 = /*#__PURE__*/innerJoin_1;
-var insert$1 = /*#__PURE__*/insert_1;
-var insertAll$1 = /*#__PURE__*/insertAll_1;
-var intersection$1 = /*#__PURE__*/intersection_1;
-var intersperse$1 = /*#__PURE__*/intersperse_1;
-var into$1 = /*#__PURE__*/into_1;
-var invert$1 = /*#__PURE__*/invert_1;
-var invertObj$1 = /*#__PURE__*/invertObj_1;
-var invoker$1 = /*#__PURE__*/invoker_1;
-var is$1 = /*#__PURE__*/is_1;
-var isEmpty$1 = /*#__PURE__*/isEmpty_1;
-var isNil$1 = /*#__PURE__*/isNil_1;
-var join$1 = /*#__PURE__*/join_1;
-var juxt$1 = /*#__PURE__*/juxt_1;
-var keys$1 = /*#__PURE__*/keys_1;
-var keysIn$1 = /*#__PURE__*/keysIn_1;
-var last$1 = /*#__PURE__*/last_1;
-var lastIndexOf$1 = /*#__PURE__*/lastIndexOf_1;
-var length$1 = /*#__PURE__*/length_1;
-var lens$1 = /*#__PURE__*/lens_1;
-var lensIndex$1 = /*#__PURE__*/lensIndex_1;
-var lensPath$1 = /*#__PURE__*/lensPath_1;
-var lensProp$1 = /*#__PURE__*/lensProp_1;
-var lift$1 = /*#__PURE__*/lift_1;
-var liftN$1 = /*#__PURE__*/liftN_1;
-var lt$1 = /*#__PURE__*/lt_1;
-var lte$1 = /*#__PURE__*/lte_1;
-var map$1 = /*#__PURE__*/map_1;
-var mapAccum$1 = /*#__PURE__*/mapAccum_1;
-var mapAccumRight$1 = /*#__PURE__*/mapAccumRight_1;
-var mapObjIndexed$1 = /*#__PURE__*/mapObjIndexed_1;
-var match$1 = /*#__PURE__*/match_1;
-var mathMod$1 = /*#__PURE__*/mathMod_1;
-var max$1 = /*#__PURE__*/max_1;
-var maxBy$1 = /*#__PURE__*/maxBy_1;
-var mean$1 = /*#__PURE__*/mean_1;
-var median$1 = /*#__PURE__*/median_1;
-var memoizeWith$1 = /*#__PURE__*/memoizeWith_1;
-var merge$1 = /*#__PURE__*/merge_1;
-var mergeAll$1 = /*#__PURE__*/mergeAll_1;
-var mergeDeepLeft$1 = /*#__PURE__*/mergeDeepLeft_1;
-var mergeDeepRight$1 = /*#__PURE__*/mergeDeepRight_1;
-var mergeDeepWith$1 = /*#__PURE__*/mergeDeepWith_1;
-var mergeDeepWithKey$1 = /*#__PURE__*/mergeDeepWithKey_1;
-var mergeLeft$1 = /*#__PURE__*/mergeLeft_1;
-var mergeRight$1 = /*#__PURE__*/mergeRight_1;
-var mergeWith$1 = /*#__PURE__*/mergeWith_1;
-var mergeWithKey$1 = /*#__PURE__*/mergeWithKey_1;
-var min$1 = /*#__PURE__*/min_1;
-var minBy$1 = /*#__PURE__*/minBy_1;
-var modulo$1 = /*#__PURE__*/modulo_1;
-var move$1 = /*#__PURE__*/move_1;
-var multiply$1 = /*#__PURE__*/multiply_1;
-var nAry$1 = /*#__PURE__*/nAry_1;
-var negate$1 = /*#__PURE__*/negate_1;
-var none$1 = /*#__PURE__*/none_1;
-var not$1 = /*#__PURE__*/not_1;
-var nth$1 = /*#__PURE__*/nth_1;
-var nthArg$1 = /*#__PURE__*/nthArg_1;
-var o$1 = /*#__PURE__*/o_1;
-var objOf$1 = /*#__PURE__*/objOf_1;
-var of$1 = /*#__PURE__*/of_1;
-var omit$1 = /*#__PURE__*/omit_1;
-var once$1 = /*#__PURE__*/once_1;
-var or$1 = /*#__PURE__*/or_1;
-var otherwise$1 = /*#__PURE__*/otherwise_1;
-var over$1 = /*#__PURE__*/over_1;
-var pair$1 = /*#__PURE__*/pair_1;
-var partial$1 = /*#__PURE__*/partial_1;
-var partialRight$1 = /*#__PURE__*/partialRight_1;
-var partition$1 = /*#__PURE__*/partition_1;
-var path$1 = /*#__PURE__*/path_1;
-var pathEq$1 = /*#__PURE__*/pathEq_1;
-var pathOr$1 = /*#__PURE__*/pathOr_1;
-var pathSatisfies$1 = /*#__PURE__*/pathSatisfies_1;
-var pick$1 = /*#__PURE__*/pick_1;
-var pickAll$1 = /*#__PURE__*/pickAll_1;
-var pickBy$1 = /*#__PURE__*/pickBy_1;
-var pipe$1 = /*#__PURE__*/pipe_1;
-var pipeK$1 = /*#__PURE__*/pipeK_1;
-var pipeP$1 = /*#__PURE__*/pipeP_1;
-var pipeWith$1 = /*#__PURE__*/pipeWith_1;
-var pluck$1 = /*#__PURE__*/pluck_1;
-var prepend$1 = /*#__PURE__*/prepend_1;
-var product$1 = /*#__PURE__*/product_1;
-var project$1 = /*#__PURE__*/project_1;
-var prop$1 = /*#__PURE__*/prop_1;
-var propEq$1 = /*#__PURE__*/propEq_1;
-var propIs$1 = /*#__PURE__*/propIs_1;
-var propOr$1 = /*#__PURE__*/propOr_1;
-var propSatisfies$1 = /*#__PURE__*/propSatisfies_1;
-var props$1 = /*#__PURE__*/props_1;
-var range$1 = /*#__PURE__*/range_1;
-var reduce$1 = /*#__PURE__*/reduce_1;
-var reduceBy$1 = /*#__PURE__*/reduceBy_1;
-var reduceRight$1 = /*#__PURE__*/reduceRight_1;
-var reduceWhile$1 = /*#__PURE__*/reduceWhile_1;
-var reduced$1 = /*#__PURE__*/reduced_1;
-var reject$1 = /*#__PURE__*/reject_1;
-var remove$1 = /*#__PURE__*/remove_1;
-var repeat$1 = /*#__PURE__*/repeat_1;
-var replace$1 = /*#__PURE__*/replace_1;
-var reverse$1 = /*#__PURE__*/reverse_1;
-var scan$1 = /*#__PURE__*/scan_1;
-var sequence$1 = /*#__PURE__*/sequence_1;
-var set$1 = /*#__PURE__*/set_1;
-var slice$1 = /*#__PURE__*/slice_1;
-var sort$1 = /*#__PURE__*/sort_1;
-var sortBy$1 = /*#__PURE__*/sortBy_1;
-var sortWith$1 = /*#__PURE__*/sortWith_1;
-var split$1 = /*#__PURE__*/split_1;
-var splitAt$1 = /*#__PURE__*/splitAt_1;
-var splitEvery$1 = /*#__PURE__*/splitEvery_1;
-var splitWhen$1 = /*#__PURE__*/splitWhen_1;
-var startsWith$1 = /*#__PURE__*/startsWith_1;
-var subtract$1 = /*#__PURE__*/subtract_1;
-var sum$1 = /*#__PURE__*/sum_1;
-var symmetricDifference$1 = /*#__PURE__*/symmetricDifference_1;
-var symmetricDifferenceWith$1 = /*#__PURE__*/symmetricDifferenceWith_1;
-var tail$1 = /*#__PURE__*/tail_1;
-var take$1 = /*#__PURE__*/take_1;
-var takeLast$1 = /*#__PURE__*/takeLast_1;
-var takeLastWhile$1 = /*#__PURE__*/takeLastWhile_1;
-var takeWhile$1 = /*#__PURE__*/takeWhile_1;
-var tap$1 = /*#__PURE__*/tap_1;
-var test$1 = /*#__PURE__*/test_1;
-var then$1 = /*#__PURE__*/then_1;
-var times$1 = /*#__PURE__*/times_1;
-var toLower$1 = /*#__PURE__*/toLower_1;
-var toPairs$1 = /*#__PURE__*/toPairs_1;
-var toPairsIn$1 = /*#__PURE__*/toPairsIn_1;
-var toString_1$1 = /*#__PURE__*/toString_1;
-var toUpper$1 = /*#__PURE__*/toUpper_1;
-var transduce$1 = /*#__PURE__*/transduce_1;
-var transpose$1 = /*#__PURE__*/transpose_1;
-var traverse$1 = /*#__PURE__*/traverse_1;
-var trim$1 = /*#__PURE__*/trim_1;
-var tryCatch$1 = /*#__PURE__*/tryCatch_1;
-var type$1 = /*#__PURE__*/type_1;
-var unapply$1 = /*#__PURE__*/unapply_1;
-var unary$1 = /*#__PURE__*/unary_1;
-var uncurryN$1 = /*#__PURE__*/uncurryN_1;
-var unfold$1 = /*#__PURE__*/unfold_1;
-var union$1 = /*#__PURE__*/union_1;
-var unionWith$1 = /*#__PURE__*/unionWith_1;
-var uniq$1 = /*#__PURE__*/uniq_1;
-var uniqBy$1 = /*#__PURE__*/uniqBy_1;
-var uniqWith$1 = /*#__PURE__*/uniqWith_1;
-var unless$1 = /*#__PURE__*/unless_1;
-var unnest$1 = /*#__PURE__*/unnest_1;
-var until$1 = /*#__PURE__*/until_1;
-var update$1 = /*#__PURE__*/update_1;
-var useWith$1 = /*#__PURE__*/useWith_1;
-var values$1 = /*#__PURE__*/values_1;
-var valuesIn$1 = /*#__PURE__*/valuesIn_1;
-var view$1 = /*#__PURE__*/view_1;
-var when$1 = /*#__PURE__*/when_1;
-var where$1 = /*#__PURE__*/where_1;
-var whereEq$1 = /*#__PURE__*/whereEq_1;
-var without$1 = /*#__PURE__*/without_1;
-var xprod$1 = /*#__PURE__*/xprod_1;
-var zip$1 = /*#__PURE__*/zip_1;
-var zipObj$1 = /*#__PURE__*/zipObj_1;
-var zipWith$1 = /*#__PURE__*/zipWith_1;
-var thunkify$1 = /*#__PURE__*/thunkify_1;
-src.F = F$1;
-src.T = T$1;
-src.__ = __$1;
-src.add = add$1;
-src.addIndex = addIndex$1;
-src.adjust = adjust$1;
-src.all = all$1;
-src.allPass = allPass$1;
-src.always = always$1;
-src.and = and$1;
-src.any = any$1;
-src.anyPass = anyPass$1;
-src.ap = ap$1;
-src.aperture = aperture$1;
-src.append = append$1;
-src.apply = apply$1;
-src.applySpec = applySpec$1;
-src.applyTo = applyTo$1;
-src.ascend = ascend$1;
-src.assoc = assoc$1;
-src.assocPath = assocPath$1;
-src.binary = binary$1;
-src.bind = bind$1;
-src.both = both$1;
-src.call = call$1;
-src.chain = chain$1;
-src.clamp = clamp$1;
-src.clone = clone$1;
-src.comparator = comparator$1;
-src.complement = complement$1;
-src.compose = compose$1;
-src.composeK = composeK$1;
-src.composeP = composeP$1;
-src.composeWith = composeWith$1;
-src.concat = concat$1;
-src.cond = cond$1;
-src.construct = construct$1;
-src.constructN = constructN$1;
-src.contains = contains$2;
-src.converge = converge$1;
-src.countBy = countBy$1;
-src.curry = curry$1;
-src.curryN = curryN$1;
-src.dec = dec$1;
-src.defaultTo = defaultTo$1;
-src.descend = descend$1;
-src.difference = difference$1;
-src.differenceWith = differenceWith$1;
-src.dissoc = dissoc$1;
-src.dissocPath = dissocPath$1;
-src.divide = divide$1;
-src.drop = drop$1;
-src.dropLast = dropLast$2;
-src.dropLastWhile = dropLastWhile$2;
-src.dropRepeats = dropRepeats$1;
-src.dropRepeatsWith = dropRepeatsWith$1;
-src.dropWhile = dropWhile$1;
-src.either = either$1;
-src.empty = empty$1;
-src.endsWith = endsWith$1;
-src.eqBy = eqBy$1;
-src.eqProps = eqProps$1;
-src.equals = equals$1;
-src.evolve = evolve$1;
-src.filter = filter$1;
-src.find = find$1;
-src.findIndex = findIndex$1;
-src.findLast = findLast$1;
-src.findLastIndex = findLastIndex$1;
-src.flatten = flatten$1;
-src.flip = flip$1;
-src.forEach = forEach$1;
-src.forEachObjIndexed = forEachObjIndexed$1;
-src.fromPairs = fromPairs$1;
-src.groupBy = groupBy$1;
-src.groupWith = groupWith$1;
-src.gt = gt$1;
-src.gte = gte$1;
-src.has = has$1;
-src.hasIn = hasIn$1;
-src.hasPath = hasPath$1;
-src.head = head$1;
-src.identical = identical$1;
-src.identity = identity$1;
-src.ifElse = ifElse$1;
-src.inc = inc$1;
-src.includes = includes$1;
-src.indexBy = indexBy$1;
-src.indexOf = indexOf$1;
-src.init = init$1;
-src.innerJoin = innerJoin$1;
-src.insert = insert$1;
-src.insertAll = insertAll$1;
-src.intersection = intersection$1;
-src.intersperse = intersperse$1;
-src.into = into$1;
-src.invert = invert$1;
-src.invertObj = invertObj$1;
-src.invoker = invoker$1;
-src.is = is$1;
-src.isEmpty = isEmpty$1;
-src.isNil = isNil$1;
-src.join = join$1;
-src.juxt = juxt$1;
-src.keys = keys$1;
-src.keysIn = keysIn$1;
-src.last = last$1;
-src.lastIndexOf = lastIndexOf$1;
-src.length = length$1;
-src.lens = lens$1;
-src.lensIndex = lensIndex$1;
-src.lensPath = lensPath$1;
-src.lensProp = lensProp$1;
-src.lift = lift$1;
-src.liftN = liftN$1;
-src.lt = lt$1;
-src.lte = lte$1;
-src.map = map$1;
-src.mapAccum = mapAccum$1;
-src.mapAccumRight = mapAccumRight$1;
-src.mapObjIndexed = mapObjIndexed$1;
-src.match = match$1;
-src.mathMod = mathMod$1;
-src.max = max$1;
-src.maxBy = maxBy$1;
-src.mean = mean$1;
-src.median = median$1;
-src.memoizeWith = memoizeWith$1;
-src.merge = merge$1;
-src.mergeAll = mergeAll$1;
-src.mergeDeepLeft = mergeDeepLeft$1;
-src.mergeDeepRight = mergeDeepRight$1;
-src.mergeDeepWith = mergeDeepWith$1;
-src.mergeDeepWithKey = mergeDeepWithKey$1;
-src.mergeLeft = mergeLeft$1;
-src.mergeRight = mergeRight$1;
-src.mergeWith = mergeWith$1;
-src.mergeWithKey = mergeWithKey$1;
-src.min = min$1;
-src.minBy = minBy$1;
-src.modulo = modulo$1;
-src.move = move$1;
-src.multiply = multiply$1;
-src.nAry = nAry$1;
-src.negate = negate$1;
-src.none = none$1;
-src.not = not$1;
-src.nth = nth$1;
-src.nthArg = nthArg$1;
-src.o = o$1;
-src.objOf = objOf$1;
-src.of = of$1;
-src.omit = omit$1;
-src.once = once$1;
-src.or = or$1;
-src.otherwise = otherwise$1;
-src.over = over$1;
-src.pair = pair$1;
-src.partial = partial$1;
-src.partialRight = partialRight$1;
-src.partition = partition$1;
-src.path = path$1;
-src.pathEq = pathEq$1;
-src.pathOr = pathOr$1;
-src.pathSatisfies = pathSatisfies$1;
-src.pick = pick$1;
-src.pickAll = pickAll$1;
-src.pickBy = pickBy$1;
-src.pipe = pipe$1;
-src.pipeK = pipeK$1;
-src.pipeP = pipeP$1;
-src.pipeWith = pipeWith$1;
-src.pluck = pluck$1;
-src.prepend = prepend$1;
-src.product = product$1;
-src.project = project$1;
-src.prop = prop$1;
-src.propEq = propEq$1;
-src.propIs = propIs$1;
-src.propOr = propOr$1;
-src.propSatisfies = propSatisfies$1;
-src.props = props$1;
-src.range = range$1;
-src.reduce = reduce$1;
-src.reduceBy = reduceBy$1;
-src.reduceRight = reduceRight$1;
-src.reduceWhile = reduceWhile$1;
-src.reduced = reduced$1;
-src.reject = reject$1;
-src.remove = remove$1;
-src.repeat = repeat$1;
-src.replace = replace$1;
-src.reverse = reverse$1;
-src.scan = scan$1;
-src.sequence = sequence$1;
-src.set = set$1;
-src.slice = slice$1;
-src.sort = sort$1;
-src.sortBy = sortBy$1;
-src.sortWith = sortWith$1;
-src.split = split$1;
-src.splitAt = splitAt$1;
-src.splitEvery = splitEvery$1;
-src.splitWhen = splitWhen$1;
-src.startsWith = startsWith$1;
-src.subtract = subtract$1;
-src.sum = sum$1;
-src.symmetricDifference = symmetricDifference$1;
-src.symmetricDifferenceWith = symmetricDifferenceWith$1;
-src.tail = tail$1;
-src.take = take$1;
-src.takeLast = takeLast$1;
-src.takeLastWhile = takeLastWhile$1;
-src.takeWhile = takeWhile$1;
-src.tap = tap$1;
-src.test = test$1;
-src.then = then$1;
-src.times = times$1;
-src.toLower = toLower$1;
-src.toPairs = toPairs$1;
-src.toPairsIn = toPairsIn$1;
-src.toString = toString_1$1;
-src.toUpper = toUpper$1;
-src.transduce = transduce$1;
-src.transpose = transpose$1;
-src.traverse = traverse$1;
-src.trim = trim$1;
-src.tryCatch = tryCatch$1;
-src.type = type$1;
-src.unapply = unapply$1;
-src.unary = unary$1;
-src.uncurryN = uncurryN$1;
-src.unfold = unfold$1;
-src.union = union$1;
-src.unionWith = unionWith$1;
-src.uniq = uniq$1;
-src.uniqBy = uniqBy$1;
-src.uniqWith = uniqWith$1;
-src.unless = unless$1;
-src.unnest = unnest$1;
-src.until = until$1;
-src.update = update$1;
-src.useWith = useWith$1;
-src.values = values$1;
-src.valuesIn = valuesIn$1;
-src.view = view$1;
-src.when = when$1;
-src.where = where$1;
-src.whereEq = whereEq$1;
-src.without = without$1;
-src.xprod = xprod$1;
-src.zip = zip$1;
-src.zipObj = zipObj$1;
-src.zipWith = zipWith$1;
-src.thunkify = thunkify$1;
 
 var R = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    'default': src,
-    __moduleExports: src,
-    F: F$1,
-    T: T$1,
-    __: __$1,
-    add: add$1,
-    addIndex: addIndex$1,
-    adjust: adjust$1,
-    all: all$1,
-    allPass: allPass$1,
-    always: always$1,
-    and: and$1,
-    any: any$1,
-    anyPass: anyPass$1,
-    ap: ap$1,
-    aperture: aperture$1,
-    append: append$1,
-    apply: apply$1,
-    applySpec: applySpec$1,
-    applyTo: applyTo$1,
-    ascend: ascend$1,
-    assoc: assoc$1,
-    assocPath: assocPath$1,
-    binary: binary$1,
-    bind: bind$1,
-    both: both$1,
-    call: call$1,
-    chain: chain$1,
-    clamp: clamp$1,
-    clone: clone$1,
-    comparator: comparator$1,
-    complement: complement$1,
-    compose: compose$1,
-    composeK: composeK$1,
-    composeP: composeP$1,
-    composeWith: composeWith$1,
-    concat: concat$1,
-    cond: cond$1,
-    construct: construct$1,
-    constructN: constructN$1,
-    contains: contains$2,
-    converge: converge$1,
-    countBy: countBy$1,
-    curry: curry$1,
-    curryN: curryN$1,
-    dec: dec$1,
-    defaultTo: defaultTo$1,
-    descend: descend$1,
-    difference: difference$1,
-    differenceWith: differenceWith$1,
-    dissoc: dissoc$1,
-    dissocPath: dissocPath$1,
-    divide: divide$1,
-    drop: drop$1,
-    dropLast: dropLast$2,
-    dropLastWhile: dropLastWhile$2,
-    dropRepeats: dropRepeats$1,
-    dropRepeatsWith: dropRepeatsWith$1,
-    dropWhile: dropWhile$1,
-    either: either$1,
-    empty: empty$1,
-    endsWith: endsWith$1,
-    eqBy: eqBy$1,
-    eqProps: eqProps$1,
-    equals: equals$1,
-    evolve: evolve$1,
-    filter: filter$1,
-    find: find$1,
-    findIndex: findIndex$1,
-    findLast: findLast$1,
-    findLastIndex: findLastIndex$1,
-    flatten: flatten$1,
-    flip: flip$1,
-    forEach: forEach$1,
-    forEachObjIndexed: forEachObjIndexed$1,
-    fromPairs: fromPairs$1,
-    groupBy: groupBy$1,
-    groupWith: groupWith$1,
-    gt: gt$1,
-    gte: gte$1,
-    has: has$1,
-    hasIn: hasIn$1,
-    hasPath: hasPath$1,
-    head: head$1,
-    identical: identical$1,
-    identity: identity$1,
-    ifElse: ifElse$1,
-    inc: inc$1,
-    includes: includes$1,
-    indexBy: indexBy$1,
-    indexOf: indexOf$1,
-    init: init$1,
-    innerJoin: innerJoin$1,
-    insert: insert$1,
-    insertAll: insertAll$1,
-    intersection: intersection$1,
-    intersperse: intersperse$1,
-    into: into$1,
-    invert: invert$1,
-    invertObj: invertObj$1,
-    invoker: invoker$1,
-    is: is$1,
-    isEmpty: isEmpty$1,
-    isNil: isNil$1,
-    join: join$1,
-    juxt: juxt$1,
-    keys: keys$1,
-    keysIn: keysIn$1,
-    last: last$1,
-    lastIndexOf: lastIndexOf$1,
-    length: length$1,
-    lens: lens$1,
-    lensIndex: lensIndex$1,
-    lensPath: lensPath$1,
-    lensProp: lensProp$1,
-    lift: lift$1,
-    liftN: liftN$1,
-    lt: lt$1,
-    lte: lte$1,
-    map: map$1,
-    mapAccum: mapAccum$1,
-    mapAccumRight: mapAccumRight$1,
-    mapObjIndexed: mapObjIndexed$1,
-    match: match$1,
-    mathMod: mathMod$1,
-    max: max$1,
-    maxBy: maxBy$1,
-    mean: mean$1,
-    median: median$1,
-    memoizeWith: memoizeWith$1,
-    merge: merge$1,
-    mergeAll: mergeAll$1,
-    mergeDeepLeft: mergeDeepLeft$1,
-    mergeDeepRight: mergeDeepRight$1,
-    mergeDeepWith: mergeDeepWith$1,
-    mergeDeepWithKey: mergeDeepWithKey$1,
-    mergeLeft: mergeLeft$1,
-    mergeRight: mergeRight$1,
-    mergeWith: mergeWith$1,
-    mergeWithKey: mergeWithKey$1,
-    min: min$1,
-    minBy: minBy$1,
-    modulo: modulo$1,
-    move: move$1,
-    multiply: multiply$1,
-    nAry: nAry$1,
-    negate: negate$1,
-    none: none$1,
-    not: not$1,
-    nth: nth$1,
-    nthArg: nthArg$1,
-    o: o$1,
-    objOf: objOf$1,
-    of: of$1,
-    omit: omit$1,
-    once: once$1,
-    or: or$1,
-    otherwise: otherwise$1,
-    over: over$1,
-    pair: pair$1,
-    partial: partial$1,
-    partialRight: partialRight$1,
-    partition: partition$1,
-    path: path$1,
-    pathEq: pathEq$1,
-    pathOr: pathOr$1,
-    pathSatisfies: pathSatisfies$1,
-    pick: pick$1,
-    pickAll: pickAll$1,
-    pickBy: pickBy$1,
-    pipe: pipe$1,
-    pipeK: pipeK$1,
-    pipeP: pipeP$1,
-    pipeWith: pipeWith$1,
-    pluck: pluck$1,
-    prepend: prepend$1,
-    product: product$1,
-    project: project$1,
-    prop: prop$1,
-    propEq: propEq$1,
-    propIs: propIs$1,
-    propOr: propOr$1,
-    propSatisfies: propSatisfies$1,
-    props: props$1,
-    range: range$1,
-    reduce: reduce$1,
-    reduceBy: reduceBy$1,
-    reduceRight: reduceRight$1,
-    reduceWhile: reduceWhile$1,
-    reduced: reduced$1,
-    reject: reject$1,
-    remove: remove$1,
-    repeat: repeat$1,
-    replace: replace$1,
-    reverse: reverse$1,
-    scan: scan$1,
-    sequence: sequence$1,
-    set: set$1,
-    slice: slice$1,
-    sort: sort$1,
-    sortBy: sortBy$1,
-    sortWith: sortWith$1,
-    split: split$1,
-    splitAt: splitAt$1,
-    splitEvery: splitEvery$1,
-    splitWhen: splitWhen$1,
-    startsWith: startsWith$1,
-    subtract: subtract$1,
-    sum: sum$1,
-    symmetricDifference: symmetricDifference$1,
-    symmetricDifferenceWith: symmetricDifferenceWith$1,
-    tail: tail$1,
-    take: take$1,
-    takeLast: takeLast$1,
-    takeLastWhile: takeLastWhile$1,
-    takeWhile: takeWhile$1,
-    tap: tap$1,
-    test: test$1,
-    then: then$1,
-    times: times$1,
-    toLower: toLower$1,
-    toPairs: toPairs$1,
-    toPairsIn: toPairsIn$1,
-    toString: toString_1$1,
-    toUpper: toUpper$1,
-    transduce: transduce$1,
-    transpose: transpose$1,
-    traverse: traverse$1,
-    trim: trim$1,
-    tryCatch: tryCatch$1,
-    type: type$1,
-    unapply: unapply$1,
-    unary: unary$1,
-    uncurryN: uncurryN$1,
-    unfold: unfold$1,
-    union: union$1,
-    unionWith: unionWith$1,
-    uniq: uniq$1,
-    uniqBy: uniqBy$1,
-    uniqWith: uniqWith$1,
-    unless: unless$1,
-    unnest: unnest$1,
-    until: until$1,
-    update: update$1,
-    useWith: useWith$1,
-    values: values$1,
-    valuesIn: valuesIn$1,
-    view: view$1,
-    when: when$1,
-    where: where$1,
-    whereEq: whereEq$1,
-    without: without$1,
-    xprod: xprod$1,
-    zip: zip$1,
-    zipObj: zipObj$1,
-    zipWith: zipWith$1,
-    thunkify: thunkify$1
+    F: F,
+    T: T,
+    __: __,
+    add: add,
+    addIndex: addIndex,
+    adjust: adjust,
+    all: all,
+    allPass: allPass,
+    always: always,
+    and: and,
+    any: any,
+    anyPass: anyPass,
+    ap: ap,
+    aperture: aperture,
+    append: append,
+    apply: apply,
+    applySpec: applySpec,
+    applyTo: applyTo,
+    ascend: ascend,
+    assoc: assoc,
+    assocPath: assocPath,
+    binary: binary,
+    bind: bind,
+    both: both,
+    call: call,
+    chain: chain,
+    clamp: clamp,
+    clone: clone,
+    comparator: comparator,
+    complement: complement,
+    compose: compose,
+    composeK: composeK,
+    composeP: composeP,
+    composeWith: composeWith,
+    concat: concat,
+    cond: cond,
+    construct: construct,
+    constructN: constructN,
+    contains: contains$1,
+    converge: converge,
+    countBy: countBy,
+    curry: curry,
+    curryN: curryN,
+    dec: dec,
+    defaultTo: defaultTo,
+    descend: descend,
+    difference: difference,
+    differenceWith: differenceWith,
+    dissoc: dissoc,
+    dissocPath: dissocPath,
+    divide: divide,
+    drop: drop,
+    dropLast: dropLast$1,
+    dropLastWhile: dropLastWhile$1,
+    dropRepeats: dropRepeats,
+    dropRepeatsWith: dropRepeatsWith,
+    dropWhile: dropWhile,
+    either: either,
+    empty: empty,
+    endsWith: endsWith,
+    eqBy: eqBy,
+    eqProps: eqProps,
+    equals: equals,
+    evolve: evolve,
+    filter: filter,
+    find: find,
+    findIndex: findIndex,
+    findLast: findLast,
+    findLastIndex: findLastIndex,
+    flatten: flatten,
+    flip: flip,
+    forEach: forEach,
+    forEachObjIndexed: forEachObjIndexed,
+    fromPairs: fromPairs,
+    groupBy: groupBy,
+    groupWith: groupWith,
+    gt: gt,
+    gte: gte,
+    has: has,
+    hasIn: hasIn,
+    hasPath: hasPath,
+    head: head,
+    identical: identical,
+    identity: identity,
+    ifElse: ifElse,
+    inc: inc,
+    includes: includes,
+    indexBy: indexBy,
+    indexOf: indexOf,
+    init: init,
+    innerJoin: innerJoin,
+    insert: insert,
+    insertAll: insertAll,
+    intersection: intersection,
+    intersperse: intersperse,
+    into: into,
+    invert: invert,
+    invertObj: invertObj,
+    invoker: invoker,
+    is: is,
+    isEmpty: isEmpty,
+    isNil: isNil,
+    join: join,
+    juxt: juxt,
+    keys: keys,
+    keysIn: keysIn,
+    last: last,
+    lastIndexOf: lastIndexOf,
+    length: length,
+    lens: lens,
+    lensIndex: lensIndex,
+    lensPath: lensPath,
+    lensProp: lensProp,
+    lift: lift,
+    liftN: liftN,
+    lt: lt,
+    lte: lte,
+    map: map,
+    mapAccum: mapAccum,
+    mapAccumRight: mapAccumRight,
+    mapObjIndexed: mapObjIndexed,
+    match: match,
+    mathMod: mathMod,
+    max: max,
+    maxBy: maxBy,
+    mean: mean,
+    median: median,
+    memoizeWith: memoizeWith,
+    merge: merge,
+    mergeAll: mergeAll,
+    mergeDeepLeft: mergeDeepLeft,
+    mergeDeepRight: mergeDeepRight,
+    mergeDeepWith: mergeDeepWith,
+    mergeDeepWithKey: mergeDeepWithKey,
+    mergeLeft: mergeLeft,
+    mergeRight: mergeRight,
+    mergeWith: mergeWith,
+    mergeWithKey: mergeWithKey,
+    min: min,
+    minBy: minBy,
+    modulo: modulo,
+    move: move,
+    multiply: multiply,
+    nAry: nAry,
+    negate: negate,
+    none: none,
+    not: not,
+    nth: nth,
+    nthArg: nthArg,
+    o: o,
+    objOf: objOf,
+    of: of,
+    omit: omit,
+    once: once,
+    or: or,
+    otherwise: otherwise,
+    over: over,
+    pair: pair,
+    partial: partial,
+    partialRight: partialRight,
+    partition: partition,
+    path: path,
+    pathEq: pathEq,
+    pathOr: pathOr,
+    pathSatisfies: pathSatisfies,
+    pick: pick,
+    pickAll: pickAll,
+    pickBy: pickBy,
+    pipe: pipe,
+    pipeK: pipeK,
+    pipeP: pipeP,
+    pipeWith: pipeWith,
+    pluck: pluck,
+    prepend: prepend,
+    product: product,
+    project: project,
+    prop: prop,
+    propEq: propEq,
+    propIs: propIs,
+    propOr: propOr,
+    propSatisfies: propSatisfies,
+    props: props,
+    range: range,
+    reduce: reduce,
+    reduceBy: reduceBy,
+    reduceRight: reduceRight,
+    reduceWhile: reduceWhile,
+    reduced: reduced,
+    reject: reject,
+    remove: remove,
+    repeat: repeat,
+    replace: replace,
+    reverse: reverse,
+    scan: scan,
+    sequence: sequence,
+    set: set,
+    slice: slice,
+    sort: sort,
+    sortBy: sortBy,
+    sortWith: sortWith,
+    split: split,
+    splitAt: splitAt,
+    splitEvery: splitEvery,
+    splitWhen: splitWhen,
+    startsWith: startsWith,
+    subtract: subtract,
+    sum: sum,
+    symmetricDifference: symmetricDifference,
+    symmetricDifferenceWith: symmetricDifferenceWith,
+    tail: tail,
+    take: take,
+    takeLast: takeLast,
+    takeLastWhile: takeLastWhile,
+    takeWhile: takeWhile,
+    tap: tap,
+    test: test,
+    then: then,
+    times: times,
+    toLower: toLower,
+    toPairs: toPairs,
+    toPairsIn: toPairsIn,
+    toString: toString$1,
+    toUpper: toUpper,
+    transduce: transduce,
+    transpose: transpose,
+    traverse: traverse,
+    trim: trim,
+    tryCatch: tryCatch,
+    type: type,
+    unapply: unapply,
+    unary: unary,
+    uncurryN: uncurryN,
+    unfold: unfold,
+    union: union,
+    unionWith: unionWith,
+    uniq: uniq,
+    uniqBy: uniqBy,
+    uniqWith: uniqWith,
+    unless: unless,
+    unnest: unnest,
+    until: until,
+    update: update,
+    useWith: useWith,
+    values: values,
+    valuesIn: valuesIn,
+    view: view,
+    when: when,
+    where: where,
+    whereEq: whereEq,
+    without: without,
+    xprod: xprod,
+    zip: zip,
+    zipObj: zipObj,
+    zipWith: zipWith,
+    thunkify: thunkify
 });
 
-var assoc$2 = function (key, value, object) { return assoc$1(key, value, object); };
-var path$2 = function () {
+var assoc$1 = function (key, value, object) { return assoc(key, value, object); };
+var path$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return path$1.apply(R, args);
+    return path.apply(R, args);
 };
-var pathOr$2 = function () {
+var pathOr$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return pathOr$1.apply(R, args);
+    return pathOr.apply(R, args);
 };
-var isNil$2 = function () {
+var isNil$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return isNil$1.apply(R, args);
+    return isNil.apply(R, args);
 };
-var assocPath$2 = function () {
+var assocPath$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return assocPath$1.apply(R, args);
+    return assocPath.apply(R, args);
 };
-var prop$2 = function () {
+var prop$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return prop$1.apply(R, args);
+    return prop.apply(R, args);
 };
-var propOr$2 = function () {
+var propOr$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return propOr$1.apply(R, args);
+    return propOr.apply(R, args);
 };
-var is$2 = function () {
+var is$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return is$1.apply(R, args);
+    return is.apply(R, args);
 };
-var last$2 = function () {
+var last$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return last$1.apply(R, args);
+    return last.apply(R, args);
 };
-var reject$2 = function () {
+var reject$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return reject$1.apply(R, args);
+    return reject.apply(R, args);
 };
-var hasPath$2 = function () {
+var hasPath$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return hasPath$1.apply(R, args);
+    return hasPath.apply(R, args);
 };
-var isEmpty$2 = function () {
+var isEmpty$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return isEmpty$1.apply(R, args);
+    return isEmpty.apply(R, args);
 };
-var keys$2 = function () {
+var keys$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return keys$1.apply(R, args);
+    return keys.apply(R, args);
 };
-var mergeDeepRight$2 = function () {
+var mergeDeepRight$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return mergeDeepRight$1.apply(R, args);
+    return mergeDeepRight.apply(R, args);
 };
-var equals$2 = function () {
+var equals$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return equals$1.apply(R, args);
+    return equals.apply(R, args);
 };
-var flatten$2 = function () {
+var flatten$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return flatten$1.apply(R, args);
+    return flatten.apply(R, args);
 };
-var contains$3 = function () {
+var contains$2 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return contains$2.apply(R, args);
+    return contains$1.apply(R, args);
 };
-var intersection$2 = function () {
+var intersection$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         args[_i] = arguments[_i];
     }
-    return intersection$1.apply(R, args);
+    return intersection.apply(R, args);
 };
+//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
-    if (isNil$1(segments)) {
+    if (isNil(segments)) {
         return url;
     }
-    var segs = keys$1(segments).map(function (seg) { return replace$1("{" + seg + "}", segments[seg]); });
-    return compose$1.apply(void 0, segs)(url);
+    var segs = keys(segments).map(function (seg) { return replace("{" + seg + "}", segments[seg]); });
+    return compose.apply(void 0, segs)(url);
 };
+//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     httpKey: 'httpv3',
     formKey: 'formv3',
 };
+//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -11616,10 +10240,10 @@ function createSelectorCreator(memoize) {
 
 var createSelector = createSelectorCreator(defaultMemoize);
 
-var createDeepEqualSelector = createSelectorCreator(defaultMemoize, equals$2);
-var selectHttp = function (state) { return prop$2(config.httpKey, state); };
+var createDeepEqualSelector = createSelectorCreator(defaultMemoize, equals$1);
+var selectHttp = function (state) { return prop$1(config.httpKey, state); };
 var selectConst = function (_, v) { return v; };
-var selectRequest = createSelector(selectHttp, selectConst, function (state, id) { return prop$2(id, state); });
+var selectRequest = createSelector(selectHttp, selectConst, function (state, id) { return prop$1(id, state); });
 var selectNotAction = createSelector(selectRequest, selectConst, function (_a) {
     var action = _a.action, notAction = __rest(_a, ["action"]);
     return notAction;
@@ -11628,13 +10252,13 @@ var mapPagination = function (data, paginationMapper) {
     var mapper = paginationMapper.fromData;
     var split = mapper.nestedSplitChar, pm = __rest(mapper, ["nestedSplitChar"]);
     return {
-        data: pathOr$2([], pm.elements.split(split), data),
+        data: pathOr$1([], pm.elements.split(split), data),
         pagination: {
-            totalElements: path$2(pm.totalElements.split(split), data),
-            totalPages: path$2(pm.totalPages.split(split), data),
-            size: path$2(pm.size.split(split), data),
-            page: path$2(pm.page.split(split), data),
-            numberOfElements: path$2(pm.numberOfElements.split(split), data),
+            totalElements: path$1(pm.totalElements.split(split), data),
+            totalPages: path$1(pm.totalPages.split(split), data),
+            size: path$1(pm.size.split(split), data),
+            page: path$1(pm.page.split(split), data),
+            numberOfElements: path$1(pm.numberOfElements.split(split), data),
         },
     };
 };
@@ -11658,11 +10282,12 @@ var selectData = createDeepEqualSelector(selectNotAction, selectConst, function 
             filter: filter });
     }
 });
-var selectAction = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$2({}, [id, 'action'], state); });
-var selectPaginationMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['paginationMapper'], state); });
-var selectSortMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['sortMapper'], state); });
-var selectFilter = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2({}, ['filter'], state); });
-var selectIsPaginated = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$2(false, ['paginated'], state); });
+var selectAction = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$1({}, [id, 'action'], state); });
+var selectPaginationMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['paginationMapper'], state); });
+var selectSortMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['sortMapper'], state); });
+var selectFilter = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['filter'], state); });
+var selectIsPaginated = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1(false, ['paginated'], state); });
+//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
     fromData: {
@@ -11684,6 +10309,7 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
+//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -11692,14 +10318,15 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
+//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
     var strategy = sortMapper.strategy, asc = sortMapper.asc, desc = sortMapper.desc, field = sortMapper.field, direction = sortMapper.direction;
     if (strategy === 'two-field') {
-        var dir = prop$2('direction', values) === 'asc' ? asc : desc;
+        var dir = prop$1('direction', values) === 'asc' ? asc : desc;
         return _a = {},
-            _a[field] = prop$2('field', values),
+            _a[field] = prop$1('field', values),
             _a[direction] = dir,
             _a;
     }
@@ -11707,6 +10334,7 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
+//# sourceMappingURL=sortMapToParams.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -11722,7 +10350,7 @@ var registerRequest = function (_a) {
     return function (dispatch, getState) {
         var state = getState();
         var req = selectRequest(state, id);
-        if (isNil$2(req)) {
+        if (isNil$1(req)) {
             return dispatch({
                 type: REGISTER_REQUEST,
                 payload: { action: action, paginated: paginated, paginationMapper: paginationMapper, sortMapper: sortMapper, id: id }
@@ -11755,7 +10383,7 @@ var resetFilter = function (_a) {
         var state = getState();
         var filter = selectFilter(state, id);
         // Unset all Params from the current filters
-        keys$2(filter).map(function (fil) {
+        keys$1(filter).map(function (fil) {
             var _a;
             dispatch(changeRequest({ id: id, type: 'params', value: (_a = {}, _a[fil] = null, _a) }));
         });
@@ -11802,7 +10430,7 @@ var setPage = function (_a) {
             return;
         }
         var mapper = selectPaginationMapper(state, id).toParam;
-        var pageProp = prop$2('page', mapper);
+        var pageProp = prop$1('page', mapper);
         var pagination = selectData(state, id).pagination;
         var page = pagination.page;
         return dispatch(changeRequest({ id: id, type: 'params', value: (_a = {}, _a[pageProp] = mod(page), _a) }));
@@ -11829,7 +10457,7 @@ var requestReducer = function (state, action) {
     switch (type) {
         case REGISTER_REQUEST: {
             var action_1 = payload.action, _b = payload.paginationMapper, paginationMapper = _b === void 0 ? defaultPaginationMapper : _b, _c = payload.sortMapper, sortMapper = _c === void 0 ? defaultSortMapper : _c, id = payload.id, _d = payload.paginated, paginated = _d === void 0 ? false : _d;
-            return assoc$2(id, {
+            return assoc$1(id, {
                 action: action_1,
                 paginated: paginated,
                 paginationMapper: paginationMapper,
@@ -11847,80 +10475,81 @@ var requestReducer = function (state, action) {
         }
         case CHANGE_REQUEST: {
             var id = payload.id, type_1 = payload.type, value = payload.value;
-            var oldVals = pathOr$2({}, [id, 'action', type_1], state);
-            var newVals = reject$2(isNil$2, __assign(__assign({}, oldVals), value));
-            return assocPath$2([id, 'action', type_1], newVals, state);
+            var oldVals = pathOr$1({}, [id, 'action', type_1], state);
+            var newVals = reject$1(isNil$1, __assign(__assign({}, oldVals), value));
+            return assocPath$1([id, 'action', type_1], newVals, state);
         }
         case SEND_REQUEST: {
             var id = payload.id;
-            return assocPath$2([id, 'loading'], true, state);
+            return assocPath$1([id, 'loading'], true, state);
         }
         case SEND_REQUEST_FAIL: {
-            var id = path$2(['previousAction', 'payload', 'id'], meta);
-            var prev = prop$2(id, state);
+            var id = path$1(['previousAction', 'payload', 'id'], meta);
+            var prev = prop$1(id, state);
             var merger = __assign(__assign({}, prev), { loading: false, hasError: true, hasRun: true, error: error });
-            return assoc$2(id, merger, state);
+            return assoc$1(id, merger, state);
         }
         case SEND_REQUEST_SUCCESS: {
-            var id = path$2(['previousAction', 'payload', 'id'], meta);
-            var prev = prop$2(id, state);
-            var merger = __assign(__assign({}, prev), { loading: false, hasError: false, hasData: true, hasRun: true, data: prop$2('data', payload), error: {} });
-            return assoc$2(id, merger, state);
+            var id = path$1(['previousAction', 'payload', 'id'], meta);
+            var prev = prop$1(id, state);
+            var merger = __assign(__assign({}, prev), { loading: false, hasError: false, hasData: true, hasRun: true, data: prop$1('data', payload), error: {} });
+            return assoc$1(id, merger, state);
         }
         case SET_FILTER: {
             var id = payload.id, _e = payload.filter, value = _e.value, field = _e.field;
-            var f = pathOr$2({}, [id, 'filter'], state);
-            var newF = reject$2(isNil$2, __assign(__assign({}, f), (_a = {}, _a[field] = value, _a)));
-            return assocPath$2([id, 'filter'], newF, state);
+            var f = pathOr$1({}, [id, 'filter'], state);
+            var newF = reject$1(isNil$1, __assign(__assign({}, f), (_a = {}, _a[field] = value, _a)));
+            return assocPath$1([id, 'filter'], newF, state);
         }
         case RESET_FILTER: {
             var id = payload.id;
-            return assocPath$2([id, 'filter'], {}, state);
+            return assocPath$1([id, 'filter'], {}, state);
         }
         case SET_SORT: {
             var id = payload.id, sort = payload.sort;
-            var s = pathOr$2({}, [id, 'sort'], state);
+            var s = pathOr$1({}, [id, 'sort'], state);
             var field = sort.field, direction = sort.direction;
-            var newS = reject$2(isNil$2, __assign(__assign({}, s), { field: field, direction: direction }));
-            return assocPath$2([id, 'sort'], newS, state);
+            var newS = reject$1(isNil$1, __assign(__assign({}, s), { field: field, direction: direction }));
+            return assocPath$1([id, 'sort'], newS, state);
         }
         case RESET_SORT: {
             var id = payload.id, sort = payload.sort;
-            return assocPath$2([id, 'sort'], {}, state);
+            return assocPath$1([id, 'sort'], {}, state);
         }
         default: {
             return state;
         }
     }
 };
+//# sourceMappingURL=requestDuck.js.map
 
 var useRequest = function (_a) {
     var id = _a.id, template = _a.template;
-    if (isNil$2(template) || isEmpty$2(template)) {
+    if (isNil$1(template) || isEmpty$1(template)) {
         console.warn('useRequest: template may not be null or empty');
         return;
     }
     var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper, _b = template.reloadOn, reloadOn = _b === void 0 ? [] : _b;
-    if (isNil$2(action) || isEmpty$2(action)) {
+    if (isNil$1(action) || isEmpty$1(action)) {
         console.warn('useRequest: template.action may not be null or empty');
         return;
     }
-    if (isNil$2(prop$2('url', action)) || isEmpty$2(prop$2('url', action)) ||
-        isNil$2(prop$2('method', action)) || isEmpty$2(prop$2('method', action))) {
+    if (isNil$1(prop$1('url', action)) || isEmpty$1(prop$1('url', action)) ||
+        isNil$1(prop$1('method', action)) || isEmpty$1(prop$1('method', action))) {
         console.warn('useRequest: template.action.url and template.action.method may not be null or empty');
         return;
     }
     var dispatch = useDispatch();
     var requestId = useRef(id);
     // -- Setup request
-    requestId.current = isNil$2(requestId.current) ? rid() : requestId.current;
+    requestId.current = isNil$1(requestId.current) ? rid() : requestId.current;
     dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, sortMapper: sortMapper, paginated: paginated, id: requestId.current }));
     var _c = useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _c.pagination, sortData = _c.sort, filterData = _c.filter, requestData = __rest(_c, ["pagination", "sort", "filter"]);
     // -- Setup dependencies
     var deps = useRef({});
     // -- helpers
     var resolveDeps = function (values) {
-        var changedDeps = intersection$2(keys$2(values), keys$2(deps.current));
+        var changedDeps = intersection$1(keys$1(values), keys$1(deps.current));
         if (changedDeps.length > 0) {
             changedDeps.map(function (name) {
                 deps.current[name] = true;
@@ -11928,13 +10557,13 @@ var useRequest = function (_a) {
         }
     };
     var depsResolved = function () {
-        return keys$2(deps.current).reduce(function (acc, name) {
+        return keys$1(deps.current).reduce(function (acc, name) {
             return acc && deps.current[name];
         }, true);
     };
     // -- init
     useEffect(function () {
-        if (!isNil$2(dependencies) && dependencies.length > 0) {
+        if (!isNil$1(dependencies) && dependencies.length > 0) {
             deps.current = dependencies.reduce(function (acc, key) {
                 var _a;
                 return __assign(__assign({}, acc), (_a = {}, _a[key] = false, _a));
@@ -11955,11 +10584,11 @@ var useRequest = function (_a) {
         isFirst.current = false;
         var reqProm = dispatch(sendRequest({ id: requestId.current }));
         return reqProm.then(function (resultAction) {
-            var type = last$2(prop$2('type', resultAction).split('_'));
+            var type = last$1(prop$1('type', resultAction).split('_'));
             if (type === 'FAIL') {
-                return Promise.reject(prop$2('error', resultAction));
+                return Promise.reject(prop$1('error', resultAction));
             }
-            return prop$2('payload', resultAction);
+            return prop$1('payload', resultAction);
         });
     };
     var reload = function () {
@@ -11968,7 +10597,7 @@ var useRequest = function (_a) {
     // -- Setters
     var setParams = function (params) {
         dispatch(changeRequest({ id: requestId.current, type: 'params', value: params }));
-        if (contains$3('params', reloadOn)) {
+        if (contains$2('params', reloadOn)) {
             reload();
         }
         resolveDeps(params);
@@ -11976,7 +10605,7 @@ var useRequest = function (_a) {
     };
     var setSegments = function (segments) {
         dispatch(changeRequest({ id: requestId.current, type: 'segments', value: segments }));
-        if (contains$3('segments', reloadOn)) {
+        if (contains$2('segments', reloadOn)) {
             reload();
         }
         resolveDeps(segments);
@@ -11984,7 +10613,7 @@ var useRequest = function (_a) {
     };
     var setData = function (data) {
         dispatch(changeRequest({ id: requestId.current, type: 'data', value: data }));
-        if (contains$3('data', reloadOn)) {
+        if (contains$2('data', reloadOn)) {
             reload();
         }
         resolveDeps(data);
@@ -11992,7 +10621,7 @@ var useRequest = function (_a) {
     };
     var setHeaders = function (headers) {
         dispatch(changeRequest({ id: requestId.current, type: 'headers', value: headers }));
-        if (contains$3('headers', reloadOn)) {
+        if (contains$2('headers', reloadOn)) {
             reload();
         }
         resolveDeps(headers);
@@ -12001,7 +10630,7 @@ var useRequest = function (_a) {
     var setFilter$1 = function (filter) {
         dispatch(setPage({ id: requestId.current, mod: function () { return 0; } }));
         dispatch(setFilter({ id: requestId.current, filter: filter }));
-        if (contains$3('filter', reloadOn)) {
+        if (contains$2('filter', reloadOn)) {
             reload();
         }
         return { go: reload };
@@ -12009,7 +10638,7 @@ var useRequest = function (_a) {
     var resetFilters = function () {
         dispatch(setPage({ id: requestId.current, mod: function () { return 0; } }));
         dispatch(resetFilter({ id: requestId.current }));
-        if (contains$3('filter', reloadOn)) {
+        if (contains$2('filter', reloadOn)) {
             reload();
         }
         return { go: reload };
@@ -12017,7 +10646,7 @@ var useRequest = function (_a) {
     var setSort$1 = function (sort) {
         dispatch(setPage({ id: requestId.current, mod: function () { return 0; } }));
         dispatch(setSort({ id: requestId.current, sort: sort }));
-        if (contains$3('sort', reloadOn)) {
+        if (contains$2('sort', reloadOn)) {
             reload();
         }
         return { go: reload };
@@ -12025,28 +10654,28 @@ var useRequest = function (_a) {
     var resetSort$1 = function () {
         dispatch(setPage({ id: requestId.current, mod: function () { return 0; } }));
         dispatch(resetSort({ id: requestId.current }));
-        if (contains$3('sort', reloadOn)) {
+        if (contains$2('sort', reloadOn)) {
             reload();
         }
         return { go: reload };
     };
     var onPageSelect = function (page) {
         dispatch(setPage({ id: requestId.current, mod: function () { return page; } }));
-        if (contains$3('pagination', reloadOn)) {
+        if (contains$2('pagination', reloadOn)) {
             reload();
         }
         return { go: reload };
     };
     var onNext = function () {
         dispatch(setPage({ id: requestId.current, mod: function (p) { return p + 1; } }));
-        if (contains$3('pagination', reloadOn)) {
+        if (contains$2('pagination', reloadOn)) {
             reload();
         }
         return { go: reload };
     };
     var onPrev = function () {
         dispatch(setPage({ id: requestId.current, mod: function (p) { return p - 1; } }));
-        if (contains$3('pagination', reloadOn)) {
+        if (contains$2('pagination', reloadOn)) {
             reload();
         }
         return { go: reload };
@@ -12066,12 +10695,14 @@ var useRequest = function (_a) {
             onPageSelect: onPageSelect,
             onPrev: onPrev }) }, requestData);
 };
+//# sourceMappingURL=useRequest.js.map
 
 var useData = function (_a) {
     var id = _a.id;
     var data = useSelector(function (state) { return selectData(state, id); });
     return data;
 };
+//# sourceMappingURL=useData.js.map
 
 /*
   Creates an object _including if neccessary arrays_ from paths
@@ -12087,36 +10718,39 @@ var assocPathArray = function (path, value, target) {
         // -- Map Numbers back to number-type
         return isNaN(+ele) ? ele : +ele;
     });
-    return set$1(lensPath$1(pathElements), value, target);
+    return set(lensPath(pathElements), value, target);
 };
+//# sourceMappingURL=assocPathArray.js.map
 
-var createDeepEqualSelector$1 = createSelectorCreator(defaultMemoize, equals$2);
-var selectFormState = function (state) { return prop$2(config.formKey, state); };
+var createDeepEqualSelector$1 = createSelectorCreator(defaultMemoize, equals$1);
+var selectFormState = function (state) { return prop$1(config.formKey, state); };
 var secondArg = function (_, v) { return v; };
 var thirdArg = function (_, __, v) { return v; };
-var selectForm = createSelector(selectFormState, secondArg, function (state, id) { return prop$2(id, state); });
-var selectFields = createSelector(selectForm, secondArg, function (form, id) { return propOr$2({}, 'fields', form); });
-var selectFieldNames = createSelector(selectFields, secondArg, function (fields, id) { return keys$2(fields); });
+var selectForm = createSelector(selectFormState, secondArg, function (state, id) { return prop$1(id, state); });
+var selectFields = createSelector(selectForm, secondArg, function (form, id) { return propOr$1({}, 'fields', form); });
+var selectFieldNames = createSelector(selectFields, secondArg, function (fields, id) { return keys$1(fields); });
 var selectAggregateValues = createSelector(selectFields, secondArg, function (fields, id) {
-    return keys$2(fields).reduce(function (acc, curr) {
-        return assocPathArray(curr.split('.'), path$2([curr, 'value'], fields), acc);
+    return keys$1(fields).reduce(function (acc, curr) {
+        return assocPathArray(curr.split('.'), path$1([curr, 'value'], fields), acc);
     }, {});
 });
-var selectField = createSelector(selectFormState, secondArg, thirdArg, function (state, formId, name) { return path$2([formId, 'fields', name], state); });
+var selectField = createSelector(selectFormState, secondArg, thirdArg, function (state, formId, name) { return path$1([formId, 'fields', name], state); });
+//# sourceMappingURL=formSelectors.js.map
 
 // -- Returns a list of Strings that denotes all property paths:
 var objectToFlatKeys = function (obj, prefix) {
     if (prefix === void 0) { prefix = ''; }
-    var list = keys$2(obj).map(function (key) {
-        if (!is$2(Object, prop$2(key, obj))) {
+    var list = keys$1(obj).map(function (key) {
+        if (!is$1(Object, prop$1(key, obj))) {
             return "" + (prefix === '' ? '' : prefix + ".") + key;
         }
         else {
-            return objectToFlatKeys(prop$2(key, obj), "" + (prefix === '' ? '' : prefix + ".") + key);
+            return objectToFlatKeys(prop$1(key, obj), "" + (prefix === '' ? '' : prefix + ".") + key);
         }
     });
-    return flatten$2(list);
+    return flatten$1(list);
 };
+//# sourceMappingURL=objectToFlatKeys.js.map
 
 var REGISTER_FORM = 'form/useForm/registerForm';
 var UNSET_FORM = 'form/useForm/unsetForm';
@@ -12149,7 +10783,7 @@ var registerForm = function (_a) {
     return function (dispatch, getState) {
         var state = getState();
         var form = selectForm(state, formId);
-        if (isNil$2(form)) {
+        if (isNil$1(form)) {
             dispatch({
                 type: REGISTER_FORM,
                 payload: { formId: formId }
@@ -12206,34 +10840,33 @@ var formReducer = function (state, action) {
     switch (type) {
         case REGISTER_FORM: {
             var formId = payload.formId;
-            return assoc$2(formId, {
-                allValues: {},
+            return assoc$1(formId, {
                 fields: {},
             }, state);
         }
         case UNSET_FORM: {
             var formId = payload.formId;
-            return assoc$2(formId, {}, state);
+            return assoc$1(formId, {}, state);
         }
         case SET_FORM_VALUES: {
             var formId_1 = payload.formId, values_1 = payload.values;
             var names = objectToFlatKeys(values_1)
-                .filter(function (name) { return hasPath$2([formId_1, 'fields', name], state); });
+                .filter(function (name) { return hasPath$1([formId_1, 'fields', name], state); });
             var mergeValues = names.reduce(function (acc, curr) {
                 var _a;
-                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { value: path$2(curr.split('.'), values_1) }, _a));
+                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { value: path$1(curr.split('.'), values_1) }, _a));
             }, {});
-            return mergeDeepRight$2(state, (_a = {}, _a[formId_1] = { fields: mergeValues }, _a));
+            return mergeDeepRight$1(state, (_a = {}, _a[formId_1] = { fields: mergeValues }, _a));
         }
         case SET_INITIAL_FORM_VALUES: {
             var formId_2 = payload.formId, values_2 = payload.values;
             var names = objectToFlatKeys(values_2)
-                .filter(function (name) { return hasPath$2([formId_2, 'fields', name], state); });
+                .filter(function (name) { return hasPath$1([formId_2, 'fields', name], state); });
             var mergeValues = names.reduce(function (acc, curr) {
                 var _a;
-                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { initialValue: path$2(curr.split('.'), values_2) }, _a));
+                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { initialValue: path$1(curr.split('.'), values_2) }, _a));
             }, {});
-            return mergeDeepRight$2(state, (_b = {}, _b[formId_2] = { fields: mergeValues }, _b));
+            return mergeDeepRight$1(state, (_b = {}, _b[formId_2] = { fields: mergeValues }, _b));
         }
         case SUBMIT_FORM: {
             var formId = payload.formId;
@@ -12241,44 +10874,45 @@ var formReducer = function (state, action) {
         }
         case REGISTER_FIELD: {
             var formId = payload.formId, field = payload.field;
-            var name_1 = prop$2('name', field);
+            var name_1 = prop$1('name', field);
             var defaultedField = __assign({ dirty: false, touched: false, valid: null }, field);
-            var fields = __assign(__assign({}, path$2([formId, 'fields'], state)), (_c = {}, _c[name_1] = defaultedField, _c));
-            return assocPath$2([formId, 'fields'], fields, state);
+            var fields = __assign(__assign({}, path$1([formId, 'fields'], state)), (_c = {}, _c[name_1] = defaultedField, _c));
+            return assocPath$1([formId, 'fields'], fields, state);
         }
         case RESET_FIELD: {
             var formId = payload.formId, name_2 = payload.name;
-            var initialValue = path$2([formId, 'fields', name_2, 'initialValue'], state);
-            return assocPath$2([formId, 'fields', name_2, 'value'], initialValue, state);
+            var initialValue = path$1([formId, 'fields', name_2, 'initialValue'], state);
+            return assocPath$1([formId, 'fields', name_2, 'value'], initialValue, state);
         }
         case CHANGE_FIELD_PROP: {
             var formId = payload.formId, name_3 = payload.name, prop_1 = payload.prop, value = payload.value;
-            return assocPath$2([formId, 'fields', name_3, prop_1], value, state);
+            return assocPath$1([formId, 'fields', name_3, prop_1], value, state);
         }
         case SET_ALL_VALUES: {
             var formId = payload.formId, values = payload.values;
-            return assocPath$2([formId, 'allValues'], values, state);
+            return assocPath$1([formId, 'allValues'], values, state);
         }
         default: {
             return state;
         }
     }
 };
+//# sourceMappingURL=formDuck.js.map
 
 var useForm = function (_a) {
     var fields = _a.fields, formId = _a.id, onSubmit = _a.onSubmit, initialValues = _a.initialValues;
-    if (isNil$2(formId) || isEmpty$2(formId)) {
+    if (isNil$1(formId) || isEmpty$1(formId)) {
         console.warn('useForm: id may not be null or empty');
         return;
     }
-    if (isNil$2(fields) || isEmpty$2(fields)) {
+    if (isNil$1(fields) || isEmpty$1(fields)) {
         console.warn('useForm: fields may not be null or empty');
         return;
     }
     var dispatch = useDispatch();
     useEffect(function () {
         dispatch(registerForm({ fields: fields, formId: formId }));
-        if (!isNil$2(initialValues)) {
+        if (!isNil$1(initialValues)) {
             dispatch(setInitialFormValues({ formId: formId, values: initialValues }));
         }
     }, []);
@@ -12298,16 +10932,17 @@ var useForm = function (_a) {
         setValues: setValues,
     };
 };
+//# sourceMappingURL=useForm.js.map
 
 var useField = function (_a) {
     var formId = _a.formId, name = _a.name, validator = _a.validator, asyncValidator = _a.asyncValidator;
     var dispatch = useDispatch();
     var field = useSelector(function (state) { return selectField(state, formId, name); });
     var onChange = function (value) {
-        if (!isNil$2(validator)) {
+        if (!isNil$1(validator)) {
             dispatch(changeFieldProp({ formId: formId, name: name, prop: 'valid', value: validator(value) }));
         }
-        if (!isNil$2(asyncValidator)) {
+        if (!isNil$1(asyncValidator)) {
             asyncValidator(value)
                 .then(function (isValid) {
                 dispatch(changeFieldProp({ formId: formId, name: name, prop: 'valid', value: isValid }));
@@ -12318,9 +10953,9 @@ var useField = function (_a) {
     var reset = function () {
         return dispatch(resetField({ formId: formId, name: name }));
     };
-    return __assign({ onChange: onChange,
+    return __assign(__assign({}, field), { onChange: onChange,
         formId: formId,
-        reset: reset }, field);
+        reset: reset });
 };
 
 var useRequest$1 = useRequest;

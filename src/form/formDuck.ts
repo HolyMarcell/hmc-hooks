@@ -113,7 +113,6 @@ export const formReducer = (state = {}, action) => {
     case REGISTER_FORM: {
       const {formId} = payload;
       return assoc(formId, {
-        allValues: {},
         fields: {},
       }, state);
     }

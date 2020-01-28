@@ -5,7 +5,9 @@ import commonjs from 'rollup-plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
 import localResolve from 'rollup-plugin-local-resolve';
 import typescript from "rollup-plugin-typescript2";
-import dts from 'rollup-plugin-dts';
+//import builtins from 'rollup-plugin-node-builtins';
+//import globals from 'rollup-plugin-node-globals';
+// import dts from 'rollup-plugin-dts';
 
 import pkg from './package.json';
 
@@ -30,21 +32,24 @@ const config = [
       'react-redux'
     ],
     plugins: [
+      resolve({
+        preferBuiltins: true
+      }),
+      localResolve(),
       typescript(),
       peerDepsExternal(),
-      // builtins(),
       babel({exclude: 'node_modules/**'}),
-      localResolve(),
-      resolve(),
       commonjs(),
       filesize(),
     ],
   },
-  {
-    input: "src/types.d.ts",
-    output: [{file: "dist/types.d.ts", format: "es"}],
-    plugins: [dts()],
-  },
+  /*
+    {
+      input: "src/types.d.ts",
+      output: [{file: "dist/types.d.ts", format: "es"}],
+      plugins: [dts()],
+    },
+  */
 
 ];
 

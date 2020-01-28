@@ -29,10 +29,10 @@ const useField = ({formId, name, validator, asyncValidator}: UseFieldProps): Use
   };
 
   return {
+    ...field,
     onChange,
     formId,
     reset,
-    ...field,
   };
 };
 
