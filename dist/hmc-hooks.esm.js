@@ -72,16 +72,14 @@ function bytesToUuid(buf, offset) {
   var i = offset || 0;
   var bth = byteToHex;
   // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
-  return ([
-    bth[buf[i++]], bth[buf[i++]],
-    bth[buf[i++]], bth[buf[i++]], '-',
-    bth[buf[i++]], bth[buf[i++]], '-',
-    bth[buf[i++]], bth[buf[i++]], '-',
-    bth[buf[i++]], bth[buf[i++]], '-',
-    bth[buf[i++]], bth[buf[i++]],
-    bth[buf[i++]], bth[buf[i++]],
-    bth[buf[i++]], bth[buf[i++]]
-  ]).join('');
+  return ([bth[buf[i++]], bth[buf[i++]], 
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]],
+	bth[buf[i++]], bth[buf[i++]],
+	bth[buf[i++]], bth[buf[i++]]]).join('');
 }
 
 var bytesToUuid_1 = bytesToUuid;
@@ -205,8 +203,8 @@ const uuidv4 = function () {
 };
 exports.uuid = uuidv4;
 const regex = {
-    v4: /(?:^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}$)|(?:^0{8}-0{4}-0{4}-0{4}-0{12}$)/u,
-    v5: /(?:^[a-f0-9]{8}-[a-f0-9]{4}-5[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}$)|(?:^0{8}-0{4}-0{4}-0{4}-0{12}$)/u
+    v4: /^(?:[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12})|(?:0{8}-0{4}-0{4}-0{4}-0{12})$/u,
+    v5: /^(?:[a-f0-9]{8}-[a-f0-9]{4}-5[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12})|(?:0{8}-0{4}-0{4}-0{4}-0{12})$/u
 };
 exports.regex = regex;
 const isUuid = function (value) {
@@ -10833,6 +10831,16 @@ var resetField = function (_a) {
         payload: { formId: formId, name: name }
     };
 };
+var resetForm = function (_a) {
+    var formId = _a.formId;
+    return function (dispatch, getState) {
+        var state = getState();
+        var fields = selectFieldNames(state, formId);
+        return fields.map(function (field) {
+            return dispatch(resetField({ formId: formId, name: field }));
+        });
+    };
+};
 var formReducer = function (state, action) {
     var _a, _b, _c;
     if (state === void 0) { state = {}; }
@@ -10897,7 +10905,6 @@ var formReducer = function (state, action) {
         }
     }
 };
-//# sourceMappingURL=formDuck.js.map
 
 var useForm = function (_a) {
     var fields = _a.fields, formId = _a.id, onSubmit = _a.onSubmit, initialValues = _a.initialValues;
@@ -10926,13 +10933,16 @@ var useForm = function (_a) {
         var field = _a.field;
         return dispatch(registerField({ field: field, formId: formId }));
     };
+    var reset = function () {
+        dispatch(resetForm({ formId: formId }));
+    };
     return {
         registerField: regField,
         submit: submit,
         setValues: setValues,
+        reset: reset,
     };
 };
-//# sourceMappingURL=useForm.js.map
 
 var useField = function (_a) {
     var formId = _a.formId, name = _a.name, validator = _a.validator, asyncValidator = _a.asyncValidator;

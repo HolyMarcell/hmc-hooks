@@ -20,6 +20,7 @@ export interface UseFormApi {
   registerField: ({field}: {field: FormField}) => void;
   submit: () => any;
   setValues: (values: Record<string, any>) => any;
+  reset: () => void;
 }
 
 export interface UseFormProps {
@@ -51,6 +52,10 @@ export interface SubmitFormAction {
 export interface ResetFieldAction {
   formId: string;
   name: string;
+}
+
+export interface ResetFormAction {
+  formId: string;
 }
 
 export interface SetFormValuesAction {

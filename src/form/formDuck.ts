@@ -1,12 +1,12 @@
 import {
   RegisterFieldAction,
-  RegisterFormAction, ResetFieldAction,
+  RegisterFormAction, ResetFieldAction, ResetFormAction,
   SetFormValuesAction,
   SetInitialFormValuesAction,
   SubmitFormAction
 } from "./types";
 import {assoc, assocPath, hasPath, isNil, mergeDeepRight, path, prop} from "../util/ram";
-import {selectAggregateValues, selectForm} from "./formSelectors";
+import {selectAggregateValues, selectFieldNames, selectForm} from "./formSelectors";
 import objectToFlatKeys from "../util/objectToFlatKeys";
 
 export const REGISTER_FORM = 'form/useForm/registerForm';
@@ -102,6 +102,20 @@ export const resetField = ({formId, name}: ResetFieldAction) => {
     payload: {formId, name}
   }
 };
+
+export const resetForm = ({formId}: ResetFormAction) => {
+  return (dispatch, getState) => {
+
+    const state = getState();
+    const fields = selectFieldNames(state, formId);
+    return fields.map((field) => {
+      return dispatch(resetField({formId, name: field}));
+    })
+  }
+};
+
+
+
 
 
 export const formReducer = (state = {}, action) => {

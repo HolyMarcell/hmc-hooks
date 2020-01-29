@@ -1,7 +1,7 @@
 import {UseFormApi, UseFormProps} from "./types";
 import {useEffect} from "react";
 import {useDispatch} from 'react-redux';
-import {registerField, registerForm, setFormValues, setInitialFormValues, submitForm} from "./formDuck";
+import {registerField, registerForm, resetForm, setFormValues, setInitialFormValues, submitForm} from "./formDuck";
 import {isEmpty, isNil} from "../util/ram";
 
 export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormProps): UseFormApi => {
@@ -38,11 +38,15 @@ export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormPr
     return dispatch(registerField({field, formId}));
   };
 
+  const reset = () => {
+    dispatch(resetForm({formId}));
+  };
 
   return {
     registerField: regField,
     submit,
     setValues,
+    reset,
   }
 };
 
