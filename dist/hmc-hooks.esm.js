@@ -72,14 +72,16 @@ function bytesToUuid(buf, offset) {
   var i = offset || 0;
   var bth = byteToHex;
   // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
-  return ([bth[buf[i++]], bth[buf[i++]], 
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]]]).join('');
+  return ([
+    bth[buf[i++]], bth[buf[i++]],
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]],
+    bth[buf[i++]], bth[buf[i++]],
+    bth[buf[i++]], bth[buf[i++]]
+  ]).join('');
 }
 
 var bytesToUuid_1 = bytesToUuid;
@@ -203,8 +205,8 @@ const uuidv4 = function () {
 };
 exports.uuid = uuidv4;
 const regex = {
-    v4: /^(?:[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12})|(?:0{8}-0{4}-0{4}-0{4}-0{12})$/u,
-    v5: /^(?:[a-f0-9]{8}-[a-f0-9]{4}-5[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12})|(?:0{8}-0{4}-0{4}-0{4}-0{12})$/u
+    v4: /(?:^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}$)|(?:^0{8}-0{4}-0{4}-0{4}-0{12}$)/u,
+    v5: /(?:^[a-f0-9]{8}-[a-f0-9]{4}-5[a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}$)|(?:^0{8}-0{4}-0{4}-0{4}-0{12}$)/u
 };
 exports.regex = regex;
 const isUuid = function (value) {
@@ -231,7 +233,6 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
-//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -10121,7 +10122,6 @@ var intersection$1 = function () {
     }
     return intersection.apply(R, args);
 };
-//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil(segments)) {
@@ -10130,13 +10130,11 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys(segments).map(function (seg) { return replace("{" + seg + "}", segments[seg]); });
     return compose.apply(void 0, segs)(url);
 };
-//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     httpKey: 'httpv3',
     formKey: 'formv3',
 };
-//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -10285,7 +10283,6 @@ var selectPaginationMapper = createSelector(selectNotAction, selectConst, functi
 var selectSortMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['sortMapper'], state); });
 var selectFilter = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['filter'], state); });
 var selectIsPaginated = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1(false, ['paginated'], state); });
-//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
     fromData: {
@@ -10307,7 +10304,6 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
-//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -10316,7 +10312,6 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
-//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
@@ -10332,7 +10327,6 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
-//# sourceMappingURL=sortMapToParams.js.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -10519,7 +10513,6 @@ var requestReducer = function (state, action) {
         }
     }
 };
-//# sourceMappingURL=requestDuck.js.map
 
 var useRequest = function (_a) {
     var id = _a.id, template = _a.template;
@@ -10693,14 +10686,12 @@ var useRequest = function (_a) {
             onPageSelect: onPageSelect,
             onPrev: onPrev }) }, requestData);
 };
-//# sourceMappingURL=useRequest.js.map
 
 var useData = function (_a) {
     var id = _a.id;
     var data = useSelector(function (state) { return selectData(state, id); });
     return data;
 };
-//# sourceMappingURL=useData.js.map
 
 /*
   Creates an object _including if neccessary arrays_ from paths
@@ -10718,7 +10709,6 @@ var assocPathArray = function (path, value, target) {
     });
     return set(lensPath(pathElements), value, target);
 };
-//# sourceMappingURL=assocPathArray.js.map
 
 var createDeepEqualSelector$1 = createSelectorCreator(defaultMemoize, equals$1);
 var selectFormState = function (state) { return prop$1(config.formKey, state); };
@@ -10733,7 +10723,6 @@ var selectAggregateValues = createSelector(selectFields, secondArg, function (fi
     }, {});
 });
 var selectField = createSelector(selectFormState, secondArg, thirdArg, function (state, formId, name) { return path$1([formId, 'fields', name], state); });
-//# sourceMappingURL=formSelectors.js.map
 
 // -- Returns a list of Strings that denotes all property paths:
 var objectToFlatKeys = function (obj, prefix) {
@@ -10748,7 +10737,6 @@ var objectToFlatKeys = function (obj, prefix) {
     });
     return flatten$1(list);
 };
-//# sourceMappingURL=objectToFlatKeys.js.map
 
 var REGISTER_FORM = 'form/useForm/registerForm';
 var UNSET_FORM = 'form/useForm/unsetForm';
