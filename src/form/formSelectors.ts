@@ -1,7 +1,6 @@
 import {config} from "../config";
 import {equals, keys, path, prop, propOr} from "../util/ram";
 import {createSelector, createSelectorCreator, defaultMemoize} from "reselect";
-import assocPathArray from "../util/assocPathArray";
 
 const createDeepEqualSelector = createSelectorCreator(
   defaultMemoize,
@@ -37,7 +36,7 @@ export const selectAggregateValues = createSelector(
   secondArg,
   (fields, id) => {
     return keys(fields).reduce((acc, curr) => {
-      return assocPathArray(curr.split('.'), path([curr, 'value'], fields), acc);
+      return {...acc, [curr]: path([curr, 'value'], fields)};
     }, {})
   }
 );

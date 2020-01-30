@@ -1,13 +1,14 @@
 import {
   RegisterFieldAction,
-  RegisterFormAction, ResetFieldAction, ResetFormAction,
+  RegisterFormAction,
+  ResetFieldAction,
+  ResetFormAction,
   SetFormValuesAction,
   SetInitialFormValuesAction,
   SubmitFormAction
 } from "./types";
-import {assoc, assocPath, hasPath, isNil, mergeDeepRight, path, prop} from "../util/ram";
+import {assoc, assocPath, hasPath, isNil, keys, mergeDeepRight, path, prop} from "../util/ram";
 import {selectAggregateValues, selectFieldNames, selectForm} from "./formSelectors";
-import objectToFlatKeys from "../util/objectToFlatKeys";
 
 export const REGISTER_FORM = 'form/useForm/registerForm';
 export const UNSET_FORM = 'form/useForm/unsetForm';
@@ -52,7 +53,8 @@ export const registerForm = ({fields, formId}: RegisterFormAction) => {
       );
       fields.map((field) => {
         dispatch(registerField({field, formId}));
-      })
+      });
+      return Promise.resolve();
     }
   }
 };
@@ -138,11 +140,11 @@ export const formReducer = (state = {}, action) => {
 
     case SET_FORM_VALUES: {
       const {formId, values} = payload;
-      const names = objectToFlatKeys(values)
+      const names = keys(values)
         .filter((name) => hasPath([formId, 'fields', name], state));
 
       const mergeValues = names.reduce((acc, curr) => {
-        return {...acc, [curr]: {value: path(curr.split('.'), values)}}
+        return {...acc, [curr]: {value: path([curr], values)}}
       }, {});
 
       return mergeDeepRight(state, {[formId]: {fields: mergeValues}});
@@ -150,11 +152,11 @@ export const formReducer = (state = {}, action) => {
 
     case SET_INITIAL_FORM_VALUES: {
       const {formId, values} = payload;
-      const names = objectToFlatKeys(values)
+      const names = keys(values)
         .filter((name) => hasPath([formId, 'fields', name], state));
 
       const mergeValues = names.reduce((acc, curr) => {
-        return {...acc, [curr]: {initialValue: path(curr.split('.'), values)}}
+        return {...acc, [curr]: {initialValue: path([curr], values)}}
       }, {});
 
       return mergeDeepRight(state, {[formId]: {fields: mergeValues}});

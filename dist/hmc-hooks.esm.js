@@ -10045,13 +10045,6 @@ var propOr$1 = function () {
     }
     return propOr.apply(R, args);
 };
-var is$1 = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    return is.apply(R, args);
-};
 var last$1 = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -10100,13 +10093,6 @@ var equals$1 = function () {
         args[_i] = arguments[_i];
     }
     return equals.apply(R, args);
-};
-var flatten$1 = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    return flatten.apply(R, args);
 };
 var contains$2 = function () {
     var args = [];
@@ -10693,23 +10679,6 @@ var useData = function (_a) {
     return data;
 };
 
-/*
-  Creates an object _including if neccessary arrays_ from paths
-
-  Usage:
-
-  const res = assocPathArray(['foo', 0, 'bar'], 'wacken', {})
-  res === {foo: [{bar: 'wacken}]};
-
- */
-var assocPathArray = function (path, value, target) {
-    var pathElements = path.map(function (ele) {
-        // -- Map Numbers back to number-type
-        return isNaN(+ele) ? ele : +ele;
-    });
-    return set(lensPath(pathElements), value, target);
-};
-
 var createDeepEqualSelector$1 = createSelectorCreator(defaultMemoize, equals$1);
 var selectFormState = function (state) { return prop$1(config.formKey, state); };
 var secondArg = function (_, v) { return v; };
@@ -10719,24 +10688,11 @@ var selectFields = createSelector(selectForm, secondArg, function (form, id) { r
 var selectFieldNames = createSelector(selectFields, secondArg, function (fields, id) { return keys$1(fields); });
 var selectAggregateValues = createSelector(selectFields, secondArg, function (fields, id) {
     return keys$1(fields).reduce(function (acc, curr) {
-        return assocPathArray(curr.split('.'), path$1([curr, 'value'], fields), acc);
+        var _a;
+        return __assign(__assign({}, acc), (_a = {}, _a[curr] = path$1([curr, 'value'], fields), _a));
     }, {});
 });
 var selectField = createSelector(selectFormState, secondArg, thirdArg, function (state, formId, name) { return path$1([formId, 'fields', name], state); });
-
-// -- Returns a list of Strings that denotes all property paths:
-var objectToFlatKeys = function (obj, prefix) {
-    if (prefix === void 0) { prefix = ''; }
-    var list = keys$1(obj).map(function (key) {
-        if (!is$1(Object, prop$1(key, obj))) {
-            return "" + (prefix === '' ? '' : prefix + ".") + key;
-        }
-        else {
-            return objectToFlatKeys(prop$1(key, obj), "" + (prefix === '' ? '' : prefix + ".") + key);
-        }
-    });
-    return flatten$1(list);
-};
 
 var REGISTER_FORM = 'form/useForm/registerForm';
 var UNSET_FORM = 'form/useForm/unsetForm';
@@ -10777,6 +10733,7 @@ var registerForm = function (_a) {
             fields.map(function (field) {
                 dispatch(registerField({ field: field, formId: formId }));
             });
+            return Promise.resolve();
         }
     };
 };
@@ -10846,21 +10803,21 @@ var formReducer = function (state, action) {
         }
         case SET_FORM_VALUES: {
             var formId_1 = payload.formId, values_1 = payload.values;
-            var names = objectToFlatKeys(values_1)
+            var names = keys$1(values_1)
                 .filter(function (name) { return hasPath$1([formId_1, 'fields', name], state); });
             var mergeValues = names.reduce(function (acc, curr) {
                 var _a;
-                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { value: path$1(curr.split('.'), values_1) }, _a));
+                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { value: path$1([curr], values_1) }, _a));
             }, {});
             return mergeDeepRight$1(state, (_a = {}, _a[formId_1] = { fields: mergeValues }, _a));
         }
         case SET_INITIAL_FORM_VALUES: {
             var formId_2 = payload.formId, values_2 = payload.values;
-            var names = objectToFlatKeys(values_2)
+            var names = keys$1(values_2)
                 .filter(function (name) { return hasPath$1([formId_2, 'fields', name], state); });
             var mergeValues = names.reduce(function (acc, curr) {
                 var _a;
-                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { initialValue: path$1(curr.split('.'), values_2) }, _a));
+                return __assign(__assign({}, acc), (_a = {}, _a[curr] = { initialValue: path$1([curr], values_2) }, _a));
             }, {});
             return mergeDeepRight$1(state, (_b = {}, _b[formId_2] = { fields: mergeValues }, _b));
         }

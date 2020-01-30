@@ -21,7 +21,7 @@ export declare const changeFieldProp: ({ name, formId, prop, value }: {
     prop: any;
     value: any;
 }) => (dispatch: any) => Promise<void>;
-export declare const registerForm: ({ fields, formId }: RegisterFormAction) => (dispatch: any, getState: any) => void;
+export declare const registerForm: ({ fields, formId }: RegisterFormAction) => (dispatch: any, getState: any) => Promise<void>;
 export declare const setFormValues: ({ formId, values }: SetFormValuesAction) => {
     type: string;
     payload: {

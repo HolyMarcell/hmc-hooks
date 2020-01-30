@@ -56,7 +56,7 @@ describe('useForm hook register', () => {
     expect(form.submit).toBeDefined();
 
     const vals = form.submit();
-    expect(vals).toEqual({email: undefined, wacken: {hacken: undefined}});
+    expect(vals).toEqual({email: undefined, 'wacken.hacken': undefined});
 
   });
 
@@ -64,20 +64,20 @@ describe('useForm hook register', () => {
 
     const initialValues = {
       email: 'dream evil',
-      wacken: {
-        hacken: 'avantasia'
-      },
+      'wacken.hacken': 'avantasia',
       something: 'else'
     };
 
     runHook({fields: mockFormFields, id: mockId, onSubmit: mockSubmit, initialValues});
 
     const state = mockStore.getState();
+
+
     expect(state[config.formKey][mockId]).toBeDefined();
     expect(state[config.formKey][mockId].fields.email.initialValue).toEqual(initialValues.email);
     expect(state[config.formKey][mockId].fields.email.value).toEqual(initialValues.email);
-    expect(state[config.formKey][mockId].fields['wacken.hacken'].initialValue).toEqual(initialValues.wacken.hacken);
-    expect(state[config.formKey][mockId].fields['wacken.hacken'].value).toEqual(initialValues.wacken.hacken);
+    expect(state[config.formKey][mockId].fields['wacken.hacken'].initialValue).toEqual(initialValues['wacken.hacken']);
+    expect(state[config.formKey][mockId].fields['wacken.hacken'].value).toEqual(initialValues['wacken.hacken']);
 
   })
 

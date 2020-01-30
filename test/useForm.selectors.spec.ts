@@ -21,7 +21,7 @@ const mockState = {
   }
 };
 
-const mockValues = {email: 'hallo', wacken: {hacken: 'dreizehn'}};
+const mockValues = {email: 'hallo', 'wacken.hacken': 'dreizehn'};
 
 describe('useForm hook selectors', () => {
 
