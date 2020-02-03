@@ -239,6 +239,7 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
+//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -10114,6 +10115,7 @@ var intersection$1 = function () {
     }
     return intersection.apply(R, args);
 };
+//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil(segments)) {
@@ -10122,11 +10124,13 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys(segments).map(function (seg) { return replace("{" + seg + "}", segments[seg]); });
     return compose.apply(void 0, segs)(url);
 };
+//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     httpKey: 'httpv3',
     formKey: 'formv3',
 };
+//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -10275,6 +10279,7 @@ var selectPaginationMapper = createSelector(selectNotAction, selectConst, functi
 var selectSortMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['sortMapper'], state); });
 var selectFilter = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['filter'], state); });
 var selectIsPaginated = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1(false, ['paginated'], state); });
+//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
     fromData: {
@@ -10296,6 +10301,7 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
+//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -10304,6 +10310,7 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
+//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
@@ -10319,6 +10326,9 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
+//# sourceMappingURL=sortMapToParams.js.map
+
+var n=function(n){return void 0===n},e=function(n){return Array.isArray(n)},t=function(n){return n&&"number"==typeof n.size&&"string"==typeof n.type&&"function"==typeof n.slice},s=function(o,i,r,f){return (i=i||{}).indices=!n(i.indices)&&i.indices,i.nullsAsUndefineds=!n(i.nullsAsUndefineds)&&i.nullsAsUndefineds,i.booleansAsIntegers=!n(i.booleansAsIntegers)&&i.booleansAsIntegers,r=r||new FormData,n(o)?r:(null===o?i.nullsAsUndefineds||r.append(f,""):"boolean"==typeof o?r.append(f,i.booleansAsIntegers?o?1:0:o):e(o)?o.length?o.forEach(function(n,e){s(n,i,r,f+"["+(i.indices?e:"")+"]");}):r.append(f+"[]",""):o instanceof Date?r.append(f,o.toISOString()):o!==Object(o)||function(n){return t(n)&&"string"==typeof n.name&&("object"==typeof n.lastModifiedDate||"number"==typeof n.lastModified)}(o)||t(o)?r.append(f,o):Object.keys(o).forEach(function(n){var t=o[n];if(e(t))for(;n.length>2&&n.lastIndexOf("[]")===n.length-2;)n=n.substring(0,n.length-2);s(t,i,r,f?f+"["+n+"]":n);}),r)};//# sourceMappingURL=index.mjs.map
 
 var n=function(n){return void 0===n},e=function(n){return Array.isArray(n)},t=function(n){return n&&"number"==typeof n.size&&"string"==typeof n.type&&"function"==typeof n.slice},s=function(o,i,r,f){return (i=i||{}).indices=!n(i.indices)&&i.indices,i.nullsAsUndefineds=!n(i.nullsAsUndefineds)&&i.nullsAsUndefineds,i.booleansAsIntegers=!n(i.booleansAsIntegers)&&i.booleansAsIntegers,r=r||new FormData,n(o)?r:(null===o?i.nullsAsUndefineds||r.append(f,""):"boolean"==typeof o?r.append(f,i.booleansAsIntegers?o?1:0:o):e(o)?o.length?o.forEach(function(n,e){s(n,i,r,f+"["+(i.indices?e:"")+"]");}):r.append(f+"[]",""):o instanceof Date?r.append(f,o.toISOString()):o!==Object(o)||function(n){return t(n)&&"string"==typeof n.name&&("object"==typeof n.lastModifiedDate||"number"==typeof n.lastModified)}(o)||t(o)?r.append(f,o):Object.keys(o).forEach(function(n){var t=o[n];if(e(t))for(;n.length>2&&n.lastIndexOf("[]")===n.length-2;)n=n.substring(0,n.length-2);s(t,i,r,f?f+"["+n+"]":n);}),r)};
 
@@ -10705,6 +10715,7 @@ var useData = function (_a) {
     var data = reactRedux.useSelector(function (state) { return selectData(state, id); });
     return data;
 };
+//# sourceMappingURL=useData.js.map
 
 var createDeepEqualSelector$1 = createSelectorCreator(defaultMemoize, equals$1);
 var selectFormState = function (state) { return prop$1(config.formKey, state); };
@@ -10720,6 +10731,7 @@ var selectAggregateValues = createSelector(selectFields, secondArg, function (fi
     }, {});
 });
 var selectField = createSelector(selectFormState, secondArg, thirdArg, function (state, formId, name) { return path$1([formId, 'fields', name], state); });
+//# sourceMappingURL=formSelectors.js.map
 
 var REGISTER_FORM = 'form/useForm/registerForm';
 var UNSET_FORM = 'form/useForm/unsetForm';
@@ -10877,6 +10889,7 @@ var formReducer = function (state, action) {
         }
     }
 };
+//# sourceMappingURL=formDuck.js.map
 
 var useForm = function (_a) {
     var fields = _a.fields, formId = _a.id, onSubmit = _a.onSubmit, initialValues = _a.initialValues;
@@ -10915,6 +10928,7 @@ var useForm = function (_a) {
         reset: reset,
     };
 };
+//# sourceMappingURL=useForm.js.map
 
 var useField = function (_a) {
     var formId = _a.formId, name = _a.name, validator = _a.validator, asyncValidator = _a.asyncValidator;
@@ -10939,6 +10953,7 @@ var useField = function (_a) {
         formId: formId,
         reset: reset });
 };
+//# sourceMappingURL=useField.js.map
 
 var useRequest$1 = useRequest;
 var useData$1 = useData;
