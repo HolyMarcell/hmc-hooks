@@ -48,6 +48,7 @@
     "typings": "^2.1.1"
   },
   "dependencies": {
+    "object-to-formdata": "^3.0.4",
     "ramda": "^0.26.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

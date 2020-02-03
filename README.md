@@ -6,6 +6,13 @@
 
 ### Changelog
 
+useRequest:
+
+* added setFile({fileField: file}); api
+If a file is present all additional JSON "data" will be sent as multipart/formdata formatted request
+
+
+
 #### 1.2.0
 
 useForm:

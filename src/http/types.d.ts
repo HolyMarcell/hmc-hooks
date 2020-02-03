@@ -103,6 +103,7 @@ export interface UseRequestApi extends RequestDataSelection {
   setSegments: (segments: Record<string, any>) => ChainedSetter;
   setHeaders: (headers: Record<string, any>) => ChainedSetter;
   setData: (data: Record<string, any>) => ChainedSetter;
+  setFile: (file: Record<string, File>) => ChainedSetter;
   sort: RequestApiSortField;
   filter: RequestApiFilterField;
 }
@@ -117,7 +118,7 @@ export interface RegisterRequestAction {
 
 export interface ChangeRequestAction {
   id: RequestId;
-  type: 'params' | 'segments' | 'data' | 'headers' | string;
+  type: 'params' | 'segments' | 'data' | 'headers' | 'file' | string;
   value: any;
 }
 
