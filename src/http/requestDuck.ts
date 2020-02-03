@@ -10,7 +10,7 @@ import {
   SetSortAction,
   SortMapper
 } from "./types";
-import {assoc, assocPath, isNil, keys, path, pathOr, prop, reject} from "../util/ram";
+import {assoc, assocPath, isEmpty, isNil, keys, path, pathOr, prop, reject} from "../util/ram";
 import parseUrlSegments from "../util/parseUrlSegments";
 import {
   selectAction,
@@ -24,6 +24,7 @@ import {
 import defaultPaginationMapper from "../util/defaultPaginationMapper";
 import defaultSortMapper from "../util/defaultSortMapper";
 import sortMapToParams from "../util/sortMapToParams";
+import {objectToFormData} from "object-to-formdata";
 
 export const REGISTER_REQUEST = 'http/useRequest/registerRequest';
 export const CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -133,13 +134,30 @@ export const sendRequest = ({id}: SendRequestAction) => {
   return (dispatch, getState) => {
 
     const state = getState();
-    const {segments, url, ...action} = selectAction(state, id);
+    const {segments, url, data, file, ...action} = selectAction(state, id);
     const resolvedUrl = parseUrlSegments(url, segments);
+
+
+    // -- Hacky way to convert JSON to multipart-formatted data if files are present
+    // Default case: Just send the JSON as application/JSON
+    let hasFile = false;
+    let fd;
+    if(!isNil(file) && !isEmpty(file)) {
+      hasFile = true;
+      fd = objectToFormData(data);
+      keys(file).map((key) => {
+        fd.append(key, file[key]);
+      });
+    }
+
+
 
     return dispatch({
       type: SEND_REQUEST, payload: {
         request: {
-          ...action, url: resolvedUrl
+          ...action,
+          data: hasFile ? fd : data,
+          url: resolvedUrl
         },
         id,
       }

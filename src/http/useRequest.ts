@@ -98,7 +98,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
 
   const setParams = (params) => {
     dispatch(changeRequest({id: requestId.current, type: 'params', value: params}));
-    if(contains('params', reloadOn)) {
+    if (contains('params', reloadOn)) {
       reload()
     }
     resolveDeps(params);
@@ -107,7 +107,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
 
   const setSegments = (segments) => {
     dispatch(changeRequest({id: requestId.current, type: 'segments', value: segments}));
-    if(contains('segments', reloadOn)) {
+    if (contains('segments', reloadOn)) {
       reload()
     }
     resolveDeps(segments);
@@ -116,7 +116,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
 
   const setData = (data) => {
     dispatch(changeRequest({id: requestId.current, type: 'data', value: data}));
-    if(contains('data', reloadOn)) {
+    if (contains('data', reloadOn)) {
       reload()
     }
     resolveDeps(data);
@@ -125,7 +125,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
 
   const setHeaders = (headers) => {
     dispatch(changeRequest({id: requestId.current, type: 'headers', value: headers}));
-    if(contains('headers', reloadOn)) {
+    if (contains('headers', reloadOn)) {
       reload()
     }
     resolveDeps(headers);
@@ -135,7 +135,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   const setFilter = (filter: Filter) => {
     dispatch(setPage({id: requestId.current, mod: () => 0}));
     dispatch(setFilterAction({id: requestId.current, filter}));
-    if(contains('filter', reloadOn)) {
+    if (contains('filter', reloadOn)) {
       reload()
     }
     return {go: reload};
@@ -144,7 +144,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   const resetFilters = () => {
     dispatch(setPage({id: requestId.current, mod: () => 0}));
     dispatch(resetFilterAction({id: requestId.current}));
-    if(contains('filter', reloadOn)) {
+    if (contains('filter', reloadOn)) {
       reload()
     }
     return {go: reload};
@@ -153,7 +153,15 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   const setSort = (sort: Sort) => {
     dispatch(setPage({id: requestId.current, mod: () => 0}));
     dispatch(setSortAction({id: requestId.current, sort}));
-    if(contains('sort', reloadOn)) {
+    if (contains('sort', reloadOn)) {
+      reload()
+    }
+    return {go: reload};
+  };
+
+  const setFile = (file: { [_: string]: File }) => {
+    dispatch(changeRequest({id: requestId.current, type: 'file', value: file}));
+    if (contains('headers', reloadOn)) {
       reload()
     }
     return {go: reload};
@@ -162,7 +170,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   const resetSort = () => {
     dispatch(setPage({id: requestId.current, mod: () => 0}));
     dispatch(resetSortAction({id: requestId.current}));
-    if(contains('sort', reloadOn)) {
+    if (contains('sort', reloadOn)) {
       reload()
     }
     return {go: reload};
@@ -170,7 +178,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
 
   const onPageSelect = (page: number) => {
     dispatch(setPage({id: requestId.current, mod: () => page}));
-    if(contains('pagination', reloadOn)) {
+    if (contains('pagination', reloadOn)) {
       reload()
     }
     return {go: reload};
@@ -178,7 +186,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
 
   const onNext = () => {
     dispatch(setPage({id: requestId.current, mod: (p) => p + 1}));
-    if(contains('pagination', reloadOn)) {
+    if (contains('pagination', reloadOn)) {
       reload()
     }
     return {go: reload};
@@ -186,7 +194,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
 
   const onPrev = () => {
     dispatch(setPage({id: requestId.current, mod: (p) => p - 1}));
-    if(contains('pagination', reloadOn)) {
+    if (contains('pagination', reloadOn)) {
       reload()
     }
     return {go: reload};
@@ -201,6 +209,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     setSegments,
     setData,
     setHeaders,
+    setFile,
     filter: {
       setFilter,
       resetFilters,
