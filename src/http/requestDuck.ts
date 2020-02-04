@@ -139,12 +139,21 @@ export const sendRequest = ({id}: SendRequestAction) => {
 
 
     // -- Hacky way to convert JSON to multipart-formatted data if files are present
-    // Default case: Just send the JSON as application/JSON
+    // Default case: Just send the JSON as application/json
     let hasFile = false;
     let fd;
     if(!isNil(file) && !isEmpty(file)) {
       hasFile = true;
+
       fd = objectToFormData(data);
+
+      // -- Important: If you want to send nested Objects to a spring backend
+      // -- alongside your File, you need to JSON.stringify the object and send
+      // -- it as a file (Blob) with the contentType set like this:
+      //
+      // const d = new Blob([JSON.stringify(data['someObj'])], {type: 'application/json'});
+      // fd.append('someObj', d);
+
       keys(file).map((key) => {
         fd.append(key, file[key]);
       });
