@@ -10107,13 +10107,6 @@ var contains$2 = function () {
     }
     return contains$1.apply(R, args);
 };
-var intersection$1 = function () {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    return intersection.apply(R, args);
-};
 
 var parseUrlSegments = function (url, segments) {
     if (isNil(segments)) {
@@ -10230,9 +10223,9 @@ var createSelector = createSelectorCreator(defaultMemoize);
 
 var createDeepEqualSelector = createSelectorCreator(defaultMemoize, equals$1);
 var selectHttp = function (state) { return prop$1(config.httpKey, state); };
-var selectConst = function (_, v) { return v; };
-var selectRequest = createSelector(selectHttp, selectConst, function (state, id) { return prop$1(id, state); });
-var selectNotAction = createSelector(selectRequest, selectConst, function (_a) {
+var secondArg = function (_, v) { return v; };
+var selectRequest = createSelector(selectHttp, secondArg, function (state, id) { return prop$1(id, state); });
+var selectNotAction = createSelector(selectRequest, secondArg, function (_a) {
     var action = _a.action, notAction = __rest(_a, ["action"]);
     return notAction;
 });
@@ -10250,7 +10243,7 @@ var mapPagination = function (data, paginationMapper) {
         },
     };
 };
-var selectData = createDeepEqualSelector(selectNotAction, selectConst, function (state) {
+var selectData = createDeepEqualSelector(selectNotAction, secondArg, function (state) {
     var data = state.data, hasError = state.hasError, error = state.error, loading = state.loading, hasData = state.hasData, paginated = state.paginated, sort = state.sort, filter = state.filter, paginationMapper = state.paginationMapper;
     if (!paginated) {
         return {
@@ -10270,11 +10263,11 @@ var selectData = createDeepEqualSelector(selectNotAction, selectConst, function 
             filter: filter });
     }
 });
-var selectAction = createSelector(selectHttp, selectConst, function (state, id) { return pathOr$1({}, [id, 'action'], state); });
-var selectPaginationMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['paginationMapper'], state); });
-var selectSortMapper = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['sortMapper'], state); });
-var selectFilter = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1({}, ['filter'], state); });
-var selectIsPaginated = createSelector(selectNotAction, selectConst, function (state, id) { return pathOr$1(false, ['paginated'], state); });
+var selectAction = createSelector(selectHttp, secondArg, function (state, id) { return pathOr$1({}, [id, 'action'], state); });
+var selectPaginationMapper = createSelector(selectNotAction, secondArg, function (state, id) { return pathOr$1({}, ['paginationMapper'], state); });
+var selectSortMapper = createSelector(selectNotAction, secondArg, function (state, id) { return pathOr$1({}, ['sortMapper'], state); });
+var selectFilter = createSelector(selectNotAction, secondArg, function (state, id) { return pathOr$1({}, ['filter'], state); });
+var selectIsPaginated = createSelector(selectNotAction, secondArg, function (state, id) { return pathOr$1(false, ['paginated'], state); });
 
 var defaultPaginationMapper = {
     fromData: {
@@ -10459,12 +10452,13 @@ var requestReducer = function (state, action) {
     var type = action.type, payload = action.payload, meta = action.meta, error = action.error;
     switch (type) {
         case REGISTER_REQUEST: {
-            var action_1 = payload.action, _b = payload.paginationMapper, paginationMapper = _b === void 0 ? defaultPaginationMapper : _b, _c = payload.sortMapper, sortMapper = _c === void 0 ? defaultSortMapper : _c, id = payload.id, _d = payload.paginated, paginated = _d === void 0 ? false : _d;
+            var action_1 = payload.action, _b = payload.paginationMapper, paginationMapper = _b === void 0 ? defaultPaginationMapper : _b, _c = payload.sortMapper, sortMapper = _c === void 0 ? defaultSortMapper : _c, id = payload.id, interceptor = payload.interceptor, _d = payload.paginated, paginated = _d === void 0 ? false : _d;
             return assoc$1(id, {
                 action: action_1,
                 paginated: paginated,
                 paginationMapper: paginationMapper,
                 sortMapper: sortMapper,
+                interceptor: interceptor,
                 id: id,
                 loading: false,
                 hasRun: false,
@@ -10531,7 +10525,7 @@ var useRequest = function (_a) {
         console.warn('useRequest: template may not be null or empty');
         return;
     }
-    var action = template.action, dependencies = template.dependencies, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper, _b = template.reloadOn, reloadOn = _b === void 0 ? [] : _b;
+    var action = template.action, paginated = template.paginated, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper, _b = template.reloadOn, reloadOn = _b === void 0 ? [] : _b;
     if (isNil$1(action) || isEmpty$1(action)) {
         console.warn('useRequest: template.action may not be null or empty');
         return;
@@ -10542,43 +10536,14 @@ var useRequest = function (_a) {
         return;
     }
     var dispatch = reactRedux.useDispatch();
-    var requestId = react.useRef(id);
     // -- Setup request
+    var requestId = react.useRef(id);
+    var isFirst = react.useRef(true);
     requestId.current = isNil$1(requestId.current) ? rid() : requestId.current;
     dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, sortMapper: sortMapper, paginated: paginated, id: requestId.current }));
     var _c = reactRedux.useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _c.pagination, sortData = _c.sort, filterData = _c.filter, requestData = __rest(_c, ["pagination", "sort", "filter"]);
-    // -- Setup dependencies
-    var deps = react.useRef({});
-    // -- helpers
-    var resolveDeps = function (values) {
-        var changedDeps = intersection$1(keys$1(values), keys$1(deps.current));
-        if (changedDeps.length > 0) {
-            changedDeps.map(function (name) {
-                deps.current[name] = true;
-            });
-        }
-    };
-    var depsResolved = function () {
-        return keys$1(deps.current).reduce(function (acc, name) {
-            return acc && deps.current[name];
-        }, true);
-    };
-    // -- init
-    react.useEffect(function () {
-        if (!isNil$1(dependencies) && dependencies.length > 0) {
-            deps.current = dependencies.reduce(function (acc, key) {
-                var _a;
-                return __assign(__assign({}, acc), (_a = {}, _a[key] = false, _a));
-            }, {});
-        }
-    }, []);
-    // -- Fire request if all deps are resolved
-    var isFirst = react.useRef(true);
     var go = function (force) {
         if (force === void 0) { force = false; }
-        if (!depsResolved()) {
-            return Promise.reject({ error: { message: 'Dependencies not met', deps: __assign({}, deps.current) } });
-        }
         // -- run only once
         if (!isFirst.current && !force) {
             return Promise.resolve();
@@ -10602,7 +10567,6 @@ var useRequest = function (_a) {
         if (contains$2('params', reloadOn)) {
             reload();
         }
-        resolveDeps(params);
         return { go: reload };
     };
     var setSegments = function (segments) {
@@ -10610,7 +10574,6 @@ var useRequest = function (_a) {
         if (contains$2('segments', reloadOn)) {
             reload();
         }
-        resolveDeps(segments);
         return { go: reload };
     };
     var setData = function (data) {
@@ -10618,7 +10581,6 @@ var useRequest = function (_a) {
         if (contains$2('data', reloadOn)) {
             reload();
         }
-        resolveDeps(data);
         return { go: reload };
     };
     var setHeaders = function (headers) {
@@ -10626,7 +10588,6 @@ var useRequest = function (_a) {
         if (contains$2('headers', reloadOn)) {
             reload();
         }
-        resolveDeps(headers);
         return { go: reload };
     };
     var setFilter$1 = function (filter) {
@@ -10689,9 +10650,7 @@ var useRequest = function (_a) {
         }
         return { go: reload };
     };
-    return __assign({ 
-        // ...requestData,
-        go: go,
+    return __assign({ go: go,
         reload: reload, id: requestId.current, setParams: setParams,
         setSegments: setSegments,
         setData: setData,
@@ -10714,18 +10673,18 @@ var useData = function (_a) {
 
 var createDeepEqualSelector$1 = createSelectorCreator(defaultMemoize, equals$1);
 var selectFormState = function (state) { return prop$1(config.formKey, state); };
-var secondArg = function (_, v) { return v; };
+var secondArg$1 = function (_, v) { return v; };
 var thirdArg = function (_, __, v) { return v; };
-var selectForm = createSelector(selectFormState, secondArg, function (state, id) { return prop$1(id, state); });
-var selectFields = createSelector(selectForm, secondArg, function (form, id) { return propOr$1({}, 'fields', form); });
-var selectFieldNames = createSelector(selectFields, secondArg, function (fields, id) { return keys$1(fields); });
-var selectAggregateValues = createSelector(selectFields, secondArg, function (fields, id) {
+var selectForm = createSelector(selectFormState, secondArg$1, function (state, id) { return prop$1(id, state); });
+var selectFields = createSelector(selectForm, secondArg$1, function (form, id) { return propOr$1({}, 'fields', form); });
+var selectFieldNames = createSelector(selectFields, secondArg$1, function (fields, id) { return keys$1(fields); });
+var selectAggregateValues = createSelector(selectFields, secondArg$1, function (fields, id) {
     return keys$1(fields).reduce(function (acc, curr) {
         var _a;
         return __assign(__assign({}, acc), (_a = {}, _a[curr] = path$1([curr, 'value'], fields), _a));
     }, {});
 });
-var selectField = createSelector(selectFormState, secondArg, thirdArg, function (state, formId, name) { return path$1([formId, 'fields', name], state); });
+var selectField = createSelector(selectFormState, secondArg$1, thirdArg, function (state, formId, name) { return path$1([formId, 'fields', name], state); });
 
 var REGISTER_FORM = 'form/useForm/registerForm';
 var UNSET_FORM = 'form/useForm/unsetForm';
