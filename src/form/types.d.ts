@@ -2,6 +2,8 @@
 
 export type FieldType = 'string' | 'number' | string;
 export type SubmitFunction = (values: any) => any;
+export type ValidatorFn = (value: any) => boolean;
+export type AsyncValidatorFn = (value: any) => Promise<boolean>;
 
 export interface FormField {
   name: string;
@@ -10,6 +12,8 @@ export interface FormField {
   touched?: boolean;
   valid?: boolean;
   initialValue?: any;
+  validator?: ValidatorFn;
+  asyncValidator?: AsyncValidatorFn;
   [_]: any;
 
 }

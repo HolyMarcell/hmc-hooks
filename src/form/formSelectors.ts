@@ -1,5 +1,5 @@
 import {config} from "../config";
-import {equals, keys, path, prop, propOr} from "../util/ram";
+import {equals, isNil, keys, path, prop, propOr} from "../util/ram";
 import {createSelector, createSelectorCreator, defaultMemoize} from "reselect";
 
 const createDeepEqualSelector = createSelectorCreator(
@@ -41,7 +41,16 @@ export const selectAggregateValues = createSelector(
   }
 );
 
-
+export const selectFormValid = createSelector(
+  selectFields,
+  secondArg,
+  (fields, id) => {
+    return keys(fields).reduce((acc, field) => {
+      const valid = prop('valid', fields[field]);
+      return acc && isNil(valid) ? true : valid;
+    }, true);
+  }
+);
 
 export const selectField = createSelector(
   selectFormState,

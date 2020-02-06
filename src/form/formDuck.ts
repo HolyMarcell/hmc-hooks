@@ -8,7 +8,7 @@ import {
   SubmitFormAction
 } from "./types";
 import {assoc, assocPath, hasPath, isNil, keys, mergeDeepRight, path, prop} from "../util/ram";
-import {selectAggregateValues, selectFieldNames, selectForm} from "./formSelectors";
+import {selectAggregateValues, selectFieldNames, selectForm, selectFormValid} from "./formSelectors";
 
 export const REGISTER_FORM = 'form/useForm/registerForm';
 export const UNSET_FORM = 'form/useForm/unsetForm';
@@ -88,7 +88,10 @@ export const submitForm = ({formId, onSubmit}: SubmitFormAction) => {
   return (dispatch, getState) => {
     const state = getState();
     const values = selectAggregateValues(state, formId);
-
+    const valid = selectFormValid(state, formId);
+    if(!valid) {
+      return false;
+    }
     dispatch({
       type: SUBMIT_FORM,
       payload: {formId}
