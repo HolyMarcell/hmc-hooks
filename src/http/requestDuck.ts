@@ -137,7 +137,6 @@ export const sendRequest = ({id}: SendRequestAction) => {
     const {segments, url, data, file, ...action} = selectAction(state, id);
     const resolvedUrl = parseUrlSegments(url, segments);
 
-
     // -- Hacky way to convert JSON to multipart-formatted data if files are present
     // Default case: Just send the JSON as application/json
     let hasFile = false;
@@ -186,6 +185,7 @@ export const requestReducer = (state = {}, action) => {
         paginationMapper = defaultPaginationMapper,
         sortMapper = defaultSortMapper,
         id,
+        interceptor,
         paginated = false
       } = payload;
       return assoc(id, {
@@ -193,6 +193,7 @@ export const requestReducer = (state = {}, action) => {
         paginated,
         paginationMapper,
         sortMapper,
+        interceptor,
         id,
         loading: false,
         hasRun: false,

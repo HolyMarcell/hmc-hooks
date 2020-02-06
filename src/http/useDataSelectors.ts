@@ -10,18 +10,18 @@ const createDeepEqualSelector = createSelectorCreator(
 
 
 export const selectHttp = state => prop(config.httpKey, state);
-export const selectConst = (_, v) => v;
+export const secondArg = (_, v) => v;
 
 export const selectRequest = createSelector(
   selectHttp,
-  selectConst,
+  secondArg,
   (state, id) => prop(id, state)
 );
 
 
 export const selectNotAction = createSelector(
   selectRequest,
-  selectConst,
+  secondArg,
   ({action, ...notAction}) => notAction
 );
 
@@ -46,7 +46,7 @@ const mapPagination = (
 
 export const selectData = createDeepEqualSelector(
   selectNotAction,
-  selectConst,
+  secondArg,
   (state) => {
     const {
       data,
@@ -84,30 +84,30 @@ export const selectData = createDeepEqualSelector(
 
 export const selectAction = createSelector(
   selectHttp,
-  selectConst,
+  secondArg,
   (state, id) => pathOr({}, [id, 'action'], state)
 );
 
 export const selectPaginationMapper = createSelector(
   selectNotAction,
-  selectConst,
+  secondArg,
   (state, id) => pathOr({}, ['paginationMapper'], state)
 );
 
 export const selectSortMapper = createSelector(
   selectNotAction,
-  selectConst,
+  secondArg,
   (state, id) => pathOr({}, ['sortMapper'], state)
 );
 
 export const selectFilter = createSelector(
   selectNotAction,
-  selectConst,
+  secondArg,
   (state, id) => pathOr({}, ['filter'], state)
 );
 
 export const selectIsPaginated = createSelector(
   selectNotAction,
-  selectConst,
+  secondArg,
   (state, id) => pathOr(false, ['paginated'], state)
 );

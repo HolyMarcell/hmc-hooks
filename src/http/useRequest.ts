@@ -1,17 +1,17 @@
 import {Filter, Sort, UseRequestApi, UseRequestProps} from "./types";
 import rid from "../util/rid";
-import {contains, intersection, isEmpty, isNil, keys, last, prop} from "../util/ram";
-import {useEffect, useRef} from "react";
+import {contains, isEmpty, isNil, last, prop} from "../util/ram";
+import {useRef} from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import {
   changeRequest,
   registerRequest,
+  resetFilter as resetFilterAction,
+  resetSort as resetSortAction,
   sendRequest,
   setFilter as setFilterAction,
-  resetFilter as resetFilterAction,
   setPage,
-  setSort as setSortAction,
-  resetSort as resetSortAction
+  setSort as setSortAction
 } from "./requestDuck";
 import {selectData} from "./useDataSelectors";
 
@@ -20,7 +20,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     console.warn('useRequest: template may not be null or empty');
     return;
   }
-  const {action, dependencies, paginated, paginationMapper, sortMapper, reloadOn = []} = template;
+  const {action, paginated, paginationMapper, sortMapper, reloadOn = []} = template;
   if (isNil(action) || isEmpty(action)) {
     console.warn('useRequest: template.action may not be null or empty');
     return;
@@ -32,47 +32,19 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   }
 
   const dispatch = useDispatch();
-  const requestId = useRef(id);
 
   // -- Setup request
+  const requestId = useRef(id);
+  const isFirst = useRef(true);
   requestId.current = isNil(requestId.current) ? rid() : requestId.current;
-
   dispatch(registerRequest({action, paginationMapper, sortMapper, paginated, id: requestId.current}));
 
-  const {pagination, sort: sortData, filter: filterData, ...requestData} = useSelector((state) => selectData(state, requestId.current));
-  // -- Setup dependencies
+  const {pagination, sort: sortData, filter: filterData, ...requestData} =
+    useSelector((state) => selectData(state, requestId.current));
 
-  const deps = useRef({});
-  // -- helpers
-  const resolveDeps = (values) => {
-    const changedDeps = intersection(keys(values), keys(deps.current));
-    if (changedDeps.length > 0) {
-      changedDeps.map((name) => {
-        deps.current[name] = true;
-      });
-    }
-  };
-  const depsResolved = () => {
-    return keys(deps.current).reduce((acc, name) => {
-      return acc && deps.current[name]
-    }, true);
-  };
-  // -- init
-  useEffect(() => {
-    if (!isNil(dependencies) && dependencies.length > 0) {
-      deps.current = dependencies.reduce((acc, key) => {
-        return {...acc, [key]: false}
-      }, {});
-    }
-  }, []);
 
-  // -- Fire request if all deps are resolved
-  const isFirst = useRef(true);
 
   const go = (force = false) => {
-    if (!depsResolved()) {
-      return Promise.reject({error: {message: 'Dependencies not met', deps: {...deps.current}}});
-    }
 
     // -- run only once
     if (!isFirst.current && !force) {
@@ -101,7 +73,6 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     if (contains('params', reloadOn)) {
       reload()
     }
-    resolveDeps(params);
     return {go: reload};
   };
 
@@ -110,7 +81,6 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     if (contains('segments', reloadOn)) {
       reload()
     }
-    resolveDeps(segments);
     return {go: reload};
   };
 
@@ -119,7 +89,6 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     if (contains('data', reloadOn)) {
       reload()
     }
-    resolveDeps(data);
     return {go: reload};
   };
 
@@ -128,7 +97,6 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     if (contains('headers', reloadOn)) {
       reload()
     }
-    resolveDeps(headers);
     return {go: reload};
   };
 
@@ -201,7 +169,6 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   };
 
   return {
-    // ...requestData,
     go,
     reload,
     id: requestId.current,

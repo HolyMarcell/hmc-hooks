@@ -51,9 +51,11 @@ export interface RequestAction {
 
 export type ReloadEnum = 'sort' | 'filter' | 'params' | 'segments' | 'data' | 'headers' | 'pagination' | string;
 
+
+
+
 export interface RequestTemplate {
   action: RequestAction;
-  dependencies?: Array<any>;
   paginated?: boolean;
   paginationMapper?: PaginationMapper;
   sortMapper?: SortMapper;
