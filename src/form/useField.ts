@@ -1,25 +1,17 @@
-import {changeFieldProp, resetField} from "./formDuck";
+import {changeFieldProp, resetField, validateField} from "./formDuck";
 import {useDispatch, useSelector} from 'react-redux';
 import {selectField} from "./formSelectors";
 import {UseFieldApi, UseFieldProps} from "./types";
 import {isNil, prop} from "../util/ram";
 
 
-const useField = ({formId, name, validator, asyncValidator}: UseFieldProps): UseFieldApi => {
+const useField = ({formId, name}: UseFieldProps): UseFieldApi => {
   const dispatch = useDispatch();
   const field = useSelector((state) => selectField(state, formId, name));
 
   const onChange = (value) => {
-    if (!isNil(validator)) {
-      dispatch(changeFieldProp({formId, name, prop: 'valid', value: validator(value)}))
-    }
 
-    if (!isNil(asyncValidator)) {
-      asyncValidator(value)
-        .then((isValid) => {
-          dispatch(changeFieldProp({formId, name, prop: 'valid', value: isValid}))
-        })
-    }
+    dispatch(validateField({formId, name, value}));
 
     const dirty = isNil(prop('initialValue', field)) ? true : value !== prop('initialValue', field);
     dispatch(changeFieldProp({formId, name, prop: 'dirty', value: dirty}));

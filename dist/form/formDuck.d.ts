@@ -1,4 +1,4 @@
-import { RegisterFieldAction, RegisterFormAction, ResetFieldAction, ResetFormAction, SetFormValuesAction, SetInitialFormValuesAction, SubmitFormAction } from "./types";
+import { RegisterFieldAction, RegisterFormAction, ResetFieldAction, ResetFormAction, SetFormValuesAction, SetInitialFormValuesAction, SubmitFormAction, ValidateFieldAction } from "./types";
 export declare const REGISTER_FORM = "form/useForm/registerForm";
 export declare const UNSET_FORM = "form/useForm/unsetForm";
 export declare const SET_FORM_VALUES = "form/useForm/setFormValues";
@@ -30,7 +30,8 @@ export declare const setFormValues: ({ formId, values }: SetFormValuesAction) =>
     };
 };
 export declare const setInitialFormValues: ({ formId, values }: SetInitialFormValuesAction) => (dispatch: any) => void;
-export declare const submitForm: ({ formId, onSubmit }: SubmitFormAction) => (dispatch: any, getState: any) => any;
+export declare const validateField: ({ formId, name, value }: ValidateFieldAction) => (dispatch: any, getState: any) => any;
+export declare const submitForm: ({ formId, onSubmit }: SubmitFormAction) => (dispatch: any, getState: any) => Promise<any>;
 export declare const resetField: ({ formId, name }: ResetFieldAction) => {
     type: string;
     payload: {

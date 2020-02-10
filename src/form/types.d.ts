@@ -25,6 +25,7 @@ export interface UseFormApi {
   submit: () => any;
   setValues: (values: Record<string, any>) => any;
   reset: () => void;
+  valid: boolean;
 }
 
 export interface UseFormProps {
@@ -58,6 +59,12 @@ export interface ResetFieldAction {
   name: string;
 }
 
+export interface ValidateFieldAction {
+  formId: string;
+  name: string;
+  value: any;
+}
+
 export interface ResetFormAction {
   formId: string;
 }
@@ -89,6 +96,4 @@ export interface UseFieldApi {
 export interface UseFieldProps {
   formId: string;
   name: string;
-  validator?: (value: any) => boolean;
-  asyncValidator?: (value: any) => Promise<boolean>;
 }

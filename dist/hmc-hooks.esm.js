@@ -10689,6 +10689,12 @@ var selectAggregateValues = createSelector(selectFields, secondArg$1, function (
         return __assign(__assign({}, acc), (_a = {}, _a[curr] = path$1([curr, 'value'], fields), _a));
     }, {});
 });
+var selectFormValid = createSelector(selectFields, secondArg$1, function (fields, id) {
+    return keys$1(fields).reduce(function (acc, field) {
+        var valid = prop$1('valid', fields[field]);
+        return acc && isNil$1(valid) ? true : valid;
+    }, true);
+});
 var selectField = createSelector(selectFormState, secondArg$1, thirdArg, function (state, formId, name) { return path$1([formId, 'fields', name], state); });
 //# sourceMappingURL=formSelectors.js.map
 
@@ -10755,16 +10761,46 @@ var setInitialFormValues = function (_a) {
         });
     };
 };
+var validateField = function (_a) {
+    var formId = _a.formId, name = _a.name, value = _a.value;
+    return function (dispatch, getState) {
+        var state = getState();
+        var _a = selectField(state, formId, name), validator = _a.validator, asyncValidator = _a.asyncValidator;
+        if (!isNil$1(validator)) {
+            dispatch(changeFieldProp({ formId: formId, name: name, prop: 'valid', value: validator(value) }));
+        }
+        if (!isNil$1(asyncValidator)) {
+            return asyncValidator(value)
+                .then(function (isValid) {
+                return dispatch(changeFieldProp({ formId: formId, name: name, prop: 'valid', value: isValid }));
+            });
+        }
+        else {
+            return Promise.resolve();
+        }
+    };
+};
 var submitForm = function (_a) {
     var formId = _a.formId, onSubmit = _a.onSubmit;
     return function (dispatch, getState) {
         var state = getState();
-        var values = selectAggregateValues(state, formId);
-        dispatch({
-            type: SUBMIT_FORM,
-            payload: { formId: formId }
+        var fields = selectFields(state, formId);
+        var validations = keys$1(fields).map(function (name) {
+            return dispatch(validateField({ formId: formId, name: name, value: path$1([name, 'value'], fields) }));
         });
-        return onSubmit(values);
+        return Promise.all(validations).then(function () {
+            var state = getState();
+            var values = selectAggregateValues(state, formId);
+            var valid = selectFormValid(state, formId);
+            if (!valid) {
+                return false;
+            }
+            dispatch({
+                type: SUBMIT_FORM,
+                payload: { formId: formId }
+            });
+            return onSubmit(values);
+        });
     };
 };
 var resetField = function (_a) {
@@ -10848,7 +10884,6 @@ var formReducer = function (state, action) {
         }
     }
 };
-//# sourceMappingURL=formDuck.js.map
 
 var useForm = function (_a) {
     var fields = _a.fields, formId = _a.id, onSubmit = _a.onSubmit, initialValues = _a.initialValues;
@@ -10860,6 +10895,7 @@ var useForm = function (_a) {
         console.warn('useForm: fields may not be null or empty');
         return;
     }
+    var valid = useSelector(function (state) { return selectFormValid(state, formId); });
     var dispatch = useDispatch();
     useEffect(function () {
         dispatch(registerForm({ fields: fields, formId: formId }));
@@ -10883,26 +10919,18 @@ var useForm = function (_a) {
     return {
         registerField: regField,
         submit: submit,
+        valid: valid,
         setValues: setValues,
         reset: reset,
     };
 };
-//# sourceMappingURL=useForm.js.map
 
 var useField = function (_a) {
-    var formId = _a.formId, name = _a.name, validator = _a.validator, asyncValidator = _a.asyncValidator;
+    var formId = _a.formId, name = _a.name;
     var dispatch = useDispatch();
     var field = useSelector(function (state) { return selectField(state, formId, name); });
     var onChange = function (value) {
-        if (!isNil$1(validator)) {
-            dispatch(changeFieldProp({ formId: formId, name: name, prop: 'valid', value: validator(value) }));
-        }
-        if (!isNil$1(asyncValidator)) {
-            asyncValidator(value)
-                .then(function (isValid) {
-                dispatch(changeFieldProp({ formId: formId, name: name, prop: 'valid', value: isValid }));
-            });
-        }
+        dispatch(validateField({ formId: formId, name: name, value: value }));
         var dirty = isNil$1(prop$1('initialValue', field)) ? true : value !== prop$1('initialValue', field);
         dispatch(changeFieldProp({ formId: formId, name: name, prop: 'dirty', value: dirty }));
         if (prop$1('touched', field) !== true) {
@@ -10918,6 +10946,13 @@ var useField = function (_a) {
         reset: reset });
 };
 
+var validators = {
+    isRequired: function (v) {
+        return !isNil$1(v) && !isEmpty$1(v);
+    }
+};
+//# sourceMappingURL=validators.js.map
+
 var useRequest$1 = useRequest;
 var useData$1 = useData;
 var requestReducer$1 = requestReducer;
@@ -10925,5 +10960,6 @@ var defaultPaginationMapper$1 = defaultPaginationMapper;
 var useForm$1 = useForm;
 var useField$1 = useField;
 var formReducer$1 = formReducer;
+var validators$1 = validators;
 
-export { defaultPaginationMapper$1 as defaultPaginationMapper, formReducer$1 as formReducer, requestReducer$1 as requestReducer, useData$1 as useData, useField$1 as useField, useForm$1 as useForm, useRequest$1 as useRequest };
+export { defaultPaginationMapper$1 as defaultPaginationMapper, formReducer$1 as formReducer, requestReducer$1 as requestReducer, useData$1 as useData, useField$1 as useField, useForm$1 as useForm, useRequest$1 as useRequest, validators$1 as validators };

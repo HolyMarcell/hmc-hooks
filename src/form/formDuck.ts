@@ -5,10 +5,17 @@ import {
   ResetFormAction,
   SetFormValuesAction,
   SetInitialFormValuesAction,
-  SubmitFormAction
+  SubmitFormAction, ValidateFieldAction
 } from "./types";
 import {assoc, assocPath, hasPath, isNil, keys, mergeDeepRight, path, prop} from "../util/ram";
-import {selectAggregateValues, selectFieldNames, selectForm, selectFormValid} from "./formSelectors";
+import {
+  selectAggregateValues,
+  selectField,
+  selectFieldNames,
+  selectFields,
+  selectForm,
+  selectFormValid
+} from "./formSelectors";
 
 export const REGISTER_FORM = 'form/useForm/registerForm';
 export const UNSET_FORM = 'form/useForm/unsetForm';
@@ -83,21 +90,50 @@ export const setInitialFormValues = ({formId, values}: SetInitialFormValuesActio
   }
 };
 
+export const validateField = ({formId, name, value}: ValidateFieldAction) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const {validator, asyncValidator} = selectField(state, formId, name);
+    if (!isNil(validator)) {
+      dispatch(changeFieldProp({formId, name, prop: 'valid', value: validator(value)}))
+    }
+
+    if (!isNil(asyncValidator)) {
+      return asyncValidator(value)
+        .then((isValid) => {
+          return dispatch(changeFieldProp({formId, name, prop: 'valid', value: isValid}));
+        });
+    } else {
+      return Promise.resolve();
+    }
+  }
+};
+
 
 export const submitForm = ({formId, onSubmit}: SubmitFormAction) => {
   return (dispatch, getState) => {
     const state = getState();
-    const values = selectAggregateValues(state, formId);
-    const valid = selectFormValid(state, formId);
-    if(!valid) {
-      return false;
-    }
-    dispatch({
-      type: SUBMIT_FORM,
-      payload: {formId}
+
+    const fields = selectFields(state, formId);
+
+    const validations = keys(fields).map((name) => {
+      return dispatch(validateField({formId, name, value: path([name, 'value'], fields)}));
     });
 
-    return onSubmit(values);
+    return Promise.all(validations).then(() => {
+      const state = getState();
+      const values = selectAggregateValues(state, formId);
+      const valid = selectFormValid(state, formId);
+      if(!valid) {
+        return false;
+      }
+      dispatch({
+        type: SUBMIT_FORM,
+        payload: {formId}
+      });
+
+      return onSubmit(values);
+    });
   }
 };
 

@@ -1,8 +1,9 @@
 import {UseFormApi, UseFormProps} from "./types";
 import {useEffect} from "react";
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {registerField, registerForm, resetForm, setFormValues, setInitialFormValues, submitForm} from "./formDuck";
 import {isEmpty, isNil} from "../util/ram";
+import {selectFormValid} from "./formSelectors";
 
 export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormProps): UseFormApi => {
 
@@ -15,6 +16,8 @@ export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormPr
     console.warn('useForm: fields may not be null or empty');
     return;
   }
+
+  const valid = useSelector((state) => selectFormValid(state, formId));
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -45,6 +48,7 @@ export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormPr
   return {
     registerField: regField,
     submit,
+    valid,
     setValues,
     reset,
   }
