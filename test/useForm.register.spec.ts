@@ -50,12 +50,12 @@ describe('useForm hook register', () => {
 
   });
 
-  it('aggregates values and passes to onSubmit', () => {
+  it('aggregates values and passes to onSubmit', async () => {
     const form = runHook({fields: mockFormFields, id: mockId, onSubmit: mockSubmit});
 
     expect(form.submit).toBeDefined();
 
-    const vals = form.submit();
+    const vals = await form.submit();
     expect(vals).toEqual({email: undefined, 'wacken.hacken': undefined});
 
   });
