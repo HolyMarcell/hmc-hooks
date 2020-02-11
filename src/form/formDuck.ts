@@ -7,7 +7,7 @@ import {
   SetInitialFormValuesAction,
   SubmitFormAction, ValidateFieldAction
 } from "./types";
-import {assoc, assocPath, hasPath, isNil, keys, mergeDeepRight, path, prop} from "../util/ram";
+import {assoc, assocPath, hasPath, isEmpty, isNil, keys, merge, mergeDeepRight, path, prop} from "../util/ram";
 import {
   selectAggregateValues,
   selectField,
@@ -185,6 +185,9 @@ export const formReducer = (state = {}, action) => {
       const mergeValues = names.reduce((acc, curr) => {
         return {...acc, [curr]: {value: path([curr], values)}}
       }, {});
+      if(isEmpty(mergeValues)) {
+        return state;
+      }
 
       return mergeDeepRight(state, {[formId]: {fields: mergeValues}});
     }

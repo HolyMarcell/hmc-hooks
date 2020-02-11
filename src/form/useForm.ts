@@ -18,11 +18,12 @@ export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormPr
   }
 
   const valid = useSelector((state) => selectFormValid(state, formId));
-
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(registerForm({fields, formId}));
-    if(!isNil(initialValues)) {
+
+    if (!isNil(initialValues)) {
       dispatch(setInitialFormValues({formId, values: initialValues}));
     }
   }, []);
@@ -34,7 +35,6 @@ export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormPr
   const setValues = (values) => {
     return dispatch(setFormValues({formId, values}));
   };
-
 
 
   const regField = ({field}) => {
