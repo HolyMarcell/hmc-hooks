@@ -3,10 +3,8 @@ import {useEffect} from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import {registerField, registerForm, resetForm, setFormValues, setInitialFormValues, submitForm} from "./formDuck";
 import {isEmpty, isNil} from "../util/ram";
-import {selectFormValid} from "./formSelectors";
 
 export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormProps): UseFormApi => {
-
   if (isNil(formId) || isEmpty(formId)) {
     console.warn('useForm: id may not be null or empty');
     return;
@@ -17,7 +15,7 @@ export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormPr
     return;
   }
 
-  const valid = useSelector((state) => selectFormValid(state, formId));
+  const valid = true; // useSelector((state) => selectFormValid(state, formId));
   const dispatch = useDispatch();
 
   useEffect(() => {

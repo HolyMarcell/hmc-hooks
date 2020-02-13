@@ -6,6 +6,30 @@
 
 ### Changelog
 
+Both:
+
+* Used "re-reselect" to create cached selectors:
+
+Problem: We may have multiple hooks (of form or request) that are being rendered. In this
+case the "memoize one last result" strategy of reselect breaks because any change to one 
+of the hooks with "id1" would invalidate all cache in the second hook with "id2".
+
+This results in complete re-renders of both components triggered by useSelector() 
+since all createSelector's think something happened that needs to be displayed.
+
+Solution:
+
+Re-Reselect curries a function after the createSelector (now called `createCachedSelector`)
+that derives a cache-key from the arguments to the selector. This way the createCachedSelector
+can diffrerentiate between state changes that happen to the Hook that is subscribed to it's state
+and the hook that is subscribed to "neighboring state". -> No unneccessary rerenders.
+
+TL;DR
+
+`selectData(state, requestId)` in request hook would render way too often if two hooks using it were present.
+Now we use `requestId` as cache-key and the problem goes away.
+
+
 useRequest:
 
 * added setFile({fileField: file}); api

@@ -93,15 +93,21 @@ export const setInitialFormValues = ({formId, values}: SetInitialFormValuesActio
 export const validateField = ({formId, name, value}: ValidateFieldAction) => {
   return (dispatch, getState) => {
     const state = getState();
-    const {validator, asyncValidator} = selectField(state, formId, name);
+    const {validator, asyncValidator, valid} = selectField(state, formId, name);
     if (!isNil(validator)) {
-      dispatch(changeFieldProp({formId, name, prop: 'valid', value: validator(value)}))
+      const stillValid = validator(value);
+      if(stillValid !== valid) {
+        dispatch(changeFieldProp({formId, name, prop: 'valid', value: stillValid}))
+      }
     }
 
     if (!isNil(asyncValidator)) {
       return asyncValidator(value)
-        .then((isValid) => {
-          return dispatch(changeFieldProp({formId, name, prop: 'valid', value: isValid}));
+        .then((stillValid) => {
+          if(stillValid !== valid) {
+            return dispatch(changeFieldProp({formId, name, prop: 'valid', value: stillValid}));
+          }
+          return Promise.resolve();
         });
     } else {
       return Promise.resolve();

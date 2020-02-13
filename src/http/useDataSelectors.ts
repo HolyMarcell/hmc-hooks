@@ -2,28 +2,32 @@ import {config} from "../config";
 import {equals, path, pathOr, prop} from "../util/ram";
 import {createSelector, createSelectorCreator, defaultMemoize} from "reselect";
 import {PaginationMapper, RequestDataSelection} from "./types";
+import createCachedSelector from 're-reselect';
+
 
 const createDeepEqualSelector = createSelectorCreator(
   defaultMemoize,
   equals
 );
 
+const storeIdAsCacheKey = (_, id) => id;
+
 
 export const selectHttp = state => prop(config.httpKey, state);
 export const secondArg = (_, v) => v;
 
-export const selectRequest = createSelector(
+export const selectRequest = createCachedSelector(
   selectHttp,
   secondArg,
   (state, id) => prop(id, state)
-);
+)(storeIdAsCacheKey);
 
 
-export const selectNotAction = createSelector(
+export const selectNotAction = createCachedSelector(
   selectRequest,
   secondArg,
   ({action, ...notAction}) => notAction
-);
+)(storeIdAsCacheKey);
 
 
 const mapPagination = (
@@ -44,7 +48,7 @@ const mapPagination = (
   };
 };
 
-export const selectData = createDeepEqualSelector(
+export const selectData = createCachedSelector(
   selectNotAction,
   secondArg,
   (state) => {
@@ -80,34 +84,34 @@ export const selectData = createDeepEqualSelector(
       } as RequestDataSelection;
     }
   }
-);
+)(storeIdAsCacheKey);
 
-export const selectAction = createSelector(
+export const selectAction = createCachedSelector(
   selectHttp,
   secondArg,
   (state, id) => pathOr({}, [id, 'action'], state)
-);
+)(storeIdAsCacheKey);
 
-export const selectPaginationMapper = createSelector(
+export const selectPaginationMapper = createCachedSelector(
   selectNotAction,
   secondArg,
   (state, id) => pathOr({}, ['paginationMapper'], state)
-);
+)(storeIdAsCacheKey);
 
-export const selectSortMapper = createSelector(
+export const selectSortMapper = createCachedSelector(
   selectNotAction,
   secondArg,
   (state, id) => pathOr({}, ['sortMapper'], state)
-);
+)(storeIdAsCacheKey);
 
-export const selectFilter = createSelector(
+export const selectFilter = createCachedSelector(
   selectNotAction,
   secondArg,
   (state, id) => pathOr({}, ['filter'], state)
-);
+)(storeIdAsCacheKey);
 
-export const selectIsPaginated = createSelector(
+export const selectIsPaginated = createCachedSelector(
   selectNotAction,
   secondArg,
   (state, id) => pathOr(false, ['paginated'], state)
-);
+)(storeIdAsCacheKey);
