@@ -56,6 +56,7 @@ describe('useField hook metavalues', () => {
   it('changes "dirty" value correctly', async () => {
     runFormHook({fields: mockFormFields, id: mockId, onSubmit: mockSubmit, initialValues: {email: 'foo'}});
 
+
     const {field} = runFieldHook({formId: mockId, name: 'email'});
 
     expect(mockStore.getState().formv3[mockId].fields['email'].dirty).toEqual(false);

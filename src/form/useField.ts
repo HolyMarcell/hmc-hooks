@@ -14,9 +14,7 @@ const useField = ({formId, name}: UseFieldProps): UseFieldApi => {
     dispatch(validateField({formId, name, value}));
 
     const dirty = isNil(prop('initialValue', field)) ? true : value !== prop('initialValue', field);
-    if(dirty !== field.dirty) {
-      dispatch(changeFieldProp({formId, name, prop: 'dirty', value: dirty}));
-    }
+    dispatch(changeFieldProp({formId, name, prop: 'dirty', value: dirty}));
 
     if(prop('touched', field) !== true) {
       dispatch(changeFieldProp({formId, name, prop: 'touched', value: true}));

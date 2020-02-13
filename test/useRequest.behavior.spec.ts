@@ -13,7 +13,6 @@ import {config} from "../src/config";
 import {mockHttpParam, mockId, mockResponse, mockTemplate, mockTemplateFails} from "./util/mocks";
 
 
-
 describe('useRequest hook behavior', () => {
 
   beforeEach(() => {
@@ -50,7 +49,10 @@ describe('useRequest hook behavior', () => {
 
   it('dispatches set param action', () => {
     const api = runHook({template: mockTemplate, id: mockId});
-    api.setParams(mockHttpParam);
+    act(() => {
+
+      api.setParams(mockHttpParam);
+    });
 
     const actions = getActions(CHANGE_REQUEST);
 
@@ -66,7 +68,9 @@ describe('useRequest hook behavior', () => {
 
   it('dispatches set header action', () => {
     const api = runHook({template: mockTemplate});
-    api.setHeaders(mockHttpParam);
+    act(() => {
+      api.setHeaders(mockHttpParam);
+    });
 
     const actions = getActions(CHANGE_REQUEST);
 
@@ -81,7 +85,9 @@ describe('useRequest hook behavior', () => {
 
   it('dispatches set data action', () => {
     const api = runHook({template: mockTemplate, id: mockId});
-    api.setData(mockHttpParam);
+    act(() => {
+      api.setData(mockHttpParam);
+    });
 
     const actions = getActions(CHANGE_REQUEST);
 
@@ -96,7 +102,9 @@ describe('useRequest hook behavior', () => {
 
   it('dispatches set segmment action', () => {
     const api = runHook({template: mockTemplate});
-    api.setSegments(mockHttpParam);
+    act(() => {
+      api.setSegments(mockHttpParam);
+    });
 
     const actions = getActions(CHANGE_REQUEST);
 
