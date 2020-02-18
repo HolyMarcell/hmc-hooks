@@ -6,6 +6,7 @@ export declare const assocPath: (...args: any[]) => any;
 export declare const dissocPath: (...args: any[]) => any;
 export declare const dissoc: (...args: any[]) => any;
 export declare const prop: (...args: any[]) => any;
+export declare const pick: (list: string[], from: any) => any;
 export declare const merge: (...args: any[]) => any;
 export declare const propOr: (...args: any[]) => any;
 export declare const is: (...args: any[]) => any;

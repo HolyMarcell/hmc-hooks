@@ -1,4 +1,5 @@
 import useRequestE from './http/useRequest';
+import useMultiRequestE from './http/useMultiRequest';
 import useDataE from './http/useData';
 import {requestReducer as requestReducerE} from "./http/requestDuck";
 import defaultPaginationMapperE from './util/defaultPaginationMapper';
@@ -10,6 +11,7 @@ import {formReducer as formReducerE} from './form/formDuck';
 import validatorsE from './form/validators';
 
 export const useRequest = useRequestE;
+export const useMultiRequest = useMultiRequestE;
 export const useData = useDataE;
 export const requestReducer = requestReducerE;
 export const defaultPaginationMapper = defaultPaginationMapperE;

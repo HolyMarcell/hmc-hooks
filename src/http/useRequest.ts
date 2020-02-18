@@ -40,7 +40,7 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   dispatch(registerRequest({action, paginationMapper, sortMapper, paginated, id: requestId.current}));
 
   const {pagination, sort: sortData, filter: filterData, ...requestData} =
-    useSelector((state) => selectData(state, requestId.current), shallowEqual);
+    useSelector((state) => selectData(state, requestId.current));
 
 
 

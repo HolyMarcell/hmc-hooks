@@ -6,6 +6,12 @@
 
 ### Changelog
 
+useRequest:
+
+* Added "useMultiRequest" hook, that will accept multiple templates as  `{name1: $template1, name2: $template2}`
+and return the result of each request if called (`goAll()`). Each request on its own offers the same API as `useRequest`
+
+
 Both:
 
 * Used "re-reselect" to create cached selectors:

@@ -1,6 +1,6 @@
 import {config} from "../config";
 import {equals, path, pathOr, prop} from "../util/ram";
-import {createSelector, createSelectorCreator, defaultMemoize} from "reselect";
+import {createSelectorCreator, defaultMemoize} from "reselect";
 import {PaginationMapper, RequestDataSelection} from "./types";
 import createCachedSelector from 're-reselect';
 
@@ -11,8 +11,9 @@ const createDeepEqualSelector = createSelectorCreator(
 );
 
 const storeIdAsCacheKey = (_, id) => id;
+const storeIdsAsCacheKey = (_, ids) => ids.join('-');
 
-
+export const selectState = state => state;
 export const selectHttp = state => prop(config.httpKey, state);
 export const secondArg = (_, v) => v;
 
@@ -85,6 +86,31 @@ export const selectData = createCachedSelector(
     }
   }
 )(storeIdAsCacheKey);
+
+
+// -- This is an intermediary Selector, that because of "reduce" always produces a new Object
+// -- We catch the "re-render trigger" in the next selector with a deep-equality check
+export const selectMultiDataObject = createCachedSelector(
+  selectState,
+  secondArg,
+  (state, ids) => {
+    return ids.reduce((acc, id) => {
+      return {
+        ...acc,
+        [id] : selectData(state, id)
+      }
+    }, {})
+  }
+)(storeIdsAsCacheKey);
+
+export const selectMultiData = createCachedSelector(
+  selectMultiDataObject,
+  secondArg,
+  (state) => state
+)
+// Re-Reselect offers to override the selector creator, and we chose Deep-Equality to
+  //-- reduce unnecessary re-renders
+({keySelector: storeIdsAsCacheKey, selectorCreator: createDeepEqualSelector});
 
 export const selectAction = createCachedSelector(
   selectHttp,

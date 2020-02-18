@@ -1,6 +1,6 @@
 import {config} from "../config";
 import {equals, isNil, keys, path, prop, propOr} from "../util/ram";
-import {createSelector, createSelectorCreator, defaultMemoize} from "reselect";
+import {createSelectorCreator, defaultMemoize} from "reselect";
 import createCachedSelector from 're-reselect';
 
 

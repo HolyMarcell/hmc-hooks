@@ -10,6 +10,7 @@ export const assocPath = (...args) => R.assocPath(...args);
 export const dissocPath = (...args) => R.dissocPath(...args);
 export const dissoc = (...args) => R.dissoc(...args);
 export const prop = (...args) => R.prop(...args);
+export const pick = (list: string[], from: any) => R.pick(list, from);
 export const merge = (...args) => R.merge(...args);
 export const propOr = (...args) => R.propOr(...args);
 export const is = (...args) => R.is(...args);

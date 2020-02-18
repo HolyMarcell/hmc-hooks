@@ -67,6 +67,10 @@ export interface UseRequestProps {
   template: RequestTemplate;
 }
 
+export interface UseMultiRequestProps {
+  [selector: string]: UseRequestProps;
+}
+
 
 export type GoFunc = (force?: boolean) => Promise<any>;
 
@@ -108,6 +112,11 @@ export interface UseRequestApi extends RequestDataSelection {
   setFile: (file: Record<string, File>) => ChainedSetter;
   sort: RequestApiSortField;
   filter: RequestApiFilterField;
+}
+
+export interface UseMultiRequestApi {
+  goAll: GoFunc;
+  [selector: string]: UseRequestApi;
 }
 
 export interface RegisterRequestAction {

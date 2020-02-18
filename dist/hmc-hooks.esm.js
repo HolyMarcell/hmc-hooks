@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { useRef, useEffect } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -233,6 +233,7 @@ var uuidv4_5 = uuidv4_1.empty;
 var uuidv4_6 = uuidv4_1.fromString;
 
 var rid = function () { return uuidv4_2(); };
+//# sourceMappingURL=rid.js.map
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -10101,6 +10102,7 @@ var contains$2 = function () {
     }
     return contains$1.apply(R, args);
 };
+//# sourceMappingURL=ram.js.map
 
 var parseUrlSegments = function (url, segments) {
     if (isNil(segments)) {
@@ -10109,11 +10111,13 @@ var parseUrlSegments = function (url, segments) {
     var segs = keys(segments).map(function (seg) { return replace("{" + seg + "}", segments[seg]); });
     return compose.apply(void 0, segs)(url);
 };
+//# sourceMappingURL=parseUrlSegments.js.map
 
 var config = {
     httpKey: 'httpv3',
     formKey: 'formv3',
 };
+//# sourceMappingURL=config.js.map
 
 function defaultEqualityCheck(a, b) {
   return a === b;
@@ -10352,9 +10356,12 @@ function createCachedSelector() {
     return selector;
   };
 }
+//# sourceMappingURL=index.js.map
 
 var createDeepEqualSelector = createSelectorCreator(defaultMemoize, equals$1);
 var storeIdAsCacheKey = function (_, id) { return id; };
+var storeIdsAsCacheKey = function (_, ids) { return ids.join('-'); };
+var selectState = function (state) { return state; };
 var selectHttp = function (state) { return prop$1(config.httpKey, state); };
 var secondArg = function (_, v) { return v; };
 var selectRequest = createCachedSelector(selectHttp, secondArg, function (state, id) { return prop$1(id, state); })(storeIdAsCacheKey);
@@ -10396,11 +10403,21 @@ var selectData = createCachedSelector(selectNotAction, secondArg, function (stat
             filter: filter });
     }
 })(storeIdAsCacheKey);
+// -- This is an intermediary Selector, that because of "reduce" always produces a new Object
+// -- We catch the "re-render trigger" in the next selector with a deep-equality check
+var selectMultiDataObject = createCachedSelector(selectState, secondArg, function (state, ids) {
+    return ids.reduce(function (acc, id) {
+        var _a;
+        return __assign(__assign({}, acc), (_a = {}, _a[id] = selectData(state, id), _a));
+    }, {});
+})(storeIdsAsCacheKey);
+var selectMultiData = createCachedSelector(selectMultiDataObject, secondArg, function (state) { return state; })({ keySelector: storeIdsAsCacheKey, selectorCreator: createDeepEqualSelector });
 var selectAction = createCachedSelector(selectHttp, secondArg, function (state, id) { return pathOr$1({}, [id, 'action'], state); })(storeIdAsCacheKey);
 var selectPaginationMapper = createCachedSelector(selectNotAction, secondArg, function (state, id) { return pathOr$1({}, ['paginationMapper'], state); })(storeIdAsCacheKey);
 var selectSortMapper = createCachedSelector(selectNotAction, secondArg, function (state, id) { return pathOr$1({}, ['sortMapper'], state); })(storeIdAsCacheKey);
 var selectFilter = createCachedSelector(selectNotAction, secondArg, function (state, id) { return pathOr$1({}, ['filter'], state); })(storeIdAsCacheKey);
 var selectIsPaginated = createCachedSelector(selectNotAction, secondArg, function (state, id) { return pathOr$1(false, ['paginated'], state); })(storeIdAsCacheKey);
+//# sourceMappingURL=useDataSelectors.js.map
 
 var defaultPaginationMapper = {
     fromData: {
@@ -10422,6 +10439,7 @@ var defaultPaginationMapper = {
         page: 'page'
     }
 };
+//# sourceMappingURL=defaultPaginationMapper.js.map
 
 var defaultSortMapper = {
     strategy: 'two-field',
@@ -10430,6 +10448,7 @@ var defaultSortMapper = {
     asc: 'ASC',
     desc: 'DESC'
 };
+//# sourceMappingURL=defaultSortMapper.js.map
 
 var sortMapToParams = function (sortMapper, values) {
     var _a;
@@ -10445,8 +10464,9 @@ var sortMapToParams = function (sortMapper, values) {
         console.error("Unrecognized sort-strategy: " + strategy + " in @hmc/hooks. Check your registerRequest function and your sortMapper value");
     }
 };
+//# sourceMappingURL=sortMapToParams.js.map
 
-var n=function(n){return void 0===n},e=function(n){return Array.isArray(n)},t=function(n){return n&&"number"==typeof n.size&&"string"==typeof n.type&&"function"==typeof n.slice},s=function(o,i,r,f){return (i=i||{}).indices=!n(i.indices)&&i.indices,i.nullsAsUndefineds=!n(i.nullsAsUndefineds)&&i.nullsAsUndefineds,i.booleansAsIntegers=!n(i.booleansAsIntegers)&&i.booleansAsIntegers,r=r||new FormData,n(o)?r:(null===o?i.nullsAsUndefineds||r.append(f,""):"boolean"==typeof o?r.append(f,i.booleansAsIntegers?o?1:0:o):e(o)?o.length?o.forEach(function(n,e){s(n,i,r,f+"["+(i.indices?e:"")+"]");}):r.append(f+"[]",""):o instanceof Date?r.append(f,o.toISOString()):o!==Object(o)||function(n){return t(n)&&"string"==typeof n.name&&("object"==typeof n.lastModifiedDate||"number"==typeof n.lastModified)}(o)||t(o)?r.append(f,o):Object.keys(o).forEach(function(n){var t=o[n];if(e(t))for(;n.length>2&&n.lastIndexOf("[]")===n.length-2;)n=n.substring(0,n.length-2);s(t,i,r,f?f+"["+n+"]":n);}),r)};
+var n=function(n){return void 0===n},e=function(n){return Array.isArray(n)},t=function(n){return n&&"number"==typeof n.size&&"string"==typeof n.type&&"function"==typeof n.slice},s=function(o,i,r,f){return (i=i||{}).indices=!n(i.indices)&&i.indices,i.nullsAsUndefineds=!n(i.nullsAsUndefineds)&&i.nullsAsUndefineds,i.booleansAsIntegers=!n(i.booleansAsIntegers)&&i.booleansAsIntegers,r=r||new FormData,n(o)?r:(null===o?i.nullsAsUndefineds||r.append(f,""):"boolean"==typeof o?r.append(f,i.booleansAsIntegers?o?1:0:o):e(o)?o.length?o.forEach(function(n,e){s(n,i,r,f+"["+(i.indices?e:"")+"]");}):r.append(f+"[]",""):o instanceof Date?r.append(f,o.toISOString()):o!==Object(o)||function(n){return t(n)&&"string"==typeof n.name&&("object"==typeof n.lastModifiedDate||"number"==typeof n.lastModified)}(o)||t(o)?r.append(f,o):Object.keys(o).forEach(function(n){var t=o[n];if(e(t))for(;n.length>2&&n.lastIndexOf("[]")===n.length-2;)n=n.substring(0,n.length-2);s(t,i,r,f?f+"["+n+"]":n);}),r)};//# sourceMappingURL=index.mjs.map
 
 var REGISTER_REQUEST = 'http/useRequest/registerRequest';
 var CHANGE_REQUEST = 'http/useRequest/changeRequest';
@@ -10651,6 +10671,7 @@ var requestReducer = function (state, action) {
         }
     }
 };
+//# sourceMappingURL=requestDuck.js.map
 
 var useRequest = function (_a) {
     var id = _a.id, template = _a.template;
@@ -10674,7 +10695,7 @@ var useRequest = function (_a) {
     var isFirst = useRef(true);
     requestId.current = isNil$1(requestId.current) ? rid() : requestId.current;
     dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, sortMapper: sortMapper, paginated: paginated, id: requestId.current }));
-    var _c = useSelector(function (state) { return selectData(state, requestId.current); }, shallowEqual), pagination = _c.pagination, sortData = _c.sort, filterData = _c.filter, requestData = __rest(_c, ["pagination", "sort", "filter"]);
+    var _c = useSelector(function (state) { return selectData(state, requestId.current); }), pagination = _c.pagination, sortData = _c.sort, filterData = _c.filter, requestData = __rest(_c, ["pagination", "sort", "filter"]);
     var go = function (force) {
         if (force === void 0) { force = false; }
         // -- run only once
@@ -10797,12 +10818,159 @@ var useRequest = function (_a) {
             onPageSelect: onPageSelect,
             onPrev: onPrev }) }, requestData);
 };
+//# sourceMappingURL=useRequest.js.map
+
+var useMultiRequest = function (multiProps) {
+    var selectors = keys$1(multiProps);
+    for (var _i = 0, selectors_1 = selectors; _i < selectors_1.length; _i++) {
+        var selector = selectors_1[_i];
+        var _a = prop$1(selector, multiProps), template = _a.template, id = _a.id;
+        if (isNil$1(id)) {
+            console.warn("useMultiRequest (" + selector + "): id may not be null or empty");
+            return;
+        }
+        if (isNil$1(template) || isEmpty$1(template)) {
+            console.warn("useMultiRequest (" + selector + "): template may not be null or empty");
+            return;
+        }
+        var action = template.action;
+        if (isNil$1(action) || isEmpty$1(action)) {
+            console.warn("useMultiRequest (" + selector + "): template.action may not be null or empty");
+            return;
+        }
+        if (isNil$1(prop$1('url', action)) || isEmpty$1(prop$1('url', action)) ||
+            isNil$1(prop$1('method', action)) || isEmpty$1(prop$1('method', action))) {
+            console.warn("useMultiRequest (" + selector + "): template.action.url and template.action.method may not be null or empty");
+            return;
+        }
+    }
+    var dispatch = useDispatch();
+    // -- Setup request
+    var isFirst = useRef(true);
+    selectors.map(function (selector) {
+        var _a = prop$1(selector, multiProps), template = _a.template, id = _a.id;
+        var action = template.action, paginationMapper = template.paginationMapper, sortMapper = template.sortMapper, paginated = template.paginated;
+        dispatch(registerRequest({ action: action, paginationMapper: paginationMapper, sortMapper: sortMapper, paginated: paginated, id: id }));
+    });
+    var ids = selectors.map(function (selector) { return path$1([selector, 'id'], multiProps); });
+    var multiData = useSelector(function (state) { return selectMultiData(state, ids); });
+    var goAll = function (force) {
+        if (force === void 0) { force = false; }
+        // -- run only once
+        if (!isFirst.current && !force) {
+            return Promise.resolve();
+        }
+        isFirst.current = false;
+        var allRequests = selectors.map(function (selector) {
+            var id = path$1([selector, 'id'], multiProps);
+            var reqProm = dispatch(sendRequest({ id: id }));
+            return reqProm.then(function (resultAction) {
+                var _a;
+                var type = last$1(prop$1('type', resultAction).split('_'));
+                if (type === 'FAIL') {
+                    return Promise.reject(prop$1('error', resultAction));
+                }
+                return _a = {}, _a[selector] = prop$1('payload', resultAction), _a;
+            });
+        });
+        return Promise.all(allRequests)
+            .then(function (results) {
+            return results.reduce(function (acc, curr) {
+                return __assign(__assign({}, acc), curr);
+            }, {});
+        });
+    };
+    var go = function (id) { return function (force) {
+        if (force === void 0) { force = false; }
+        // -- run only once
+        if (!isFirst.current && !force) {
+            return Promise.resolve();
+        }
+        isFirst.current = false;
+        var reqProm = dispatch(sendRequest({ id: id }));
+        return reqProm.then(function (resultAction) {
+            var type = last$1(prop$1('type', resultAction).split('_'));
+            if (type === 'FAIL') {
+                return Promise.reject(prop$1('error', resultAction));
+            }
+            return prop$1('payload', resultAction);
+        });
+    }; };
+    var reload = function (id) { return function () {
+        return go(id)(true);
+    }; };
+    // -- Setters
+    var setParams = function (id) { return function (params) {
+        dispatch(changeRequest({ id: id, type: 'params', value: params }));
+        return { go: reload(id) };
+    }; };
+    var setSegments = function (id) { return function (segments) {
+        dispatch(changeRequest({ id: id, type: 'segments', value: segments }));
+        return { go: reload(id) };
+    }; };
+    var setData = function (id) { return function (data) {
+        dispatch(changeRequest({ id: id, type: 'data', value: data }));
+        return { go: reload(id) };
+    }; };
+    var setHeaders = function (id) { return function (headers) {
+        dispatch(changeRequest({ id: id, type: 'headers', value: headers }));
+        return { go: reload(id) };
+    }; };
+    var setFilter$1 = function (id) { return function (filter) {
+        dispatch(setPage({ id: id, mod: function () { return 0; } }));
+        dispatch(setFilter({ id: id, filter: filter }));
+        return { go: reload(id) };
+    }; };
+    var resetFilters = function (id) { return function () {
+        dispatch(setPage({ id: id, mod: function () { return 0; } }));
+        dispatch(resetFilter({ id: id }));
+        return { go: reload(id) };
+    }; };
+    var setSort$1 = function (id) { return function (sort) {
+        dispatch(setPage({ id: id, mod: function () { return 0; } }));
+        dispatch(setSort({ id: id, sort: sort }));
+        return { go: reload(id) };
+    }; };
+    var setFile = function (id) { return function (file) {
+        dispatch(changeRequest({ id: id, type: 'file', value: file }));
+        return { go: reload(id) };
+    }; };
+    var resetSort$1 = function (id) { return function () {
+        dispatch(setPage({ id: id, mod: function () { return 0; } }));
+        dispatch(resetSort({ id: id }));
+        return { go: reload(id) };
+    }; };
+    var onPageSelect = function (id) { return function (page) {
+        dispatch(setPage({ id: id, mod: function () { return page; } }));
+        return { go: reload(id) };
+    }; };
+    var onNext = function (id) { return function () {
+        dispatch(setPage({ id: id, mod: function (p) { return p + 1; } }));
+        return { go: reload(id) };
+    }; };
+    var onPrev = function (id) { return function () {
+        dispatch(setPage({ id: id, mod: function (p) { return p - 1; } }));
+        return { go: reload(id) };
+    }; };
+    var res = selectors.reduce(function (acc, selector) {
+        var _a;
+        var id = path$1([selector, 'id'], multiProps);
+        var _b = propOr$1({ pagination: {}, filters: {}, sort: {} }, id, multiData), pagination = _b.pagination, filters = _b.filters, sort = _b.sort, requestData = __rest(_b, ["pagination", "filters", "sort"]);
+        return __assign(__assign({}, acc), (_a = {}, _a[selector] = __assign({ go: go(id), reload: reload(id), id: id, setParams: setParams(id), setSegments: setSegments(id), setData: setData(id), setHeaders: setHeaders(id), setFile: setFile(id), filter: {
+                setFilter: setFilter$1(id),
+                resetFilters: resetFilters(id),
+                filters: filters
+            }, sort: __assign({ setSort: setSort$1(id), resetSort: resetSort$1(id) }, sort), pagination: __assign(__assign({}, pagination), { onNext: onNext(id), onPageSelect: onPageSelect(id), onPrev: onPrev(id) }) }, requestData), _a));
+    }, {});
+    return __assign({ goAll: goAll }, res);
+};
 
 var useData = function (_a) {
     var id = _a.id;
     var data = useSelector(function (state) { return selectData(state, id); });
     return data;
 };
+//# sourceMappingURL=useData.js.map
 
 var createDeepEqualSelector$1 = createSelectorCreator(defaultMemoize, equals$1);
 var selectFormState = function (state) { return prop$1(config.formKey, state); };
@@ -10826,6 +10994,7 @@ var selectFormValid = createCachedSelector(selectFields, secondArg$1, function (
     }, true);
 })(storeIdAsCacheKey$1);
 var selectField = createCachedSelector(selectFormState, secondArg$1, thirdArg, function (state, formId, name) { return path$1([formId, 'fields', name], state); })(storeIdAndFieldNameAsCacheKey);
+//# sourceMappingURL=formSelectors.js.map
 
 var REGISTER_FORM = 'form/useForm/registerForm';
 var UNSET_FORM = 'form/useForm/unsetForm';
@@ -11022,6 +11191,7 @@ var formReducer = function (state, action) {
         }
     }
 };
+//# sourceMappingURL=formDuck.js.map
 
 var useForm = function (_a) {
     var fields = _a.fields, formId = _a.id, onSubmit = _a.onSubmit, initialValues = _a.initialValues;
@@ -11062,6 +11232,7 @@ var useForm = function (_a) {
         reset: reset,
     };
 };
+//# sourceMappingURL=useForm.js.map
 
 var useField = function (_a) {
     var formId = _a.formId, name = _a.name;
@@ -11083,14 +11254,17 @@ var useField = function (_a) {
         formId: formId,
         reset: reset });
 };
+//# sourceMappingURL=useField.js.map
 
 var validators = {
     isRequired: function (v) {
         return !isNil$1(v) && !isEmpty$1(v);
     }
 };
+//# sourceMappingURL=validators.js.map
 
 var useRequest$1 = useRequest;
+var useMultiRequest$1 = useMultiRequest;
 var useData$1 = useData;
 var requestReducer$1 = requestReducer;
 var defaultPaginationMapper$1 = defaultPaginationMapper;
@@ -11099,4 +11273,4 @@ var useField$1 = useField;
 var formReducer$1 = formReducer;
 var validators$1 = validators;
 
-export { defaultPaginationMapper$1 as defaultPaginationMapper, formReducer$1 as formReducer, requestReducer$1 as requestReducer, useData$1 as useData, useField$1 as useField, useForm$1 as useForm, useRequest$1 as useRequest, validators$1 as validators };
+export { defaultPaginationMapper$1 as defaultPaginationMapper, formReducer$1 as formReducer, requestReducer$1 as requestReducer, useData$1 as useData, useField$1 as useField, useForm$1 as useForm, useMultiRequest$1 as useMultiRequest, useRequest$1 as useRequest, validators$1 as validators };
