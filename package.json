@@ -1,6 +1,6 @@
 {
   "name": "@holymarell/hooks",
-  "version": "1.2.12",
+  "version": "1.2.13",
   "description": "react hooks shared for me",
   "repository": "https://github.com/HolyMarcell/hmc-hooks",
   "module": "dist/hmc-hooks.esm.js",
