@@ -1,5 +1,5 @@
 {
-  "name": "@hmc/hooks",
+  "name": "@holymarell/hooks",
   "version": "1.2.9",
   "description": "react hooks shared for me",
   "repository": "https://github.com/HolyMarcell/hmc-hooks",
@@ -39,6 +39,7 @@
     "rollup-plugin-local-resolve": "^1.0.7",
     "rollup-plugin-node-globals": "^1.4.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-typescript2": "^0.25.3",
     "rollup-watch": "^4.3.1",
@@ -57,7 +58,6 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
-    "rollup-plugin-node-builtins": "^2.1.2",
     "uuidv4": "^6.0.2"
   }
 }
