@@ -17,7 +17,7 @@ if (level === undefined) {
 
 const run = async () => {
   await exec('npx jest').then(print).catch(() => process.exit(1));
-  await exec('npm run build').then(print);
+  // await exec('npm run build').then(print);
   await exec('git add --all').then(print);
   try {
     await exec('git commit -am "Chore: updating version ' + level + '"').then(print);
