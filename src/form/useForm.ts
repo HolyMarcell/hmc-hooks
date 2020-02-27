@@ -1,14 +1,18 @@
 import {UseFormApi, UseFormProps} from "./types";
 import {useEffect} from "react";
-import {useDispatch, useSelector} from 'react-redux';
-import {registerField, registerForm, resetForm, setFormValues, setInitialFormValues, submitForm} from "./formDuck";
+import {useDispatch} from 'react-redux';
+import {
+  registerField,
+  registerFields,
+  registerForm,
+  resetForm,
+  setFormValues,
+  setInitialFormValues,
+  submitForm
+} from "./formDuck";
 import {isEmpty, isNil} from "../util/ram";
 
 export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormProps): UseFormApi => {
-  if (isNil(formId) || isEmpty(formId)) {
-    console.warn('useForm: id may not be null or empty');
-    return;
-  }
 
   if (isNil(fields) || isEmpty(fields)) {
     console.warn('useForm: fields may not be null or empty');
@@ -39,12 +43,17 @@ export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormPr
     return dispatch(registerField({field, formId}));
   };
 
+  const regFields = ({fields}) => {
+    return dispatch(registerFields({fields, formId}));
+  };
+
   const reset = () => {
     dispatch(resetForm({formId}));
   };
 
   return {
     registerField: regField,
+    registerFields: regFields,
     submit,
     valid,
     setValues,

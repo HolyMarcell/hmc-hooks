@@ -3,9 +3,7 @@ import {Provider} from 'react-redux';
 import {act, renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
 import {mockId} from "./util/mocks";
-import objectContaining = jasmine.objectContaining;
 import * as React from "react";
-import {CHANGE_FIELD_PROP} from "../src/form/formDuck";
 
 
 const mockFormFields = [
@@ -55,7 +53,6 @@ describe('useField hook metavalues', () => {
 
   it('changes "dirty" value correctly', async () => {
     runFormHook({fields: mockFormFields, id: mockId, onSubmit: mockSubmit, initialValues: {email: 'foo'}});
-
 
     const {field} = runFieldHook({formId: mockId, name: 'email'});
 

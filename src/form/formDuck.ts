@@ -1,13 +1,14 @@
 import {
-  RegisterFieldAction,
+  RegisterFieldAction, RegisterFieldsAction,
   RegisterFormAction,
   ResetFieldAction,
   ResetFormAction,
   SetFormValuesAction,
   SetInitialFormValuesAction,
-  SubmitFormAction, ValidateFieldAction
+  SubmitFormAction,
+  ValidateFieldAction
 } from "./types";
-import {assoc, assocPath, hasPath, isEmpty, isNil, keys, merge, mergeDeepRight, path, prop} from "../util/ram";
+import {assoc, assocPath, hasPath, is, isEmpty, isNil, keys, mergeDeepRight, path, prop, reject} from "../util/ram";
 import {
   selectAggregateValues,
   selectField,
@@ -23,6 +24,7 @@ export const SET_FORM_VALUES = 'form/useForm/setFormValues';
 export const SET_INITIAL_FORM_VALUES = 'form/useForm/setFormInitialValues';
 export const SUBMIT_FORM = 'form/useForm/submitForm';
 export const REGISTER_FIELD = 'form/useForm/registerField';
+export const REGISTER_FIELDS = 'form/useForm/registerFields';
 export const CHANGE_FIELD_PROP = 'form/useForm/changeFieldProp';
 export const SET_ALL_VALUES = 'form/useForm/setAllValues';
 export const RESET_FIELD = 'form/useForm/resetField';
@@ -32,6 +34,13 @@ export const registerField = ({field, formId}: RegisterFieldAction) => {
   return {
     type: REGISTER_FIELD,
     payload: {field, formId}
+  }
+};
+
+export const registerFields = ({fields, formId}: RegisterFieldsAction) => {
+  return {
+    type: REGISTER_FIELDS,
+    payload: {fields, formId}
   }
 };
 
@@ -58,20 +67,33 @@ export const registerForm = ({fields, formId}: RegisterFormAction) => {
           payload: {formId}
         }
       );
-      fields.map((field) => {
-        dispatch(registerField({field, formId}));
-      });
+      dispatch(registerFields({fields, formId}));
       return Promise.resolve();
     }
   }
 };
 
+
 export const setFormValues = ({formId, values}: SetFormValuesAction) => {
 
-  return {
-    type: SET_FORM_VALUES,
-    payload: {formId, values}
-  };
+  return (dispatch, getState) => {
+
+    if(is(Function, values)) {
+      const curr = selectAggregateValues(getState(), formId);
+
+      return dispatch({
+        type: SET_FORM_VALUES,
+        payload: {formId, values: values(curr)}
+      });
+
+    } else {
+      return dispatch({
+        type: SET_FORM_VALUES,
+        payload: {formId, values}
+      })
+    }
+
+  }
 
 };
 
@@ -83,10 +105,18 @@ export const setInitialFormValues = ({formId, values}: SetInitialFormValuesActio
       payload: {formId, values}
     });
 
-    dispatch({
-      type: SET_FORM_VALUES,
-      payload: {formId, values}
-    });
+
+    // fill values of form fields that are NIL
+    const merge = (curr) => {
+      return {
+        ...values,
+        ...reject(isNil, curr)
+      }
+    };
+
+    dispatch(setFormValues({formId,
+      values: merge
+    }));
   }
 };
 
@@ -229,6 +259,29 @@ export const formReducer = (state = {}, action) => {
 
       const fields = {...path([formId, 'fields'], state), [name]: defaultedField};
       return assocPath([formId, 'fields'], fields, state);
+    }
+
+    case REGISTER_FIELDS: {
+      const {formId, fields} = payload;
+
+      const defaulted = fields.reduce((acc, field) => {
+        const name = prop('name', field);
+        if(hasPath([formId, 'fields', name], state)) {
+          return acc;
+        }
+        return {
+          ...acc,
+          [name]: {
+            dirty: false,
+            touched: false,
+            valid: null,
+            ...field
+          }
+        };
+      }, {});
+
+      const merge = {...path([formId, 'fields'], state), ...defaulted};
+      return assocPath([formId, 'fields'], merge, state);
     }
 
     case RESET_FIELD: {
