@@ -50,6 +50,11 @@ export interface RegisterFieldAction {
   field: FormField;
 }
 
+export interface RemoveFieldAction {
+  formId: string;
+  name: string;
+}
+
 
 export interface RegisterFieldsAction {
   formId: string;

@@ -11,6 +11,7 @@ export const dissocPath = (...args) => R.dissocPath(...args);
 export const dissoc = (...args) => R.dissoc(...args);
 export const prop = (...args) => R.prop(...args);
 export const pick = (list: string[], from: any) => R.pick(list, from);
+export const omit = (list: string[], from: any) => R.omit(list, from);
 export const merge = (...args) => R.merge(...args);
 export const propOr = (...args) => R.propOr(...args);
 export const is = <T = any>(t: T, x: any): x is T => R.is(t, x,);

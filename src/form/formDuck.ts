@@ -1,6 +1,6 @@
 import {
   RegisterFieldAction, RegisterFieldsAction,
-  RegisterFormAction,
+  RegisterFormAction, RemoveFieldAction,
   ResetFieldAction,
   ResetFormAction,
   SetFormValuesAction,
@@ -8,7 +8,20 @@ import {
   SubmitFormAction,
   ValidateFieldAction
 } from "./types";
-import {assoc, assocPath, hasPath, is, isEmpty, isNil, keys, mergeDeepRight, path, prop, reject} from "../util/ram";
+import {
+  assoc,
+  assocPath,
+  hasPath,
+  is,
+  isEmpty,
+  isNil,
+  keys,
+  mergeDeepRight,
+  omit,
+  path,
+  prop,
+  reject
+} from "../util/ram";
 import {
   selectAggregateValues,
   selectField,
@@ -19,6 +32,7 @@ import {
 } from "./formSelectors";
 
 export const REGISTER_FORM = 'form/useForm/registerForm';
+export const REMOVE_FIELD = 'form/useForm/removeField';
 export const UNSET_FORM = 'form/useForm/unsetForm';
 export const SET_FORM_VALUES = 'form/useForm/setFormValues';
 export const SET_INITIAL_FORM_VALUES = 'form/useForm/setFormInitialValues';
@@ -34,6 +48,13 @@ export const registerField = ({field, formId}: RegisterFieldAction) => {
   return {
     type: REGISTER_FIELD,
     payload: {field, formId}
+  }
+};
+
+export const removeField = ({name, formId}: RemoveFieldAction) => {
+  return {
+    type: REMOVE_FIELD,
+    payload: {name, formId}
   }
 };
 
@@ -258,6 +279,15 @@ export const formReducer = (state = {}, action) => {
       };
 
       const fields = {...path([formId, 'fields'], state), [name]: defaultedField};
+      return assocPath([formId, 'fields'], fields, state);
+    }
+
+
+    case REMOVE_FIELD: {
+      const {formId, name} = payload;
+
+
+      const fields = omit(name, path([formId, 'fields'], state));
       return assocPath([formId, 'fields'], fields, state);
     }
 
