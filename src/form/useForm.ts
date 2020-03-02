@@ -1,6 +1,6 @@
 import {UseFormApi, UseFormProps} from "./types";
 import {useEffect} from "react";
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   registerField,
   registerFields,
@@ -11,15 +11,15 @@ import {
   submitForm
 } from "./formDuck";
 import {isEmpty, isNil} from "../util/ram";
+import {selectFormValid} from "./formSelectors";
 
 export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormProps): UseFormApi => {
-
-  if (isNil(fields) || isEmpty(fields)) {
-    console.warn('useForm: fields may not be null or empty');
+  if (isNil(formId) || isEmpty(formId)) {
+    console.warn('useForm: id may not be null or empty');
     return;
   }
 
-  const valid = true; // useSelector((state) => selectFormValid(state, formId));
+  const valid =  useSelector((state) => selectFormValid(state, formId));
   const dispatch = useDispatch();
 
   useEffect(() => {
