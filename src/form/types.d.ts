@@ -24,6 +24,7 @@ export interface UseFormApi {
   registerField: ({field}: {field: FormField}) => void;
   registerFields: ({fields}: {fields: FormField[]}) => void;
   submit: () => any;
+  selectedData?: any;
   setValues: (values: Record<string, any>) => any;
   reset: () => void;
   valid: boolean;
@@ -33,6 +34,7 @@ export interface UseFormProps {
   fields: FormField[];
   id: string;
   onSubmit: SubmitFunction;
+  selectData?: (state: Record<any, any>, formId: string) => any;
   initialValues?: Record<string, any>;
 }
 

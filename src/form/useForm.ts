@@ -13,13 +13,14 @@ import {
 import {isEmpty, isNil} from "../util/ram";
 import {selectFormValid} from "./formSelectors";
 
-export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormProps): UseFormApi => {
+export const useForm = ({fields, id: formId, onSubmit, initialValues, selectData = () => ({})}: UseFormProps): UseFormApi => {
   if (isNil(formId) || isEmpty(formId)) {
     console.warn('useForm: id may not be null or empty');
     return;
   }
 
-  const valid =  useSelector((state) => selectFormValid(state, formId));
+  const selectedData = useSelector((state) => selectData(state, formId));
+  const valid = useSelector((state) => selectFormValid(state, formId));
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export const useForm = ({fields, id: formId, onSubmit, initialValues}: UseFormPr
   return {
     registerField: regField,
     registerFields: regFields,
+    selectedData,
     submit,
     valid,
     setValues,

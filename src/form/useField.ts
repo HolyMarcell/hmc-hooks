@@ -2,7 +2,7 @@ import {changeFieldProp, resetField, validateField, removeField as removeFieldAc
 import {useDispatch, useSelector} from 'react-redux';
 import {selectField} from "./formSelectors";
 import {UseFieldApi, UseFieldProps} from "./types";
-import {isNil, prop} from "../util/ram";
+import {isNil, prop, equals} from "../util/ram";
 
 
 const useField = ({formId, name}: UseFieldProps): UseFieldApi => {
@@ -13,7 +13,7 @@ const useField = ({formId, name}: UseFieldProps): UseFieldApi => {
 
     dispatch(validateField({formId, name, value}));
 
-    const dirty = isNil(prop('initialValue', field)) ? true : value !== prop('initialValue', field);
+    const dirty = isNil(prop('initialValue', field)) ? true : !equals(value, prop('initialValue', field));
     dispatch(changeFieldProp({formId, name, prop: 'dirty', value: dirty}));
 
     if(prop('touched', field) !== true) {
