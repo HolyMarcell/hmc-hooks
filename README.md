@@ -6,6 +6,12 @@
 
 ### Changelog
 
+useForm:
+
+* field.dirty is now computed value (via the selector)
+* form.onSubmit signature changed from (values) => any; to (values, dirty) => any; which allows to 
+perform actions only on dirty form values.
+
 useRequest:
 
 * Added "useMultiRequest" hook, that will accept multiple templates as  `{name1: $template1, name2: $template2}`

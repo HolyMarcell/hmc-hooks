@@ -38,7 +38,7 @@ export const SomeComponent = () => {
     {name: 'email', type: 'text'}
   ]
   
-  const onSubmit = (values) => {console.log(values)}
+  const onSubmit = (values, dirty) => {console.log(values, dirty)}
 
 
   const {submit} = useForm({id: 'foo', fields, onSubmit});
