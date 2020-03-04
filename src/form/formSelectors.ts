@@ -1,5 +1,5 @@
 import {config} from "../config";
-import {equals, isNil, keys, path, prop, propOr} from "../util/ram";
+import {equals, isNil, keys, path, pathOr, prop, propOr} from "../util/ram";
 import {createSelectorCreator, defaultMemoize} from "reselect";
 import createCachedSelector from 're-reselect';
 
@@ -45,6 +45,21 @@ export const selectAggregateValues = createCachedSelector(
   }
 )(storeIdAsCacheKey);
 
+export const selectDirtyValues = createCachedSelector(
+  selectFields,
+  secondArg,
+  (fields, id) => {
+    return keys(fields).reduce((acc, curr) => {
+      const dirty = !equals(path([curr, 'value'], fields), path([curr, 'initialValue'], fields));
+
+      if(dirty) {
+        return {...acc, [curr]: path([curr, 'value'], fields)};
+      }
+      return acc;
+    }, {})
+  }
+)(storeIdAsCacheKey);
+
 export const selectFormValid = createCachedSelector(
   selectFields,
   secondArg,
@@ -60,5 +75,13 @@ export const selectField = createCachedSelector(
   selectFormState,
   secondArg,
   thirdArg,
-  (state, formId, name) =>  path([formId, 'fields', name], state)
+  (state, formId, name) => {
+    const dirty = !equals(path([formId, 'fields', name, 'value'], state),
+      path([formId, 'fields', name, 'value'], state));
+
+    return {
+      ...path([formId, 'fields', name], state),
+      dirty,
+    }
+  }
 )(storeIdAndFieldNameAsCacheKey);

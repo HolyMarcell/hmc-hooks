@@ -23,7 +23,7 @@ import {
   reject
 } from "../util/ram";
 import {
-  selectAggregateValues,
+  selectAggregateValues, selectDirtyValues,
   selectField,
   selectFieldNames,
   selectFields,
@@ -180,6 +180,7 @@ export const submitForm = ({formId, onSubmit}: SubmitFormAction) => {
     return Promise.all(validations).then(() => {
       const state = getState();
       const values = selectAggregateValues(state, formId);
+      const dirty = selectDirtyValues(state, formId);
       const valid = selectFormValid(state, formId);
       if(!valid) {
         return false;
@@ -189,7 +190,7 @@ export const submitForm = ({formId, onSubmit}: SubmitFormAction) => {
         payload: {formId}
       });
 
-      return onSubmit(values);
+      return onSubmit(values, dirty);
     });
   }
 };
@@ -240,7 +241,7 @@ export const formReducer = (state = {}, action) => {
         .filter((name) => hasPath([formId, 'fields', name], state));
 
       const mergeValues = names.reduce((acc, curr) => {
-        return {...acc, [curr]: {value: path([curr], values)}}
+        return {...acc, [curr]: { value: path([curr], values)}}
       }, {});
       if(isEmpty(mergeValues)) {
         return state;
@@ -272,7 +273,6 @@ export const formReducer = (state = {}, action) => {
       const name = prop('name', field);
 
       const defaultedField = {
-        dirty: false,
         touched: false,
         valid: null,
         ...field
@@ -287,7 +287,8 @@ export const formReducer = (state = {}, action) => {
       const {formId, name} = payload;
 
 
-      const fields = omit(name, path([formId, 'fields'], state));
+      const fields = omit([name], path([formId, 'fields'], state));
+      console.log([name], fields);
       return assocPath([formId, 'fields'], fields, state);
     }
 
@@ -302,7 +303,6 @@ export const formReducer = (state = {}, action) => {
         return {
           ...acc,
           [name]: {
-            dirty: false,
             touched: false,
             valid: null,
             ...field

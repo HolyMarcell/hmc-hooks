@@ -1,7 +1,7 @@
 // entities
 
 export type FieldType = 'string' | 'number' | string;
-export type SubmitFunction = (values: any) => any;
+export type SubmitFunction = (values: any, dirty: any) => any;
 export type ValidatorFn = (value: any) => boolean;
 export type AsyncValidatorFn = (value: any) => Promise<boolean>;
 
@@ -100,6 +100,7 @@ export interface SetInitialFormValuesAction {
 
 export interface UseFieldApi {
   onChange: any;
+  removeField: () => any;
   value: any;
   reset: () => any;
   name: any;

@@ -1,6 +1,6 @@
 import {useForm} from "../src";
 import {Provider} from 'react-redux';
-import {renderHook} from "@testing-library/react-hooks";
+import {act, renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
 import {mockId} from "./util/mocks";
 import {config} from "../src/config";
@@ -54,9 +54,11 @@ describe('useForm hook register', () => {
     const form = runHook({fields: mockFormFields, id: mockId, onSubmit: mockSubmit});
 
     expect(form.submit).toBeDefined();
+    await act(async () => {
 
-    const vals = await form.submit();
-    expect(vals).toEqual({email: undefined, 'wacken.hacken': undefined});
+      const vals = await form.submit();
+      expect(vals).toEqual({email: undefined, 'wacken.hacken': undefined});
+    })
 
   });
 

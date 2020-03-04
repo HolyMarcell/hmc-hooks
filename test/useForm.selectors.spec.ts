@@ -62,8 +62,10 @@ describe('useForm hook selectors', () => {
   });
 
   it('selects the field', () => {
-    const res = selectField(mockState, 'form1', 'email');
-    const res2 = selectField(mockState, 'form1', 'wacken.hacken');
+    const {dirty, ...res} = selectField(mockState, 'form1', 'email');
+    const {dirty: dirty2, ...res2}= selectField(mockState, 'form1', 'wacken.hacken');
+
+    // dirty added as computed property in the selector
 
     expect(res).toEqual(mockState[config.formKey].form1.fields.email);
     expect(res2).toEqual(mockState[config.formKey].form1.fields['wacken.hacken']);
