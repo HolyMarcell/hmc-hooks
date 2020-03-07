@@ -288,7 +288,6 @@ export const formReducer = (state = {}, action) => {
 
 
       const fields = omit([name], path([formId, 'fields'], state));
-      console.log([name], fields);
       return assocPath([formId, 'fields'], fields, state);
     }
 
