@@ -109,7 +109,7 @@ export const selectMultiData = createCachedSelector(
   (state) => state
 )
 // Re-Reselect offers to override the selector creator, and we chose Deep-Equality to
-  //-- reduce unnecessary re-renders
+// -- reduce unnecessary re-renders
 ({keySelector: storeIdsAsCacheKey, selectorCreator: createDeepEqualSelector});
 
 export const selectAction = createCachedSelector(

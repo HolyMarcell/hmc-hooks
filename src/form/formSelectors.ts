@@ -71,7 +71,7 @@ export const selectFormValid = createCachedSelector(
   }
 )(storeIdAsCacheKey);
 
-export const selectField = createCachedSelector(
+export const selectFieldAndDirty = createCachedSelector(
   selectFormState,
   secondArg,
   thirdArg,
@@ -85,3 +85,12 @@ export const selectField = createCachedSelector(
     }
   }
 )(storeIdAndFieldNameAsCacheKey);
+
+export const selectField = createCachedSelector(
+  selectFieldAndDirty,
+  secondArg,
+  thirdArg,
+  (field, formId, name) => {
+    return field;
+  }
+)({keySelector: storeIdAndFieldNameAsCacheKey, selectorCreator: createDeepEqualSelector});
