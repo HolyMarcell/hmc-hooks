@@ -1,11 +1,11 @@
-import {changeFieldProp, resetField, validateField, removeField as removeFieldAction} from "./formDuck";
+import {changeFieldProp, removeField as removeFieldAction, resetField, validateField} from "./formDuck";
 import {useDispatch, useSelector} from 'react-redux';
 import {selectField} from "./formSelectors";
 import {UseFieldApi, UseFieldProps} from "./types";
-import {isNil, prop, equals} from "../util/ram";
+import {prop} from "../util/ram";
 
 
-const useField = ({formId, name}: UseFieldProps): UseFieldApi => {
+export const useField = ({formId, name}: UseFieldProps): UseFieldApi => {
   const dispatch = useDispatch();
   const field = useSelector((state) => selectField(state, formId, name));
 
@@ -37,4 +37,3 @@ const useField = ({formId, name}: UseFieldProps): UseFieldApi => {
   };
 };
 
-export default useField;

@@ -1,8 +1,7 @@
 import {Filter, Sort, UseRequestApi, UseRequestProps} from "./types";
-import rid from "../util/rid";
 import {contains, isEmpty, isNil, last, prop} from "../util/ram";
 import {useRef} from "react";
-import {useDispatch, useSelector, shallowEqual} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   changeRequest,
   registerRequest,
@@ -14,8 +13,9 @@ import {
   setSort as setSortAction
 } from "./requestDuck";
 import {selectData} from "./useDataSelectors";
+import {rid} from "../util/rid";
 
-const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
+export const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
   if (isNil(template) || isEmpty(template)) {
     console.warn('useRequest: template may not be null or empty');
     return;
@@ -198,4 +198,3 @@ const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
 };
 
 
-export default useRequest;

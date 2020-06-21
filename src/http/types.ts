@@ -115,6 +115,7 @@ export interface UseRequestApi extends RequestDataSelection {
 }
 
 export interface UseMultiRequestApi {
+  // @ts-ignore
   goAll: GoFunc;
   [selector: string]: UseRequestApi;
 }

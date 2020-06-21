@@ -1,6 +1,6 @@
 import {PaginationMapper} from "../http/types";
 
-const defaultPaginationMapper: PaginationMapper = {
+export const defaultPaginationMapper: PaginationMapper = {
   fromData: {
     elements: 'elements',
     totalElements: 'totalElements',
@@ -21,4 +21,3 @@ const defaultPaginationMapper: PaginationMapper = {
   }
 };
 
-export default defaultPaginationMapper;

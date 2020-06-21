@@ -63,4 +63,3 @@ export const useForm = ({fields, id: formId, onSubmit, initialValues, selectData
   }
 };
 
-export default useForm;

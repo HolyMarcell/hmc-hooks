@@ -15,7 +15,7 @@ import {
 import {selectMultiData} from "./useDataSelectors";
 
 
-const useMultiRequest = (multiProps: UseMultiRequestProps): UseMultiRequestApi => {
+export const useMultiRequest = (multiProps: UseMultiRequestProps): UseMultiRequestApi => {
   const selectors = keys(multiProps);
 
   for (const selector of selectors) {
@@ -225,4 +225,3 @@ const useMultiRequest = (multiProps: UseMultiRequestProps): UseMultiRequestApi =
 };
 
 
-export default useMultiRequest;

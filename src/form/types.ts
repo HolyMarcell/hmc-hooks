@@ -5,7 +5,7 @@ export type SubmitFunction = (values: any, dirty: any) => any;
 export type ValidatorFn = (value: any) => boolean;
 export type AsyncValidatorFn = (value: any) => Promise<boolean>;
 
-export interface FormField {
+export interface FormField  {
   name: string;
   type: FieldType;
   dirty?: boolean;
@@ -14,8 +14,6 @@ export interface FormField {
   initialValue?: any;
   validator?: ValidatorFn;
   asyncValidator?: AsyncValidatorFn;
-  [_]: any;
-
 }
 
 

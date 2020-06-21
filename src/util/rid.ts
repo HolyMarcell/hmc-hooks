@@ -1,4 +1,3 @@
-import {uuid} from "uuidv4";
 
-const rid = () => uuid();
-export default rid;
+export const rid = () => Math.random().toString(36).substr(2, 9);
+

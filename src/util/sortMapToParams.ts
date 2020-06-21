@@ -1,7 +1,7 @@
 import {prop} from "./ram";
 
 
-const sortMapToParams = (sortMapper, values) => {
+export const sortMapToParams = (sortMapper, values) => {
   const {strategy, asc, desc, field, direction} = sortMapper;
 
   if(strategy === 'two-field') {
@@ -15,5 +15,3 @@ const sortMapToParams = (sortMapper, values) => {
   }
 
 };
-
-export default sortMapToParams;

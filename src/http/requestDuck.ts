@@ -11,7 +11,6 @@ import {
   SortMapper
 } from "./types";
 import {assoc, assocPath, isEmpty, isNil, keys, path, pathOr, prop, reject} from "../util/ram";
-import parseUrlSegments from "../util/parseUrlSegments";
 import {
   selectAction,
   selectData,
@@ -21,10 +20,11 @@ import {
   selectRequest,
   selectSortMapper
 } from "./useDataSelectors";
-import defaultPaginationMapper from "../util/defaultPaginationMapper";
-import defaultSortMapper from "../util/defaultSortMapper";
-import sortMapToParams from "../util/sortMapToParams";
 import {objectToFormData} from "object-to-formdata";
+import {sortMapToParams} from "../util/sortMapToParams";
+import {parseUrlSegments} from "../util/parseUrlSegments";
+import {defaultSortMapper} from "../util/defaultSortMapper";
+import {defaultPaginationMapper} from "../util/defaultPaginationMapper";
 
 export const REGISTER_REQUEST = 'http/useRequest/registerRequest';
 export const CHANGE_REQUEST = 'http/useRequest/changeRequest';

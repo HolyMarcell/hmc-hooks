@@ -5,9 +5,9 @@ import mockStore from "./util/mockStore";
 import {config} from "../src/config";
 import {mockId, mockSortBy, mockTemplate} from "./util/mocks";
 import {RESET_SORT, SET_SORT} from "../src/http/requestDuck";
-import sortMapToParams from "../src/util/sortMapToParams";
-import defaultSortMapper from "../src/util/defaultSortMapper";
 import {SortMapper} from "../src/http/types";
+import {sortMapToParams} from "../src/util/sortMapToParams";
+import {defaultSortMapper} from "../src/util/defaultSortMapper";
 
 
 describe('useRequest hook sort', () => {
