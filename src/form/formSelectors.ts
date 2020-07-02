@@ -1,5 +1,5 @@
 import {config} from "../config";
-import {equals, isNil, keys, path, prop, propOr} from "../util/ram";
+import {equals, isNil, keys, path, pathOr, prop, propOr} from "../util/ram";
 import {createSelectorCreator, defaultMemoize} from "reselect";
 import createCachedSelector from 're-reselect';
 
@@ -65,8 +65,8 @@ export const selectFormValid = createCachedSelector(
   secondArg,
   (fields, id) => {
     return keys(fields).reduce((acc, field) => {
-      const valid = prop('valid', fields[field]);
-      return acc && isNil(valid) ? true : valid;
+      const valid = pathOr(true, [field, 'valid'], fields);
+      return acc && valid;
     }, true);
   }
 )(storeIdAsCacheKey);
