@@ -14,6 +14,8 @@ export interface FormField  {
   initialValue?: any;
   validator?: ValidatorFn;
   asyncValidator?: AsyncValidatorFn;
+  options?: any[];
+
 }
 
 
@@ -106,6 +108,8 @@ export interface UseFieldApi {
   valid: boolean;
   touched: boolean;
   dirty: boolean;
+  options?: any[];
+  label?: string;
 }
 
 export interface UseFieldProps {
