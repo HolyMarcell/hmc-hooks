@@ -57,13 +57,16 @@ export const useMultiRequest = (multiProps: UseMultiRequestProps): UseMultiReque
   const ids = selectors.map((selector) => path([selector, 'id'], multiProps));
   const multiData = useSelector((state) => selectMultiData(state, ids));
 
-
-  const goAll = (force = false) => {
-
-    // -- run only once
+  // Try to return quickly if rerendering occurs
+  const returnDefault = (force) => {
     if (!isFirst.current && !force) {
       return Promise.resolve();
     }
+  }
+  const goAll = (force = false) => {
+
+    // -- run only once
+    returnDefault(force);
     isFirst.current = false;
     const allRequests = selectors.map((selector) => {
 
