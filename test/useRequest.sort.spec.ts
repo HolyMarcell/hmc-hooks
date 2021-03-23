@@ -8,6 +8,7 @@ import {RESET_SORT, SET_SORT} from "../src/http/requestDuck";
 import {SortMapper} from "../src/http/types";
 import {sortMapToParams} from "../src/util/sortMapToParams";
 import {defaultSortMapper} from "../src/util/defaultSortMapper";
+import * as React from "react";
 
 
 describe('useRequest hook sort', () => {
@@ -17,7 +18,7 @@ describe('useRequest hook sort', () => {
   });
 
   const runHook = (props) => {
-    const wrapper = ({children}) => Provider({store: mockStore, children});
+    const wrapper = ({children}) =>  React.createElement(Provider, {store: mockStore}, children);
     return renderHook(() => useRequest(props), {wrapper});
   };
 

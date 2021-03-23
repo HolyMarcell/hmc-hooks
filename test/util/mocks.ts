@@ -77,3 +77,8 @@ export const mockFilterBy: Filter = {
   value: 'zaphod',
   field: 'zarquon'
 };
+
+export const mockFilterBy2: Filter = {
+  value: 'beeblebrox',
+  field: 'beebleborx'
+};

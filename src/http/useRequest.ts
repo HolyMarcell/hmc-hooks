@@ -1,5 +1,5 @@
 import {Filter, Sort, UseRequestApi, UseRequestProps} from "./types";
-import {contains, isEmpty, isNil, last, prop} from "../util/ram";
+import {contains, is, isEmpty, isNil, last, prop} from "../util/ram";
 import {useRef} from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -100,9 +100,16 @@ export const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     return {go: reload};
   };
 
-  const setFilter = (filter: Filter) => {
+  const setFilter = (filter: Filter|Filter[]) => {
     dispatch(setPage({id: requestId.current, mod: () => 0}));
-    dispatch(setFilterAction({id: requestId.current, filter}));
+    if(is(Array, filter)) {
+      (filter as Filter[]).map((f) => {
+        dispatch(setFilterAction({id: requestId.current, filter: f}));
+      });
+
+    } else {
+      dispatch(setFilterAction({id: requestId.current, filter: (filter as Filter)}));
+    }
     if (contains('filter', reloadOn)) {
       reload()
     }

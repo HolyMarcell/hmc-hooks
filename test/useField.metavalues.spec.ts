@@ -20,7 +20,7 @@ describe('useField hook metavalues', () => {
   });
 
   const runFormHook = (props) => {
-    const wrapper = ({children}) => Provider({store: mockStore, children});
+    const wrapper = ({children}) =>  React.createElement(Provider, {store: mockStore}, children);
     const {result} = renderHook(() => useForm(props), {wrapper});
     return result.current;
   };

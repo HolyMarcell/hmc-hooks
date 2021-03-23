@@ -89,13 +89,13 @@ export interface RequestDataSelection {
   sort?: Record<string, any>;
 }
 
-export interface RequestApiSortField extends Sort {
+export interface RequestApiSortField {
   setSort: (sort: Sort) => ChainedSetter;
   resetSort: () => ChainedSetter;
 }
 
 export interface RequestApiFilterField {
-  setFilter: (filter: Filter) => ChainedSetter;
+  setFilter: (filter: Filter|Filter[]) => ChainedSetter;
   resetFilters: () => ChainedSetter;
   filters?: Record<string, any>;
 }

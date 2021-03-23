@@ -11,6 +11,7 @@ import {
 } from "../src/http/requestDuck";
 import {config} from "../src/config";
 import {mockHttpParam, mockId, mockResponse, mockTemplate, mockTemplateFails} from "./util/mocks";
+import * as React from "react";
 
 
 describe('useRequest hook behavior', () => {
@@ -20,7 +21,7 @@ describe('useRequest hook behavior', () => {
   });
 
   const runHook = (props) => {
-    const wrapper = ({children}) => Provider({store: mockStore, children});
+    const wrapper = ({children}) =>  React.createElement(Provider, {store: mockStore}, children);
     const {result} = renderHook(() => useRequest(props), {wrapper});
     return result.current;
   };

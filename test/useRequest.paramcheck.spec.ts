@@ -3,6 +3,7 @@ import {Provider} from 'react-redux';
 import {renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
 import {mockId, mockTemplate} from "./util/mocks";
+import * as React from "react";
 
 
 
@@ -14,7 +15,7 @@ describe('useRequest hook parameter check', () => {
   });
 
   const runHook = (props) => {
-    const wrapper = ({children}) => Provider({store: mockStore, children});
+    const wrapper = ({children}) =>  React.createElement(Provider, {store: mockStore}, children);
     const {result} = renderHook(() => useRequest(props), {wrapper});
     return result.current;
   };

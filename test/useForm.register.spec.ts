@@ -5,6 +5,7 @@ import mockStore from "./util/mockStore";
 import {mockId} from "./util/mocks";
 import {config} from "../src/config";
 import {REGISTER_FORM} from "../src/form/formDuck";
+import * as React from "react";
 
 
 const mockFormFields = [
@@ -21,7 +22,7 @@ describe('useForm hook register', () => {
   });
 
   const runHook = (props) => {
-    const wrapper = ({children}) => Provider({store: mockStore, children});
+    const wrapper = ({children}) =>  React.createElement(Provider, {store: mockStore}, children);
     const {result} = renderHook(() => useForm(props), {wrapper});
     return result.current;
   };
