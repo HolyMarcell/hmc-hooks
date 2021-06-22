@@ -1,5 +1,5 @@
 import {config} from "../config";
-import {equals, path, pathOr, prop} from "../util/ram";
+import {equals, path, pathOr, prop} from "ramda";
 import {createSelectorCreator, defaultMemoize} from "reselect";
 import {PaginationMapper, RequestDataSelection} from "./types";
 import createCachedSelector from 're-reselect';

@@ -9,6 +9,7 @@ export interface PaginationMapperElements {
   nestedSplitChar: string;
 }
 
+
 export interface PaginationMapper {
   fromData: PaginationMapperElements;
   toParam: PaginationMapperElements;
@@ -95,7 +96,7 @@ export interface RequestApiSortField extends Partial<Sort> {
 }
 
 export interface RequestApiFilterField {
-  setFilter: (filter: Filter) => ChainedSetter;
+  setFilter: (filter: Filter | Filter[]) => ChainedSetter;
   resetFilters: () => ChainedSetter;
   filters?: Record<string, any>;
 }
@@ -115,7 +116,6 @@ export interface UseRequestApi extends RequestDataSelection {
 }
 
 export interface UseMultiRequestApi {
-  // @ts-ignore
   goAll: GoFunc;
   [selector: string]: UseRequestApi;
 }
@@ -148,7 +148,7 @@ export interface Filter {
 }
 
 export interface SetFilterAction {
-  filter: Filter;
+  filter: Filter | Filter[];
   id: RequestId;
 }
 

@@ -10,7 +10,7 @@ import {
   setInitialFormValues,
   submitForm
 } from "./formDuck";
-import {isEmpty, isNil} from "../util/ram";
+import {isEmpty, isNil} from "ramda";
 import {selectFormValid} from "./formSelectors";
 
 export const useForm = ({fields, id: formId, onSubmit, initialValues, selectData = () => ({})}: UseFormProps): UseFormApi => {

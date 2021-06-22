@@ -6,7 +6,7 @@ import {
   selectForm,
   selectFormState
 } from "../src/form/formSelectors";
-import {keys, path, prop} from "../src/util/ram";
+import {keys, path, prop} from "ramda";
 
 
 const mockState = {

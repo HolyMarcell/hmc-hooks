@@ -6,6 +6,7 @@ import {config} from "../src/config";
 import {mockFilterBy, mockId, mockTemplate} from "./util/mocks";
 import {SET_FILTER} from "../src/http/requestDuck";
 import React from "react";
+import {Filter} from "../src/http/types";
 
 
 describe('useRequest hook filter', () => {
@@ -95,8 +96,32 @@ describe('useRequest hook filter', () => {
     await act(async () => {
       await result.current.filter.setFilter(mockFilterBy).go();
     });
+  });
 
-  })
+  it('accepts multiple filters in a request', async () => {
+    const {result} = runHook({template: mockTemplate});
+
+    const multiFilter: Filter[] = [
+      {
+        value: 'zaphod',
+        field: 'zarquon'
+      },
+      {
+        value: 'acdc',
+        field: 'rocknroll'
+      }
+    ]
+
+    await act(async () => {
+      await result.current.filter.setFilter(multiFilter).go();
+    });
+
+    const filterShape = {
+      setFilter: expect.any(Function),
+      resetFilters: expect.any(Function),
+      // filters: expect.any
+    };
+  });
 
 });
 

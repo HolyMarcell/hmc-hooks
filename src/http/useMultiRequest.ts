@@ -1,5 +1,5 @@
 import {Filter, Sort, UseMultiRequestApi, UseMultiRequestProps} from "./types";
-import {isEmpty, isNil, keys, last, path, prop, propOr} from "../util/ram";
+import {isEmpty, isNil, keys, last, path, pathOr, prop, propOr} from "ramda";
 import {useRef} from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -67,7 +67,7 @@ export const useMultiRequest = (multiProps: UseMultiRequestProps): UseMultiReque
     isFirst.current = false;
     const allRequests = selectors.map((selector) => {
 
-      const id = path([selector, 'id'], multiProps);
+      const id = pathOr('', [selector, 'id'], multiProps);
 
       const reqProm = dispatch(sendRequest({id})) as unknown as Promise<any>;
       return reqProm.then((resultAction) => {
@@ -180,9 +180,9 @@ export const useMultiRequest = (multiProps: UseMultiRequestProps): UseMultiReque
 
 
   const res = selectors.reduce((acc, selector) => {
-    const id = path([selector, 'id'], multiProps);
+    const id = path([selector, 'id'], multiProps) as string;
     const {pagination, filters, sort, ...requestData} =
-      propOr({pagination: {}, filters: {}, sort: {}}, id, multiData);
+      propOr({pagination: {}, filters: {}, sort: {}}, id, multiData) as any;
 
     return {
       ...acc,
@@ -221,7 +221,7 @@ export const useMultiRequest = (multiProps: UseMultiRequestProps): UseMultiReque
   return {
     goAll,
     ...res
-  };
+  } as any;
 };
 
 

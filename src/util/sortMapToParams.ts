@@ -1,4 +1,4 @@
-import {prop} from "./ram";
+import {prop} from "ramda";
 
 
 export const sortMapToParams = (sortMapper, values) => {

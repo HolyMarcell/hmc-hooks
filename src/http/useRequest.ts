@@ -1,5 +1,5 @@
 import {Filter, Sort, UseRequestApi, UseRequestProps} from "./types";
-import {contains, isEmpty, isNil, last, prop} from "../util/ram";
+import {contains, isEmpty, isNil, last, prop} from "ramda";
 import {useRef} from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -53,7 +53,7 @@ export const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     isFirst.current = false;
 
     const reqProm = dispatch(sendRequest({id: requestId.current})) as unknown as Promise<any>;
-    return reqProm.then((resultAction) => {
+    return reqProm.then((resultAction: { type: string, [some: string]: any }) => {
       const type = last(prop('type', resultAction).split('_'));
       if (type === 'FAIL') {
         return Promise.reject(prop('error', resultAction))
@@ -100,7 +100,7 @@ export const useRequest = ({id, template}: UseRequestProps): UseRequestApi => {
     return {go: reload};
   };
 
-  const setFilter = (filter: Filter) => {
+  const setFilter = (filter: Filter | Filter[]) => {
     dispatch(setPage({id: requestId.current, mod: () => 0}));
     dispatch(setFilterAction({id: requestId.current, filter}));
     if (contains('filter', reloadOn)) {

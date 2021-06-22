@@ -1,5 +1,5 @@
 import {config} from "../config";
-import {equals, isNil, keys, path, pathOr, prop, propOr} from "../util/ram";
+import {equals, isNil, keys, path, pathOr, prop, propOr} from "ramda";
 import {createSelectorCreator, defaultMemoize} from "reselect";
 import createCachedSelector from 're-reselect';
 
@@ -80,7 +80,7 @@ export const selectFieldAndDirty = createCachedSelector(
       path([formId, 'fields', name, 'value'], state));
 
     return {
-      ...path([formId, 'fields', name], state),
+      ...pathOr({}, [formId, 'fields', name], state),
       dirty,
     }
   }

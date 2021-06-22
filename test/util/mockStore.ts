@@ -1,6 +1,6 @@
 import {applyMiddleware, combineReducers, createStore} from "redux";
 import thunk from "redux-thunk";
-import {hasPath} from "../../src/util/ram";
+import {hasPath} from "ramda";
 import {requestReducer, SEND_REQUEST_FAIL, SEND_REQUEST_SUCCESS} from "../../src/http/requestDuck";
 import {config} from "../../src/config";
 import {

@@ -1,4 +1,4 @@
-import {isEmpty, isNil} from "../util/ram";
+import {isEmpty, isNil} from "ramda";
 
 
 export const validators = {

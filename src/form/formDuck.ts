@@ -1,4 +1,5 @@
 import {
+  FormField,
   RegisterFieldAction, RegisterFieldsAction,
   RegisterFormAction, RemoveFieldAction,
   ResetFieldAction,
@@ -18,10 +19,10 @@ import {
   keys,
   mergeDeepRight,
   omit,
-  path,
+  path, pathOr,
   prop,
   reject
-} from "../util/ram";
+} from "ramda";
 import {
   selectAggregateValues, selectDirtyValues,
   selectField,
@@ -104,7 +105,7 @@ export const setFormValues = ({formId, values}: SetFormValuesAction) => {
 
       return dispatch({
         type: SET_FORM_VALUES,
-        payload: {formId, values: values(curr)}
+        payload: {formId, values: (values as any)(curr)}
       });
 
     } else {
@@ -144,7 +145,7 @@ export const setInitialFormValues = ({formId, values}: SetInitialFormValuesActio
 export const validateField = ({formId, name, value}: ValidateFieldAction) => {
   return (dispatch, getState) => {
     const state = getState();
-    const {validator, asyncValidator, valid} = selectField(state, formId, name);
+    const {validator, asyncValidator, valid} = selectField(state, formId, name) as FormField;
     if (!isNil(validator)) {
       const stillValid = validator(value);
       if(stillValid !== valid) {
@@ -240,7 +241,7 @@ export const formReducer = (state = {}, action) => {
       const names = keys(values)
         .filter((name) => hasPath([formId, 'fields', name], state));
 
-      const mergeValues = names.reduce((acc, curr) => {
+      const mergeValues = names.reduce((acc, curr: any) => {
         return {...acc, [curr]: { value: path([curr], values)}}
       }, {});
       if(isEmpty(mergeValues)) {
@@ -255,7 +256,7 @@ export const formReducer = (state = {}, action) => {
       const names = keys(values)
         .filter((name) => hasPath([formId, 'fields', name], state));
 
-      const mergeValues = names.reduce((acc, curr) => {
+      const mergeValues = names.reduce((acc, curr: any) => {
         return {...acc, [curr]: {initialValue: path([curr], values)}}
       }, {});
 
@@ -278,7 +279,7 @@ export const formReducer = (state = {}, action) => {
         ...field
       };
 
-      const fields = {...path([formId, 'fields'], state), [name]: defaultedField};
+      const fields = {...pathOr({}, [formId, 'fields'], state), [name]: defaultedField};
       return assocPath([formId, 'fields'], fields, state);
     }
 
@@ -309,7 +310,7 @@ export const formReducer = (state = {}, action) => {
         };
       }, {});
 
-      const merge = {...path([formId, 'fields'], state), ...defaulted};
+      const merge = {...pathOr({}, [formId, 'fields'], state), ...defaulted};
       return assocPath([formId, 'fields'], merge, state);
     }
 

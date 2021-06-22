@@ -1,5 +1,5 @@
 import {
-  ChangeRequestAction,
+  ChangeRequestAction, Filter,
   PaginationMapper,
   RegisterRequestAction,
   ResetFilterAction,
@@ -10,7 +10,7 @@ import {
   SetSortAction,
   SortMapper
 } from "./types";
-import {assoc, assocPath, isEmpty, isNil, keys, path, pathOr, prop, reject} from "../util/ram";
+import {assoc, assocPath, isEmpty, isNil, keys, path, pathOr, prop, reject, is} from 'ramda';
 import {
   selectAction,
   selectData,
@@ -60,12 +60,20 @@ export const changeRequest = ({id, type, value}: ChangeRequestAction) => {
 
 export const setFilter = ({id, filter}: SetFilterAction) => {
   return (dispatch) => {
-    const {field, value} = filter;
-    dispatch(changeRequest({id, type: 'params', value: {[field]: value}}));
-    return dispatch({
-      type: SET_FILTER,
-      payload: {id, filter}
+
+    const filters: Filter[] = is(Array, filter) ? filter : [filter] as any;
+
+    const dispatchers = filters.map((filter) => {
+      const {field, value} = filter;
+      dispatch(changeRequest({id, type: 'params', value: {[field]: value}}));
+      return dispatch({
+        type: SET_FILTER,
+        payload: {id, filter}
+      });
     });
+
+    return Promise.all(dispatchers);
+
   }
 };
 
@@ -87,7 +95,7 @@ export const resetFilter = ({id}: ResetFilterAction) => {
 export const setSort = ({id, sort}: SetSortAction) => {
   return (dispatch, getState) => {
     const state = getState();
-    const sortMapper: SortMapper = selectSortMapper(state, id);
+    const sortMapper: SortMapper = selectSortMapper(state, id) as SortMapper;
 
     const params = sortMapToParams(sortMapper, sort);
 
@@ -102,7 +110,7 @@ export const setSort = ({id, sort}: SetSortAction) => {
 export const resetSort = ({id}: ResetSortAction) => {
   return (dispatch, getState) => {
     const state = getState();
-    const sortMapper: SortMapper = selectSortMapper(state, id);
+    const sortMapper: SortMapper = selectSortMapper(state, id) as SortMapper;
 
     const params = {[sortMapper.field]: null, [sortMapper.direction]: null};
 
@@ -121,7 +129,7 @@ export const setPage = ({id, mod}: SetPageAction) => {
     if(!paginated) {
       return;
     }
-    const {toParam: mapper}: PaginationMapper = selectPaginationMapper(state, id);
+    const {toParam: mapper}: PaginationMapper = selectPaginationMapper(state, id) as PaginationMapper;
     const pageProp = prop('page', mapper);
     const {pagination} = selectData(state, id);
     const {page} = pagination;
@@ -134,7 +142,7 @@ export const sendRequest = ({id}: SendRequestAction) => {
   return (dispatch, getState) => {
 
     const state = getState();
-    const {segments, url, data, file, ...action} = selectAction(state, id);
+    const {segments, url, data, file, ...action} = selectAction(state, id) as any;
     const resolvedUrl = parseUrlSegments(url, segments);
 
     // -- Hacky way to convert JSON to multipart-formatted data if files are present
@@ -173,8 +181,14 @@ export const sendRequest = ({id}: SendRequestAction) => {
   }
 };
 
+export interface RequestReducerAction {
+  type: string;
+  payload?: any;
+  meta?: any;
+  error?: any;
+}
 
-export const requestReducer = (state = {}, action) => {
+export const requestReducer = (state = {}, action: RequestReducerAction) => {
 
   const {type, payload, meta, error} = action;
 
@@ -207,7 +221,7 @@ export const requestReducer = (state = {}, action) => {
     }
 
     case CHANGE_REQUEST: {
-      const {id, type, value} = payload;
+      const {id, type, value}: {id: string, type: any, value: any} = payload;
 
       const oldVals = pathOr({}, [id, 'action', type], state);
       const newVals = reject(isNil, {...oldVals, ...value});
@@ -221,7 +235,7 @@ export const requestReducer = (state = {}, action) => {
     }
 
     case SEND_REQUEST_FAIL: {
-      const id = path(['previousAction', 'payload', 'id'], meta);
+      const id = path(['previousAction', 'payload', 'id'], meta) as any;
       const prev = prop(id, state);
       const merger = {
         ...prev,
@@ -234,7 +248,7 @@ export const requestReducer = (state = {}, action) => {
     }
 
     case SEND_REQUEST_SUCCESS: {
-      const id = path(['previousAction', 'payload', 'id'], meta);
+      const id = path(['previousAction', 'payload', 'id'], meta)  as any;
       const prev = prop(id, state);
       const merger = {
         ...prev,

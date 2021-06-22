@@ -2,12 +2,12 @@ import {changeFieldProp, removeField as removeFieldAction, resetField, validateF
 import {useDispatch, useSelector} from 'react-redux';
 import {selectField} from "./formSelectors";
 import {UseFieldApi, UseFieldProps} from "./types";
-import {prop} from "../util/ram";
+import {prop} from "ramda";
 
 
 export const useField = ({formId, name}: UseFieldProps): UseFieldApi => {
   const dispatch = useDispatch();
-  const field = useSelector((state) => selectField(state, formId, name));
+  const field: any = useSelector((state) => selectField(state, formId, name));
 
   const onChange = (value) => {
 
