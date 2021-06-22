@@ -5,6 +5,7 @@ import mockStore from "./util/mockStore";
 import {config} from "../src/config";
 import {mockFilterBy, mockId, mockTemplate} from "./util/mocks";
 import {SET_FILTER} from "../src/http/requestDuck";
+import React from "react";
 
 
 describe('useRequest hook filter', () => {
@@ -14,8 +15,8 @@ describe('useRequest hook filter', () => {
   });
 
   const runHook = (props) => {
-    const wrapper = ({children}) => Provider({store: mockStore, children});
-    return renderHook(() => useRequest(props), {wrapper});
+    const Wrapper = ({children}) => (<Provider store={mockStore}>{children})</Provider>);
+    return renderHook(() => useRequest(props), {wrapper: Wrapper});
   };
 
   const getActions = (type) => {

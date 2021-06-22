@@ -20,7 +20,7 @@ import {
   selectRequest,
   selectSortMapper
 } from "./useDataSelectors";
-import {objectToFormData} from "object-to-formdata";
+import {serialize} from "object-to-formdata";
 import {sortMapToParams} from "../util/sortMapToParams";
 import {parseUrlSegments} from "../util/parseUrlSegments";
 import {defaultSortMapper} from "../util/defaultSortMapper";
@@ -144,7 +144,7 @@ export const sendRequest = ({id}: SendRequestAction) => {
     if(!isNil(file) && !isEmpty(file)) {
       hasFile = true;
 
-      fd = objectToFormData(data);
+      fd = serialize(data);
 
       // -- Important: If you want to send nested Objects to a spring backend
       // -- alongside your File, you need to JSON.stringify the object and send

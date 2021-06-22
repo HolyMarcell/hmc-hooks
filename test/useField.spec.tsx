@@ -3,7 +3,6 @@ import {Provider} from 'react-redux';
 import {act, renderHook} from "@testing-library/react-hooks";
 import mockStore from "./util/mockStore";
 import {mockId} from "./util/mocks";
-import objectContaining = jasmine.objectContaining;
 import * as React from "react";
 import {CHANGE_FIELD_PROP} from "../src/form/formDuck";
 
@@ -22,8 +21,8 @@ describe('useField hook', () => {
   });
 
   const runFormHook = (props) => {
-    const wrapper = ({children}) => Provider({store: mockStore, children});
-    const {result} = renderHook(() => useForm(props), {wrapper});
+    const Wrapper = ({children}) => (<Provider store={mockStore}>{children})</Provider>);
+    const {result} = renderHook(() => useForm(props), {wrapper: Wrapper});
     return result.current;
   };
 
@@ -53,12 +52,12 @@ describe('useField hook', () => {
       dirty: expect.any(Boolean),
     };
 
-    expect(field).toEqual(objectContaining(fieldShape));
+    expect(field).toEqual(expect.objectContaining(fieldShape));
     expect(field.formId).toEqual(mockId);
     expect(field.name).toEqual('email');
 
 
-    expect(field2).toEqual(objectContaining(fieldShape));
+    expect(field2).toEqual(expect.objectContaining(fieldShape));
     expect(field2.formId).toEqual(mockId);
     expect(field2.name).toEqual('wacken.hacken');
 

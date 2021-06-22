@@ -10,6 +10,7 @@ import {
   mockTemplate,
   mockTemplateCustomPagination
 } from "./util/mocks";
+import React from "react";
 
 
 describe('useRequest hook paginations', () => {
@@ -19,8 +20,8 @@ describe('useRequest hook paginations', () => {
   });
 
   const runHook = (props) => {
-    const wrapper = ({children}) => Provider({store: mockStore, children});
-    return renderHook(() => useRequest(props), {wrapper});
+    const Wrapper = ({children}) => (<Provider store={mockStore}>{children})</Provider>);
+    return renderHook(() => useRequest(props), {wrapper: Wrapper});
   };
 
   const getActions = (type) => {

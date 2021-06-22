@@ -20,8 +20,8 @@ describe('useField hook metavalues', () => {
   });
 
   const runFormHook = (props) => {
-    const wrapper = ({children}) => Provider({store: mockStore, children});
-    const {result} = renderHook(() => useForm(props), {wrapper});
+    const Wrapper = ({children}) => (<Provider store={mockStore}>{children})</Provider>);
+    const {result} = renderHook(() => useForm(props), {wrapper: Wrapper});
     return result.current;
   };
 

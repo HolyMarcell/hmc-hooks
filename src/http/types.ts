@@ -89,7 +89,7 @@ export interface RequestDataSelection {
   sort?: Record<string, any>;
 }
 
-export interface RequestApiSortField extends Sort {
+export interface RequestApiSortField extends Partial<Sort> {
   setSort: (sort: Sort) => ChainedSetter;
   resetSort: () => ChainedSetter;
 }
