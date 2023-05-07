@@ -20,12 +20,16 @@ describe('useField hook metavalues', () => {
   });
 
   const runFormHook = (props) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const wrapper = ({children}) =>  React.createElement(Provider, {store: mockStore}, children);
     const {result} = renderHook(() => useForm(props), {wrapper});
     return result.current;
   };
 
   const runFieldHook = (props) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const wrapper = ({children}) => React.createElement(Provider, {store: mockStore}, children);
     const {result, rerender} = renderHook(() => useField(props), {wrapper});
     return {field: result.current, rerender};

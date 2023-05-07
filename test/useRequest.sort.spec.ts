@@ -18,6 +18,7 @@ describe('useRequest hook sort', () => {
   });
 
   const runHook = (props) => {
+    // @ts-ignore
     const wrapper = ({children}) =>  React.createElement(Provider, {store: mockStore}, children);
     return renderHook(() => useRequest(props), {wrapper});
   };

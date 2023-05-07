@@ -15,6 +15,7 @@ describe('useRequest hook parameter check', () => {
   });
 
   const runHook = (props) => {
+    // @ts-ignore
     const wrapper = ({children}) =>  React.createElement(Provider, {store: mockStore}, children);
     const {result} = renderHook(() => useRequest(props), {wrapper});
     return result.current;
