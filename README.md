@@ -1,3 +1,6 @@
+# Abandonware. Do not use.
+
+
 ## @hmc/hooks | HolyMarcell/hmc-hooks
 
 * [useRequest](./docs/useRequest.md)
